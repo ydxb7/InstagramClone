@@ -1,4 +1,4 @@
-package ai.tomorrow.instagramclone;
+package ai.tomorrow.instagramclone.Likes;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -9,14 +9,15 @@ import android.view.MenuItem;
 
 import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
 
+import ai.tomorrow.instagramclone.R;
 import ai.tomorrow.instagramclone.Utils.BottomNavigationViewHelper;
 
-public class ProfileActivity extends AppCompatActivity {
+public class LikesActivity extends AppCompatActivity {
 
-    private static final String TAG = "ProfileActivity";
-    private static final int ACTIVITY_NUM = 4;
+    private static final String TAG = "LikesActivity";
+    private static final int ACTIVITY_NUM = 3;
 
-    private Context mContext = ProfileActivity.this;
+    private Context mContext = LikesActivity.this;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

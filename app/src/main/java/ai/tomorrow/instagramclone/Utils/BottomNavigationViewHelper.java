@@ -9,12 +9,12 @@ import android.view.MenuItem;
 
 import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
 
-import ai.tomorrow.instagramclone.HomeActivity;
-import ai.tomorrow.instagramclone.LikesActivity;
-import ai.tomorrow.instagramclone.ProfileActivity;
+import ai.tomorrow.instagramclone.Home.HomeActivity;
+import ai.tomorrow.instagramclone.Likes.LikesActivity;
+import ai.tomorrow.instagramclone.Profile.ProfileActivity;
 import ai.tomorrow.instagramclone.R;
-import ai.tomorrow.instagramclone.SearchActivity;
-import ai.tomorrow.instagramclone.ShareActivity;
+import ai.tomorrow.instagramclone.Search.SearchActivity;
+import ai.tomorrow.instagramclone.Share.ShareActivity;
 
 public class BottomNavigationViewHelper {
 

@@ -1,4 +1,4 @@
-package ai.tomorrow.instagramclone;
+package ai.tomorrow.instagramclone.Share;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -9,14 +9,15 @@ import android.view.MenuItem;
 
 import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
 
+import ai.tomorrow.instagramclone.R;
 import ai.tomorrow.instagramclone.Utils.BottomNavigationViewHelper;
 
-public class SearchActivity extends AppCompatActivity {
+public class ShareActivity extends AppCompatActivity {
 
-    private static final String TAG = "SearchActivity";
-    private static final int ACTIVITY_NUM = 1;
+    private static final String TAG = "ShareActivity";
+    private static final int ACTIVITY_NUM = 2;
 
-    private Context mContext = SearchActivity.this;
+    private Context mContext = ShareActivity.this;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
