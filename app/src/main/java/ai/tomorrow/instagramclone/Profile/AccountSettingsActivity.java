@@ -6,6 +6,8 @@ import android.support.annotation.Nullable;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -14,14 +16,18 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 
+import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
+
 import java.util.ArrayList;
 
 import ai.tomorrow.instagramclone.R;
+import ai.tomorrow.instagramclone.Utils.BottomNavigationViewHelper;
 import ai.tomorrow.instagramclone.Utils.SectionsStatePagerAdapter;
 
 public class AccountSettingsActivity extends AppCompatActivity {
 
     private static final String TAG = "AccountSettingsActivity";
+    private static final int ACTIVITY_NUM = 4;
     private Context mContext;
 
     private SectionsStatePagerAdapter pagerAdapter;
@@ -39,7 +45,7 @@ public class AccountSettingsActivity extends AppCompatActivity {
         mRelativeLayout = (RelativeLayout) findViewById(R.id.relLayout1);
 
         setupSettingList();
-
+        setupBottomNavigationView();
         setupFragments();
 
         // setup the backarrow for navigating back to 'ProfileActivity'
@@ -88,4 +94,16 @@ public class AccountSettingsActivity extends AppCompatActivity {
         });
     }
 
+
+    /**
+     * BottomNavigationView setup
+     */
+    private void setupBottomNavigationView() {
+        BottomNavigationViewEx bottomNavigationViewEx = (BottomNavigationViewEx) findViewById(R.id.bottomNavViewBar);
+        BottomNavigationViewHelper.setupBottomNavigationView(bottomNavigationViewEx);
+        BottomNavigationViewHelper.enableNavigation(mContext, bottomNavigationViewEx);
+        Menu menu = bottomNavigationViewEx.getMenu();
+        MenuItem menuItem = menu.getItem(ACTIVITY_NUM);
+        menuItem.setChecked(true);
+    }
 }

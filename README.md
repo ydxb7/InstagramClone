@@ -35,6 +35,7 @@ The following features are implemented:
 * [X] Use **BottomNavigationView** to navigate between different activities.
 * [X] Use **FragmentPagerAdapter** to navigate between ViewPagers.
 * [X] Use **Toolbar** to set the TextView and menu in ProfileActivity.
+* [X] Use **Universal image loader** to load the web image.
 
 <!--* [X] Use **ViewModel** and **LiveData** to optimize the Architecture.
 * [X] Use **BindingAdapter** and **data transform** to bind the data and reduce codes.
@@ -58,6 +59,8 @@ Here's a walkthrough of implemented user stories:
 ## Open-source libraries used
 
 - BottomNavigationViewEx library
+- Circle ImageView
+- Universal image loader
 
 
 
