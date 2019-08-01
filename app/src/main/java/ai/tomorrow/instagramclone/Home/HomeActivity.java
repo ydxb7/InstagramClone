@@ -13,6 +13,7 @@ import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
 
 import ai.tomorrow.instagramclone.R;
 import ai.tomorrow.instagramclone.Utils.BottomNavigationViewHelper;
+import ai.tomorrow.instagramclone.Utils.SectionsPagerAdapter;
 
 public class HomeActivity extends AppCompatActivity {
 

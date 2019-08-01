@@ -1,4 +1,4 @@
-package ai.tomorrow.instagramclone.Home;
+package ai.tomorrow.instagramclone.Utils;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
