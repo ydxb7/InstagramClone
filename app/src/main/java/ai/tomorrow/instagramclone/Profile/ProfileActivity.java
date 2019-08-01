@@ -1,12 +1,15 @@
 package ai.tomorrow.instagramclone.Profile;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ImageView;
 
 import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
 
@@ -33,15 +36,12 @@ public class ProfileActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.profileToolBar);
         setSupportActionBar(toolbar);
 
-        toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+        ImageView profileMenu = (ImageView) findViewById(R.id.profileMenu);
+        profileMenu.setOnClickListener(new View.OnClickListener() {
             @Override
-            public boolean onMenuItemClick(MenuItem menuItem) {
-                switch (menuItem.getItemId()){
-                    case R.id.profileMenu:
-                        Log.d(TAG, "onMenuItemClick: Navigating to Profile Preference");
-                }
-
-                return false;
+            public void onClick(View v) {
+                Intent intent = new Intent(mContext, AccountSettingsActivity.class);
+                startActivity(intent);
             }
         });
 
@@ -60,9 +60,5 @@ public class ProfileActivity extends AppCompatActivity {
         menuItem.setChecked(true);
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.profile_menu, menu);
-        return true;
-    }
+
 }
