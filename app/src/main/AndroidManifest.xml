@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="ai.tomorrow.instagramclone">
 
     <uses-permission android:name="android.permission.INTERNET"/>
@@ -24,6 +25,8 @@
         <activity android:name=".Share.ShareActivity"></activity>
         <activity android:name=".Profile.ProfileActivity"></activity>
         <activity android:name=".Profile.AccountSettingsActivity"></activity>
+        <activity android:name=".Login.LoginActivity"></activity>
+        <activity android:name=".Login.RegisterActivity"></activity>
     </application>
 
 </manifest>

@@ -2,10 +2,11 @@ package ai.tomorrow.instagramclone.Likes;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
 
@@ -22,9 +23,9 @@ public class LikesActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_register);
+        setContentView(R.layout.activity_home);
         Log.d(TAG, "onCreate: starting");
-//        setupBottomNavigationView();
+        setupBottomNavigationView();
     }
 
     /**
