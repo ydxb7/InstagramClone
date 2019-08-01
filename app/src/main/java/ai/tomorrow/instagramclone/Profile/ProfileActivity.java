@@ -26,6 +26,7 @@ public class ProfileActivity extends AppCompatActivity {
 
     private static final String TAG = "ProfileActivity";
     private static final int ACTIVITY_NUM = 4;
+    private static final int NUM_GRID_COLUMNS = 3;
 
     private Context mContext = ProfileActivity.this;
     private ProgressBar mProgressBar;
@@ -51,7 +52,7 @@ public class ProfileActivity extends AppCompatActivity {
         imgURLs.add("http://www.baojiabao.com/bjbnews/pic/20180404/6405f2b36c6ae5a2799980b43156d90f.jpg");
         imgURLs.add("https://img.pc841.com/2018/0905/20180905031728569.jpg");
         imgURLs.add("https://img0.sc115.com/uploads3/sc/jpgs/1904/zzpic17543_sc115.com.jpg");
-        imgURLs.add("https://www.feizl.com/upload2007/allimg/190624/19592H5L-5.jpg");
+        imgURLs.add("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRBtCKDzb0O-2VUTyAi_D3Gi2MaZK2y5PTRzibXDlWwcF2h5RWm");
         imgURLs.add("http://p9.pstatp.com/large/pgc-image/5552f943362d475c88b3f5cc3ee74a49");
         imgURLs.add("http://p99.pstatp.com/large/pgc-image/15407759708280197df4b71");
         imgURLs.add("https://upload.wikimedia.org/wikipedia/commons/thumb/f/f6/1_jiuzhaigou_valley_national_park_wu_hua_hai.jpg/250px-1_jiuzhaigou_valley_national_park_wu_hua_hai.jpg");
@@ -67,6 +68,11 @@ public class ProfileActivity extends AppCompatActivity {
 
     private void setupImageGrid(ArrayList<String> imgURLs){
         GridView gridView = (GridView) findViewById(R.id.gridView);
+
+        int gridWidth = getResources().getDisplayMetrics().widthPixels;
+        int imageWidth = gridWidth / NUM_GRID_COLUMNS;
+        gridView.setColumnWidth(imageWidth);
+
 
         GridImageAdapter adapter = new GridImageAdapter(mContext, R.layout.layout_grid_imageview, "", imgURLs);
         gridView.setAdapter(adapter);
