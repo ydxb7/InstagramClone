@@ -2,4 +2,8 @@
     <string name="app_name">InstagramClone</string>
     <string name="edit_profile_fragment">Edit Profile</string>
     <string name="sign_out_fragment">Sign Out</string>
+
+    <string name="auth_fail">Fail to Authenticate</string>
+    <string name="auth_success">Authentication Success</string>
+
 </resources>

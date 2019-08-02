@@ -107,8 +107,6 @@ public class HomeActivity extends AppCompatActivity {
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 FirebaseUser user = mAuth.getCurrentUser();
 
-                // check if user is logged in
-                checkCurrentUser(user);
                 if (user != null){
                     // User is logged in
                     Log.d(TAG, "onAuthStateChanged: signed_in: " + user.getUid());
@@ -124,6 +122,9 @@ public class HomeActivity extends AppCompatActivity {
     public void onStart() {
         super.onStart();
         mAuth.addAuthStateListener(mAuthListener);
+
+        // check if user is logged in
+        checkCurrentUser(mAuth.getCurrentUser());
     }
 
     @Override
