@@ -91,13 +91,15 @@ public class HomeActivity extends AppCompatActivity {
      */
     private void checkCurrentUser(FirebaseUser user){
         Log.d(TAG, "checkCurrentUser: checking if user is logged in");
-        if (user == null){
+//        if (user == null){
             Intent intent = new Intent(mContext, LoginActivity.class);
             startActivity(intent);
-        }
+//        }
     }
 
-
+    /**
+     * setup the firebase auth object
+     */
     private void setupFirebaseAuth(){
         // Initialize Firebase Auth
         mAuth = FirebaseAuth.getInstance();

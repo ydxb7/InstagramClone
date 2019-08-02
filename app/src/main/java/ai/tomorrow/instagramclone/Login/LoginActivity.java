@@ -21,12 +21,13 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+import ai.tomorrow.instagramclone.Home.HomeActivity;
 import ai.tomorrow.instagramclone.R;
 
 public class LoginActivity extends AppCompatActivity {
     private static final String TAG = "LoginActivity";
 
-    // FirebaseAuth
+    // Firebase
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
 
@@ -107,8 +108,31 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
+        TextView linkSignUp = (TextView) findViewById(R.id.link_signup);
+        linkSignUp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d(TAG, "onClick: navigating to register screen");
+                Intent intent = new Intent(mContext, RegisterActivity.class);
+                startActivity(intent);
+            }
+        });
+
+
+        /**
+         * If the user is logged in then navigate to 'HomeActivity' and call 'finish()'
+         */
+//        if (mAuth.getCurrentUser() != null){
+//            Intent intent = new Intent(mContext, HomeActivity.class);
+//            startActivity(intent);
+//            finish();
+//        }
+
     }
 
+    /**
+     * setup the firebase auth object
+     */
     private void setupFirebaseAuth(){
         // Initialize Firebase Auth
         mAuth = FirebaseAuth.getInstance();
