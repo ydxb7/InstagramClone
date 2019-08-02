@@ -11,6 +11,9 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+
+import ai.tomorrow.instagramclone.models.User;
 
 public class FirebaseMethods {
 
@@ -32,6 +35,27 @@ public class FirebaseMethods {
             userID = mAuth.getCurrentUser().getProviderId();
         }
     }
+
+    public boolean checkIfUsernameExists(String username, DataSnapshot dataSnapshot){
+        Log.d(TAG, "checkIfUsernameExists: checking if " + username + " is exists.");
+
+        User user = new User();
+
+        for (DataSnapshot ds: dataSnapshot.getChildren()){
+            Log.d(TAG, "checkIfUsernameExists: datasnapshot: " + ds);
+
+            user.setUsername(ds.getValue(User.class).getUsername());
+            Log.d(TAG, "checkIfUsernameExists: username : " + user.getUsername());
+
+            if (StringManipulation.expandUsername(user.getUsername()).equals(username)){
+                Log.d(TAG, "checkIfUsernameExists: Found a MATCH: " + user.getUsername());
+                return true;
+            }
+        }
+        return false;
+    }
+
+
 
     /**
      * Register a new email and password to Firebase Authentication
@@ -57,7 +81,7 @@ public class FirebaseMethods {
                             Toast.makeText(mContext, "Authentication failed.",
                                     Toast.LENGTH_SHORT).show();
                         }
-                        
+
                     }
                 });
 

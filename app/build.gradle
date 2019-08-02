@@ -39,9 +39,15 @@ dependencies {
     // Universal image loader
     implementation 'com.nostra13.universalimageloader:universal-image-loader:1.9.5'
 
+    // Firebase
+    implementation 'com.google.firebase:firebase-core:17.0.0'
+
     // Firebase authentication
     implementation 'com.google.firebase:firebase-auth:18.1.0'
-    implementation 'com.google.firebase:firebase-core:17.0.0'
+
+    // Firebase database
+    implementation 'com.google.firebase:firebase-database:17.0.0'
+
 }
 
 // Firebase
