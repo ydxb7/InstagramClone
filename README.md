@@ -8,6 +8,10 @@ Time spent: -- spent in total
 
 I use **Java** to compelete this Application. The following **required** functionality is completed:
 
+* [X] User can **login** to his/her account.
+* [X] User can **sign up** using the app, and the app will send them a verification email. After the user verify the email, then can launch the app.
+* 
+
 <!--* [X] User can **scroll through all the articles** find from the New York Times Database API
 * [X] User can **Endlessly get the data in the server** to find their interested articles.
 * [X] User can According to the their interesting topic to show the articles and store these information **use preference** .
@@ -36,6 +40,8 @@ The following features are implemented:
 * [X] Use **FragmentPagerAdapter** to navigate between ViewPagers.
 * [X] Use **Toolbar** to set the TextView and menu in ProfileActivity.
 * [X] Use **Universal image loader** to load the web image.
+* [X] Use **Firebase**
+* 
 
 <!--* [X] Use **ViewModel** and **LiveData** to optimize the Architecture.
 * [X] Use **BindingAdapter** and **data transform** to bind the data and reduce codes.

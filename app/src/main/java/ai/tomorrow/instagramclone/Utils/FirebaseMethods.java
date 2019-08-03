@@ -41,7 +41,7 @@ public class FirebaseMethods {
         myRef = mFirebaseDatabase.getReference();
 
         if (mAuth.getCurrentUser() != null){
-            userID = mAuth.getCurrentUser().getProviderId();
+            userID = mAuth.getCurrentUser().getUid();
         }
     }
 

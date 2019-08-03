@@ -31,6 +31,11 @@ import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
 import ai.tomorrow.instagramclone.Login.LoginActivity;
 import ai.tomorrow.instagramclone.R;
 import ai.tomorrow.instagramclone.Utils.BottomNavigationViewHelper;
+import ai.tomorrow.instagramclone.Utils.FirebaseMethods;
+import ai.tomorrow.instagramclone.Utils.UniversalImageLoader;
+import ai.tomorrow.instagramclone.models.User;
+import ai.tomorrow.instagramclone.models.UserAccountSettings;
+import ai.tomorrow.instagramclone.models.UserSettings;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class ProfileFragment extends Fragment {
@@ -54,6 +59,7 @@ public class ProfileFragment extends Fragment {
     private FirebaseAuth.AuthStateListener mAuthListener;
     private FirebaseDatabase mFirebaseDatabase;
     private DatabaseReference myRef;
+    private FirebaseMethods mFirebaseMethods;
 
 
     @Nullable
@@ -74,6 +80,7 @@ public class ProfileFragment extends Fragment {
         profileMenu = (ImageView) view.findViewById(R.id.profileMenu);
         bottomNavigationView = (BottomNavigationViewEx) view.findViewById(R.id.bottomNavViewBar);
         mContext = getActivity();
+        mFirebaseMethods = new FirebaseMethods(getActivity());
 
         Log.d(TAG, "onCreateView: started");
 
@@ -84,6 +91,30 @@ public class ProfileFragment extends Fragment {
 
         return view;
     }
+
+    private void setProfileWidgets(UserSettings userSettings){
+        Log.d(TAG, "setProfileWidgets: setting widgets with data retrieved from firebase databse: "+userSettings.toString());
+        Log.d(TAG, "setProfileWidgets: mUsername = " + mUsername);
+
+//        User user = userSettings.getUser();
+        UserAccountSettings settings = userSettings.getSettings();
+
+        UniversalImageLoader.setImage(settings.getProfile_photo(), mProfilePhoto, null, "");
+
+        mDisplayName.setText(settings.getDisplay_name());
+        mUsername.setText(settings.getUsername());
+        mWebsite.setText(settings.getWebsite());
+        mDescription.setText(settings.getDescription());
+        mPosts.setText(String.valueOf(settings.getPosts()));
+        mFollowers.setText(String.valueOf(settings.getFollowers()));
+        mFollowing.setText(String.valueOf(settings.getFollowing()));
+
+        mProgressBar.setVisibility(View.GONE);
+
+
+    }
+
+
 
     /**
      * Responsible for setting up the profile toolbar
@@ -145,6 +176,7 @@ public class ProfileFragment extends Fragment {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
                 //retrieve user information from the database
+                setProfileWidgets(mFirebaseMethods.getUserSettings(dataSnapshot));
 
 
                 //retrieve images for the user in question
