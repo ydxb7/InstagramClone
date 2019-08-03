@@ -3,6 +3,7 @@
     <!--fragment names-->
     <string name="edit_profile_fragment">Edit Profile</string>
     <string name="sign_out_fragment">Sign Out</string>
+    <string name="profile_fragment">Profile</string>
 
     <!--firebase messages-->
     <string name="auth_fail">Fail to Authenticate</string>

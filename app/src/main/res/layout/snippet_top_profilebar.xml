@@ -20,7 +20,7 @@
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
                     android:layout_marginStart="15dp"
-                    android:text="yini_duanmu"
+                    android:text="yini.duanmu"
                     android:textColor="@color/black"
                     android:textSize="20sp" />
 
