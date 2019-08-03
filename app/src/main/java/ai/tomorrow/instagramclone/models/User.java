@@ -1,15 +1,17 @@
 package ai.tomorrow.instagramclone.models;
 
+import ai.tomorrow.instagramclone.Login.LoginActivity;
+
 public class User {
 
     private static final String TAG = "User";
 
     private String user_id;
     private String email;
-    private String phone_number;
+    private Long phone_number;
     private String username;
 
-    public User(String user_id, String email, String phone_number, String username) {
+    public User(String user_id, String email, Long phone_number, String username) {
         this.user_id = user_id;
         this.email = email;
         this.phone_number = phone_number;
@@ -36,11 +38,11 @@ public class User {
         this.email = email;
     }
 
-    public String getPhone_number() {
+    public Long getPhone_number() {
         return phone_number;
     }
 
-    public void setPhone_number(String phone_number) {
+    public void setPhone_number(Long phone_number) {
         this.phone_number = phone_number;
     }
 

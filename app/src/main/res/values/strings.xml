@@ -1,9 +1,15 @@
 <resources>
     <string name="app_name">InstagramClone</string>
+    <!--fragment names-->
     <string name="edit_profile_fragment">Edit Profile</string>
     <string name="sign_out_fragment">Sign Out</string>
 
+    <!--firebase messages-->
     <string name="auth_fail">Fail to Authenticate</string>
     <string name="auth_success">Authentication Success</string>
+
+    <!--firebase database fields-->
+    <string name="dbname_users">users</string>
+    <string name="dbname_user_account_settings">user_account_settings</string>
 
 </resources>

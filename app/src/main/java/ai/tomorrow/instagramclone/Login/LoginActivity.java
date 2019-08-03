@@ -122,11 +122,11 @@ public class LoginActivity extends AppCompatActivity {
         /**
          * If the user is logged in then navigate to 'HomeActivity' and call 'finish()'
          */
-//        if (mAuth.getCurrentUser() != null){
-//            Intent intent = new Intent(mContext, HomeActivity.class);
-//            startActivity(intent);
-//            finish();
-//        }
+        if (mAuth.getCurrentUser() != null){
+            Intent intent = new Intent(mContext, HomeActivity.class);
+            startActivity(intent);
+            finish();
+        }
 
     }
 

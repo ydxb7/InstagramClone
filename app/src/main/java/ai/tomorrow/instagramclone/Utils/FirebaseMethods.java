@@ -12,8 +12,12 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
+import ai.tomorrow.instagramclone.R;
 import ai.tomorrow.instagramclone.models.User;
+import ai.tomorrow.instagramclone.models.UserAccountSettings;
 
 public class FirebaseMethods {
 
@@ -25,23 +29,34 @@ public class FirebaseMethods {
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
     private String userID;
+    private FirebaseDatabase mFirebaseDatabase;
+    private DatabaseReference myRef;
 
     public FirebaseMethods(Context mContext) {
         this.mContext = mContext;
-        // Initialize Firebase Auth
+        // Initialize Firebase
         mAuth = FirebaseAuth.getInstance();
+        mFirebaseDatabase = FirebaseDatabase.getInstance();
+        myRef = mFirebaseDatabase.getReference();
 
         if (mAuth.getCurrentUser() != null){
             userID = mAuth.getCurrentUser().getProviderId();
         }
     }
 
+    /**
+     * chek if username is exist in the database
+     * @param username: with space
+     * @param dataSnapshot
+     * @return
+     */
     public boolean checkIfUsernameExists(String username, DataSnapshot dataSnapshot){
         Log.d(TAG, "checkIfUsernameExists: checking if " + username + " is exists.");
 
         User user = new User();
 
-        for (DataSnapshot ds: dataSnapshot.getChildren()){
+        // ----------------------- 有bug
+        for (DataSnapshot ds: dataSnapshot.child(userID).getChildren()){
             Log.d(TAG, "checkIfUsernameExists: datasnapshot: " + ds);
 
             user.setUsername(ds.getValue(User.class).getUsername());
@@ -54,8 +69,6 @@ public class FirebaseMethods {
         }
         return false;
     }
-
-
 
     /**
      * Register a new email and password to Firebase Authentication
@@ -81,15 +94,32 @@ public class FirebaseMethods {
                             Toast.makeText(mContext, "Authentication failed.",
                                     Toast.LENGTH_SHORT).show();
                         }
-
                     }
                 });
-
-
-
     }
 
+    public void addNewUser(String email, String username, String description, String website, String profile_photo){
 
+        User user = new User(userID, email, 1L, username);
+        myRef.child(mContext.getString(R.string.dbname_users))
+                .child(userID)
+                .setValue(user);
+
+        UserAccountSettings settings = new UserAccountSettings(
+                description,
+                username,
+                0L,
+                0L,
+                0L,
+                profile_photo,
+                username,
+                website
+        );
+        myRef.child(mContext.getString(R.string.dbname_user_account_settings))
+                .child(userID)
+                .setValue(settings);
+
+    }
 
 
 }

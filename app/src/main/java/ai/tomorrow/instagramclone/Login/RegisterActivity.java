@@ -42,7 +42,7 @@ public class RegisterActivity extends AppCompatActivity {
     private FirebaseDatabase mFirebaseDatabase;
     private DatabaseReference myRef;
 
-    private String append;
+    private String append = "";
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -125,7 +125,7 @@ public class RegisterActivity extends AppCompatActivity {
         // Initialize Firebase Auth
         mAuth = FirebaseAuth.getInstance();
         mFirebaseDatabase = FirebaseDatabase.getInstance();
-        myRef = mFirebaseDatabase.getReference("message");
+        myRef = mFirebaseDatabase.getReference();
 
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
@@ -142,14 +142,17 @@ public class RegisterActivity extends AppCompatActivity {
                             // 1st check: Make sure the username is not already in use
                             if (firebaseMethods.checkIfUsernameExists(username, dataSnapshot)){
                                 // generate a random string to append to duplicate username
-                                append = myRef.push().getKey().substring(3, 10);
+                                append = myRef.push().getKey();
                                 Log.d(TAG, "onDataChange: username already exists, append random string to name " + append);
                             }
                             username = username + append;
 
                             // add new user to the database
+                            firebaseMethods.addNewUser(email, username, "", "", "");
+                            Toast.makeText(mContext, "Sign up seccessful. Sending verification email", Toast.LENGTH_SHORT).show();
 
-                            // add new user_account_settings to the database
+                            Log.d(TAG, "onDataChange: myRef:" + myRef.child(getString(R.string.dbname_users)));
+
                         }
 
                         @Override
