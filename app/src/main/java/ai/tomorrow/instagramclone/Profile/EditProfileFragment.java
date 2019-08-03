@@ -30,6 +30,7 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import ai.tomorrow.instagramclone.R;
 import ai.tomorrow.instagramclone.Utils.FirebaseMethods;
 import ai.tomorrow.instagramclone.Utils.UniversalImageLoader;
+import ai.tomorrow.instagramclone.models.User;
 import ai.tomorrow.instagramclone.models.UserAccountSettings;
 import ai.tomorrow.instagramclone.models.UserSettings;
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -43,6 +44,7 @@ public class EditProfileFragment extends Fragment {
     private FirebaseDatabase mFirebaseDatabase;
     private DatabaseReference myRef;
     private FirebaseMethods mFirebaseMethods;
+    private String userID;
 
     //widgets
     private EditText mDisplayName, mUsername, mWebsite, mDescription, mEmail, mPhoneNumber;
@@ -86,6 +88,51 @@ public class EditProfileFragment extends Fragment {
         return view;
     }
 
+    private void saveProfileSettings(){
+        final String displayName = mDisplayName.getText().toString();
+        final String username = mUsername.getText().toString();
+        final String website = mWebsite.getText().toString();
+        final String description = mDescription.getText().toString();
+        final String email = mEmail.getText().toString();
+        final long phoneNumber = Long.parseLong(mPhoneNumber.getText().toString());
+
+        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                User user = new User();
+                for (DataSnapshot ds: dataSnapshot.child(getString(R.string.dbname_users)).getChildren()){
+                    if (ds.getKey().equals(userID)){
+                        user.setUsername(ds.getValue(User.class).getUsername());
+                    }
+                }
+                Log.d(TAG, "onDataChange: CURRENT USERNAME: " + user.getUsername());
+
+                // case1: the user did not change their username
+                if (user.getUsername().equals(username)){
+
+                }
+                // case2: the user changed their username therefore we need to check for uniqueness
+                else {
+                    
+                }
+
+
+
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+
+
+    }
+
+
     private void setProfileWidgets(UserSettings userSettings){
         Log.d(TAG, "setProfileWidgets: setting widgets with data retrieved from firebase databse: "+userSettings.toString());
         Log.d(TAG, "setProfileWidgets: mUsername = " + mUsername);
@@ -117,6 +164,7 @@ public class EditProfileFragment extends Fragment {
         mAuth = FirebaseAuth.getInstance();
         mFirebaseDatabase = FirebaseDatabase.getInstance();
         myRef = mFirebaseDatabase.getReference();
+        userID = mAuth.getCurrentUser().getUid();
 
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
