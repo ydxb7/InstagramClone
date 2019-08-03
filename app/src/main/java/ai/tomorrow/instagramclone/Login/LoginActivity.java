@@ -88,11 +88,19 @@ public class LoginActivity extends AppCompatActivity {
                                 @Override
                                 public void onComplete(@NonNull Task<AuthResult> task) {
                                     if (task.isSuccessful()) {
-                                        // Sign in success, update UI with the signed-in user's information
-                                        Log.d(TAG, "signInWithEmail:success");
-                                        Toast.makeText(mContext, getString(R.string.auth_success),
-                                                Toast.LENGTH_SHORT).show();
-                                        FirebaseUser user = mAuth.getCurrentUser();
+                                        try {
+                                            FirebaseUser user = mAuth.getCurrentUser();
+                                            if (user.isEmailVerified()){
+                                                Intent intent = new Intent(mContext, HomeActivity.class);
+                                                startActivity(intent);
+                                            } else {
+                                                Toast.makeText(mContext, "Email is not verified \n Please check your email inbox", Toast.LENGTH_SHORT).show();
+                                                mAuth.signOut();
+                                            }
+                                        } catch (NullPointerException e){
+                                            Log.d(TAG, "onComplete: NullPointerException: " + e.getMessage());
+                                        }
+
                                     } else {
                                         // If sign in fails, display a message to the user.
                                         Log.w(TAG, getString(R.string.auth_fail), task.getException());

@@ -43,6 +43,8 @@ public class HomeActivity extends AppCompatActivity {
         initImageLoader();
         setupBottomNavigationView();
         setupViewPager();
+
+//        mAuth.signOut();
     }
 
     private void initImageLoader(){
@@ -103,7 +105,6 @@ public class HomeActivity extends AppCompatActivity {
     private void setupFirebaseAuth(){
         // Initialize Firebase Auth
         mAuth = FirebaseAuth.getInstance();
-        mAuth.signOut();
 
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override

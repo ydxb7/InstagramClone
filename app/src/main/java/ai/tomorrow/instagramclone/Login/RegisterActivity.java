@@ -153,6 +153,8 @@ public class RegisterActivity extends AppCompatActivity {
 
                             Log.d(TAG, "onDataChange: myRef:" + myRef.child(getString(R.string.dbname_users)));
 
+                            // user can be signed in after verify the email, so keep them signed out
+                            mAuth.signOut();
                         }
 
                         @Override
@@ -161,7 +163,7 @@ public class RegisterActivity extends AppCompatActivity {
                         }
                     });
 
-
+                    finish();
 
                 } else {
                     // User is signed out
