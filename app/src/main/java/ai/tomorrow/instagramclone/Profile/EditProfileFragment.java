@@ -18,8 +18,13 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthCredential;
+import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.SignInMethodQueryResult;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -42,9 +47,63 @@ public class EditProfileFragment extends Fragment implements
         ConfirmPasswordDialog.OnConfirmPasswordListener {
 
 
+    // change the email in the database
     @Override
     public void onComfirmPasswordListener(String password) {
-//        Log.d(TAG, "onComfirmPasswordListener: got the password: " + password);
+
+        // Get auth credentials from the user for re-authentication. The example below shows
+        // email and password credentials but there are multiple possible providers,
+        // such as GoogleAuthProvider or FacebookAuthProvider.
+        AuthCredential credential = EmailAuthProvider
+                .getCredential(mAuth.getCurrentUser().getEmail(), password);
+
+        ////////////////////////////////////// Prompt the user to re-provide their sign-in credentials
+        mAuth.getCurrentUser().reauthenticate(credential)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) {
+                            Log.d(TAG, "User re-authenticated.");
+
+                            ////////////////////////////////////// check if email already present in the database.
+                            mAuth.fetchSignInMethodsForEmail(mEmail.getText().toString()).addOnCompleteListener(new OnCompleteListener<SignInMethodQueryResult>() {
+                                @Override
+                                public void onComplete(@NonNull Task<SignInMethodQueryResult> task) {
+                                    if (task.isSuccessful()) {
+                                        try {
+                                            if (task.getResult().getSignInMethods().size() == 0) {
+                                                // email not existed
+                                                //////////////////////////////////the email is available so update it
+                                                Log.d(TAG, "onComplete: that email is available");
+                                                mAuth.getCurrentUser().updateEmail(mEmail.getText().toString())
+                                                        .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                            @Override
+                                                            public void onComplete(@NonNull Task<Void> task) {
+                                                                if (task.isSuccessful()) {
+                                                                    Log.d(TAG, "User email address updated.");
+                                                                    mFirebaseMethods.updateEmail(mEmail.getText().toString());
+                                                                    Toast.makeText(getActivity(), "email updated", Toast.LENGTH_SHORT).show();
+                                                                }
+                                                            }
+                                                        });
+                                            } else {
+                                                // email existed
+                                                Log.d(TAG, "onComplete: that email is already in use");
+                                                Toast.makeText(getActivity(), "That email is already in use", Toast.LENGTH_SHORT).show();
+                                            }
+                                        } catch (NullPointerException e) {
+                                            Log.e(TAG, "onComplete: NullPointerException: " + e.getMessage());
+                                        }
+                                    }
+                                }
+                            });
+                        } else {
+                            Log.d(TAG, "onComplete: re-authentication failed.");
+                        }
+                    }
+                });
+
+
     }
 
 
