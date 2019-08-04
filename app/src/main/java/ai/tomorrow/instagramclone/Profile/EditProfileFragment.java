@@ -32,6 +32,7 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import ai.tomorrow.instagramclone.R;
 import ai.tomorrow.instagramclone.Utils.FirebaseMethods;
 import ai.tomorrow.instagramclone.Utils.UniversalImageLoader;
+import ai.tomorrow.instagramclone.dialogs.ConfirmPasswordDialog;
 import ai.tomorrow.instagramclone.models.User;
 import ai.tomorrow.instagramclone.models.UserAccountSettings;
 import ai.tomorrow.instagramclone.models.UserSettings;
@@ -98,13 +99,10 @@ public class EditProfileFragment extends Fragment {
         });
 
 
-
-
-
         return view;
     }
 
-    private void saveProfileSettings(){
+    private void saveProfileSettings() {
         final String displayName = mDisplayName.getText().toString();
         final String username = mUsername.getText().toString();
         final String website = mWebsite.getText().toString();
@@ -112,40 +110,37 @@ public class EditProfileFragment extends Fragment {
         final String email = mEmail.getText().toString();
         final long phoneNumber = Long.parseLong(mPhoneNumber.getText().toString());
 
-        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+        // case1: if the user made a change to their username
+        if (!mUserSettings.getUser().getUsername().equals(username)) {
+            checkIfUsernameExists(username);
+
+        }
+        // case2: if the user made a change to their email
+        if (!mUserSettings.getUser().getEmail().equals(email)) {
+
+            // step1) Reauthenticate
+            //          -confirm the password and email
+            ConfirmPasswordDialog dialog = new ConfirmPasswordDialog();
+            dialog.show(getFragmentManager(), getString(R.string.confirm_password_dialog));
 
 
+            // step2) check if the email already is registered
+            //          -'fetchProvidersForEmail(String email)'
+            // step3) change the email
+            //          -submit the new email to the database and authentication
 
-                // case1: the user did not change their username
-                // username changes
-                if (!mUserSettings.getUser().getUsername().equals(username)){
-                    checkIfUsernameExists(username);
 
-                }
-                // case2: the user changed their username therefore we need to check for uniqueness
-                else {
-
-                }
-
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-
+        }
 
 
     }
 
     /**
      * check is @param username already exists in the database
+     *
      * @param username
      */
-    private void checkIfUsernameExists(final String username){
+    private void checkIfUsernameExists(final String username) {
         Log.d(TAG, "checkIfUsernameExists: checking if " + username + " already exists.");
 
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
@@ -157,13 +152,13 @@ public class EditProfileFragment extends Fragment {
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if (!dataSnapshot.exists()){
+                if (!dataSnapshot.exists()) {
                     // add new user
                     mFirebaseMethods.updateUsername(username);
                     Toast.makeText(mContext, "saved username", Toast.LENGTH_SHORT).show();
                 }
-                for (DataSnapshot singleSnapshot: dataSnapshot.getChildren()){
-                    if (singleSnapshot.exists()){
+                for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
+                    if (singleSnapshot.exists()) {
                         Log.d(TAG, "checkIfUsernameExists: FOUND A MATCH: " + singleSnapshot.getValue(User.class).getUsername());
                         Toast.makeText(mContext, "That username already exists.", Toast.LENGTH_SHORT).show();
                     }
@@ -179,8 +174,8 @@ public class EditProfileFragment extends Fragment {
     }
 
 
-    private void setProfileWidgets(UserSettings userSettings){
-        Log.d(TAG, "setProfileWidgets: setting widgets with data retrieved from firebase databse: "+userSettings.toString());
+    private void setProfileWidgets(UserSettings userSettings) {
+        Log.d(TAG, "setProfileWidgets: setting widgets with data retrieved from firebase databse: " + userSettings.toString());
         Log.d(TAG, "setProfileWidgets: mUsername = " + mUsername);
 
 //        User user = userSettings.getUser();
@@ -205,7 +200,7 @@ public class EditProfileFragment extends Fragment {
     /**
      * setup the firebase auth object
      */
-    private void setupFirebaseAuth(){
+    private void setupFirebaseAuth() {
         // Initialize Firebase Auth
         mAuth = FirebaseAuth.getInstance();
         mFirebaseDatabase = FirebaseDatabase.getInstance();
@@ -217,7 +212,7 @@ public class EditProfileFragment extends Fragment {
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 FirebaseUser user = mAuth.getCurrentUser();
 
-                if (user != null){
+                if (user != null) {
                     // User is logged in
                     Log.d(TAG, "onAuthStateChanged: signed_in: " + user.getUid());
                 } else {
@@ -255,7 +250,7 @@ public class EditProfileFragment extends Fragment {
     @Override
     public void onStop() {
         super.onStop();
-        if (mAuthListener != null){
+        if (mAuthListener != null) {
             mAuth.removeAuthStateListener(mAuthListener);
         }
     }
