@@ -38,7 +38,16 @@ import ai.tomorrow.instagramclone.models.UserAccountSettings;
 import ai.tomorrow.instagramclone.models.UserSettings;
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class EditProfileFragment extends Fragment {
+public class EditProfileFragment extends Fragment implements
+        ConfirmPasswordDialog.OnConfirmPasswordListener {
+
+
+    @Override
+    public void onComfirmPasswordListener(String password) {
+//        Log.d(TAG, "onComfirmPasswordListener: got the password: " + password);
+    }
+
+
     private static final String TAG = "EditProfileFragment";
 
     // Firebase
@@ -122,6 +131,7 @@ public class EditProfileFragment extends Fragment {
             //          -confirm the password and email
             ConfirmPasswordDialog dialog = new ConfirmPasswordDialog();
             dialog.show(getFragmentManager(), getString(R.string.confirm_password_dialog));
+            dialog.setTargetFragment(EditProfileFragment.this, 1);
 
 
             // step2) check if the email already is registered
