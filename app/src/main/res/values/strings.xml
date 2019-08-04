@@ -29,6 +29,9 @@
     <!--activity names-->
     <string name="profile_activity">Profile Activity</string>
 
+    <!--strings-->
+    <string name="gallery">GALLERY</string>
+    <string name="photo">PHOTO</string>
 
 
 </resources>
