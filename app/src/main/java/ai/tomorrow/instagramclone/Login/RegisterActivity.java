@@ -20,10 +20,12 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import ai.tomorrow.instagramclone.R;
 import ai.tomorrow.instagramclone.Utils.FirebaseMethods;
+import ai.tomorrow.instagramclone.models.User;
 
 public class RegisterActivity extends AppCompatActivity {
     private static final String TAG = "RegisterActivity";
@@ -117,6 +119,50 @@ public class RegisterActivity extends AppCompatActivity {
     /**
      * -------------------------------- firebase --------------------------
      */
+    /**
+     * check is @param username already exists in the database
+     * @param username
+     */
+    private void checkIfUsernameExists(final String username){
+        Log.d(TAG, "checkIfUsernameExists: checking if " + username + " already exists.");
+
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
+        Query query = reference
+                .child(getString(R.string.dbname_users))
+                .orderByChild(getString(R.string.field_username))
+                .equalTo(username);
+
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (!dataSnapshot.exists()){
+                    // add new user
+                }
+                for (DataSnapshot singleSnapshot: dataSnapshot.getChildren()){
+                    if (singleSnapshot.exists()){
+                        Log.d(TAG, "checkIfUsernameExists: FOUND A MATCH: " + singleSnapshot.getValue(User.class).getUsername());
+                        append = myRef.push().getKey();
+                        Log.d(TAG, "onDataChange: username already exists, append random string to name " + append);
+                    }
+                }
+                String mUsername = "";
+                mUsername = username + append;
+
+                // add new user to the database
+                firebaseMethods.addNewUser(email, mUsername, "", "", "");
+                Toast.makeText(mContext, "Sign up seccessful. Sending verification email", Toast.LENGTH_SHORT).show();
+
+                // user can be signed in after verify the email, so keep them signed out
+                mAuth.signOut();
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
 
     /**
      * setup the firebase auth object
@@ -139,22 +185,7 @@ public class RegisterActivity extends AppCompatActivity {
                     myRef.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            // 1st check: Make sure the username is not already in use
-                            if (firebaseMethods.checkIfUsernameExists(username, dataSnapshot)){
-                                // generate a random string to append to duplicate username
-                                append = myRef.push().getKey();
-                                Log.d(TAG, "onDataChange: username already exists, append random string to name " + append);
-                            }
-                            username = username + append;
-
-                            // add new user to the database
-                            firebaseMethods.addNewUser(email, username, "", "", "");
-                            Toast.makeText(mContext, "Sign up seccessful. Sending verification email", Toast.LENGTH_SHORT).show();
-
-                            Log.d(TAG, "onDataChange: myRef:" + myRef.child(getString(R.string.dbname_users)));
-
-                            // user can be signed in after verify the email, so keep them signed out
-                            mAuth.signOut();
+                            checkIfUsernameExists(username);
                         }
 
                         @Override
