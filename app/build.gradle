@@ -43,10 +43,13 @@ dependencies {
     implementation 'com.google.firebase:firebase-core:17.0.0'
 
     // Firebase authentication
-    implementation 'com.google.firebase:firebase-auth:18.1.0'
+    implementation 'com.google.firebase:firebase-auth:18.0.0'
 
     // Firebase database
-    implementation 'com.google.firebase:firebase-database:17.0.0'
+    implementation 'com.google.firebase:firebase-database:18.0.0'
+
+    // Firebase storage
+    implementation 'com.google.firebase:firebase-storage:18.0.0'
 
 }
 

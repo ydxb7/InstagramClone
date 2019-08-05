@@ -5,8 +5,10 @@ import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.util.Log;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -32,6 +34,7 @@ public class NextActivity extends AppCompatActivity {
     //vars
     private String mAppend = "file:/";
     private int imageCount = 0;
+    private String imgUrl;
 
     // Firebase
     private FirebaseAuth mAuth;
@@ -40,6 +43,10 @@ public class NextActivity extends AppCompatActivity {
     private DatabaseReference myRef;
     private FirebaseMethods mFirebaseMethods;
 
+    //widgets
+    private EditText mCaption;
+
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,6 +54,8 @@ public class NextActivity extends AppCompatActivity {
         Log.d(TAG, "onCreate: get the chosen image: " + getIntent().getStringExtra(getString(R.string.selected_image)));
 
         mFirebaseMethods = new FirebaseMethods(NextActivity.this);
+        mCaption = (EditText) findViewById(R.id.caption);
+        imgUrl = getIntent().getStringExtra(getString(R.string.selected_image));
         setupFirebaseAuth();
 
         ImageView backArrow = (ImageView) findViewById(R.id.ivBackArrow);
@@ -58,6 +67,7 @@ public class NextActivity extends AppCompatActivity {
             }
         });
 
+
         TextView share = (TextView) findViewById(R.id.tvShare);
         share.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -65,6 +75,15 @@ public class NextActivity extends AppCompatActivity {
                 Log.d(TAG, "onClick: upload the image");
 
                 // upload the image and description to firebase
+                Toast.makeText(NextActivity.this, "Attempting to upload new photo", Toast.LENGTH_SHORT).show();
+
+                String caption = mCaption.getText().toString();
+
+                mFirebaseMethods.uploadNewPhotos(getString(R.string.new_photo), caption, imageCount, imgUrl);
+
+
+
+
             }
         });
 

@@ -14,6 +14,8 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import ai.tomorrow.instagramclone.R;
 import ai.tomorrow.instagramclone.models.User;
@@ -32,6 +34,7 @@ public class FirebaseMethods {
     private String userID;
     private FirebaseDatabase mFirebaseDatabase;
     private DatabaseReference myRef;
+    private StorageReference mStorageReference;
 
     public FirebaseMethods(Context mContext) {
         this.mContext = mContext;
@@ -39,11 +42,37 @@ public class FirebaseMethods {
         mAuth = FirebaseAuth.getInstance();
         mFirebaseDatabase = FirebaseDatabase.getInstance();
         myRef = mFirebaseDatabase.getReference();
+        mStorageReference = FirebaseStorage.getInstance().getReference();
 
         if (mAuth.getCurrentUser() != null){
             userID = mAuth.getCurrentUser().getUid();
         }
     }
+
+    public void uploadNewPhotos(String photoType, String caption, int count, String imgUrl) {
+        Log.d(TAG, "uploadNewPhotos: Attempting to upload new photo");
+        FilePaths filePaths = new FilePaths();
+
+        // case1) new photo
+        if (photoType.equals(mContext.getString(R.string.new_photo))){
+            Log.d(TAG, "uploadNewPhotos: Uploading NEW photo.");
+
+            String user_id = FirebaseAuth.getInstance().getCurrentUser().getUid();
+            StorageReference storageReference = mStorageReference
+                    .child(filePaths.FIRENASE_IMAGE_STORAGE + "/" + user_id + "/photo" + (count + 1));
+
+
+        }
+        // case2) profile photo
+        else if (photoType.equals(mContext.getString(R.string.profile_photo))){
+            Log.d(TAG, "uploadNewPhotos: Uploading new PROFILE photo.");
+
+        }
+
+
+    }
+
+
 
     public int getImageCount(DataSnapshot dataSnapshot) {
         int count = 0;
