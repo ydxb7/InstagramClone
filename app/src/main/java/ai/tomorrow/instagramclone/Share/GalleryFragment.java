@@ -1,5 +1,6 @@
 package ai.tomorrow.instagramclone.Share;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.util.Log;
@@ -45,6 +46,7 @@ public class GalleryFragment extends Fragment {
 
     //vars
     private ArrayList<String> directories;
+    private String mSelectedImage;
     
 
     @Nullable
@@ -74,10 +76,9 @@ public class GalleryFragment extends Fragment {
             public void onClick(View v) {
                 Log.d(TAG, "onClick: navigating to the final share screen");
 
-
-
-
-
+                Intent intent = new Intent(getActivity(), NextActivity.class);
+                intent.putExtra(getString(R.string.selected_image), mSelectedImage);
+                startActivity(intent);
             }
         });
 
@@ -96,8 +97,16 @@ public class GalleryFragment extends Fragment {
         }
         directories.add(filePaths.CAMERA);
 
+        // directories is too long, we only need the last part of the file path
+        ArrayList<String> directoryName = new ArrayList<>();
+        for (int i = 0; i < directories.size(); i++){
+            int index = directories.get(i).lastIndexOf("/");
+            String string = directories.get(i).substring(index);
+            directoryName.add(string);
+        }
+
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(),
-                android.R.layout.simple_spinner_item, directories);
+                android.R.layout.simple_spinner_item, directoryName);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         directorySpinner.setAdapter(adapter);
 
@@ -134,6 +143,7 @@ public class GalleryFragment extends Fragment {
         // set the first image to be displayed when the activity fragment is inflated.
         if (imgURLs != null && imgURLs.size() > 0){
             setImage(imgURLs.get(0), galleryImage, mAppend);
+            mSelectedImage = imgURLs.get(0);
         }
         
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -142,6 +152,7 @@ public class GalleryFragment extends Fragment {
                 Log.d(TAG, "onItemClick: selected an image + " + imgURLs.get(position));
                 if (imgURLs != null && imgURLs.size() > 0){
                     setImage(imgURLs.get(position), galleryImage, mAppend);
+                    mSelectedImage = imgURLs.get(position);
                 }
             }
         });
