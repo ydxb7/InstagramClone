@@ -1,6 +1,8 @@
 package ai.tomorrow.instagramclone.Utils;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.provider.ContactsContract;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -16,6 +18,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 import ai.tomorrow.instagramclone.R;
 import ai.tomorrow.instagramclone.models.User;
@@ -60,6 +63,13 @@ public class FirebaseMethods {
             String user_id = FirebaseAuth.getInstance().getCurrentUser().getUid();
             StorageReference storageReference = mStorageReference
                     .child(filePaths.FIRENASE_IMAGE_STORAGE + "/" + user_id + "/photo" + (count + 1));
+
+            // convert image url to bitmap
+            Bitmap bm = ImageManager.getBitmap(imgUrl);
+            byte[] bytes = ImageManager.getBytesFromBitmap(bm, 100);
+
+            UploadTask uploadTask = null;
+            uploadTask = storageReference.putBytes(bytes);
 
 
         }
