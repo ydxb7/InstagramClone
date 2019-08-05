@@ -31,6 +31,7 @@ public class NextActivity extends AppCompatActivity {
 
     //vars
     private String mAppend = "file:/";
+    private int imageCount = 0;
 
     // Firebase
     private FirebaseAuth mAuth;
@@ -45,6 +46,7 @@ public class NextActivity extends AppCompatActivity {
         setContentView(R.layout.activity_next);
         Log.d(TAG, "onCreate: get the chosen image: " + getIntent().getStringExtra(getString(R.string.selected_image)));
 
+        mFirebaseMethods = new FirebaseMethods(NextActivity.this);
         setupFirebaseAuth();
 
         ImageView backArrow = (ImageView) findViewById(R.id.ivBackArrow);
@@ -69,6 +71,28 @@ public class NextActivity extends AppCompatActivity {
         setImage();
     }
 
+    private void someMethod(){
+
+        /**
+         * step 1)
+         * create a data model for photos
+         *
+         * step 2)
+         * add properties to the photo objects (caption, data, imageUrl, photo_id, tags, user_id)
+         *
+         * step 3)
+         * count the number of photos that the user already has.
+         *
+         * step 4)
+         * a) upload the photo to Firebase Storage
+         * b) insert into 'photos' node
+         * c) insert into 'user_photos' node
+         *
+         */
+
+    }
+
+
     /**
      * gets the image url from the incoming intent and displays the chosen image
      */
@@ -77,8 +101,6 @@ public class NextActivity extends AppCompatActivity {
         Intent intent = getIntent();
         UniversalImageLoader.setImage(intent.getStringExtra(getString(R.string.selected_image)), imageView, null, mAppend);
     }
-
-
 
     /**
      * -------------------------------- firebase --------------------------
@@ -92,6 +114,7 @@ public class NextActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         mFirebaseDatabase = FirebaseDatabase.getInstance();
         myRef = mFirebaseDatabase.getReference();
+        Log.d(TAG, "onDataChange: image count: " + imageCount);
 
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
@@ -111,7 +134,8 @@ public class NextActivity extends AppCompatActivity {
         myRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-
+                imageCount = mFirebaseMethods.getImageCount(dataSnapshot);
+                Log.d(TAG, "onDataChange: image count: " + imageCount);
             }
 
             @Override

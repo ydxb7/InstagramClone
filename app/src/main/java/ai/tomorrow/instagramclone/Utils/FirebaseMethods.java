@@ -45,6 +45,18 @@ public class FirebaseMethods {
         }
     }
 
+    public int getImageCount(DataSnapshot dataSnapshot) {
+        int count = 0;
+        for (DataSnapshot ds: dataSnapshot
+                .child(mContext.getString(R.string.dbname_user_photos))
+                .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                .getChildren()){
+            count++;
+        }
+        return count;
+    }
+
+
     /**
      * update 'user_account_settings' node and 'users' node for the current user
      * @param displayName
