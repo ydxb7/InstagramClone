@@ -55,7 +55,6 @@ public class NextActivity extends AppCompatActivity {
 
         mFirebaseMethods = new FirebaseMethods(NextActivity.this);
         mCaption = (EditText) findViewById(R.id.caption);
-        imgUrl = getIntent().getStringExtra(getString(R.string.selected_image));
         setupFirebaseAuth();
 
         ImageView backArrow = (ImageView) findViewById(R.id.ivBackArrow);
@@ -116,6 +115,7 @@ public class NextActivity extends AppCompatActivity {
      * gets the image url from the incoming intent and displays the chosen image
      */
     private void setImage(){
+        imgUrl = getIntent().getStringExtra(getString(R.string.selected_image));
         ImageView imageView = (ImageView) findViewById(R.id.imageShare);
         Intent intent = getIntent();
         UniversalImageLoader.setImage(intent.getStringExtra(getString(R.string.selected_image)), imageView, null, mAppend);

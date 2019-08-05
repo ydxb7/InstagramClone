@@ -2,13 +2,17 @@ package ai.tomorrow.instagramclone.Utils;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.provider.ContactsContract;
 import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
+import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
@@ -17,6 +21,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
@@ -29,8 +34,6 @@ public class FirebaseMethods {
 
     private static final String TAG = "FirebaseMethods";
 
-    private Context mContext;
-
     // Firebase
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
@@ -38,6 +41,10 @@ public class FirebaseMethods {
     private FirebaseDatabase mFirebaseDatabase;
     private DatabaseReference myRef;
     private StorageReference mStorageReference;
+
+    //vars
+    private Context mContext;
+    private double mPhotoUploadProgress = 0;
 
     public FirebaseMethods(Context mContext) {
         this.mContext = mContext;
@@ -54,22 +61,86 @@ public class FirebaseMethods {
 
     public void uploadNewPhotos(String photoType, String caption, int count, String imgUrl) {
         Log.d(TAG, "uploadNewPhotos: Attempting to upload new photo");
-        FilePaths filePaths = new FilePaths();
+        final FilePaths filePaths = new FilePaths();
+        mPhotoUploadProgress = 0;
 
         // case1) new photo
         if (photoType.equals(mContext.getString(R.string.new_photo))){
             Log.d(TAG, "uploadNewPhotos: Uploading NEW photo.");
 
             String user_id = FirebaseAuth.getInstance().getCurrentUser().getUid();
-            StorageReference storageReference = mStorageReference
+            final StorageReference storageReference = mStorageReference
                     .child(filePaths.FIRENASE_IMAGE_STORAGE + "/" + user_id + "/photo" + (count + 1));
 
             // convert image url to bitmap
             Bitmap bm = ImageManager.getBitmap(imgUrl);
             byte[] bytes = ImageManager.getBytesFromBitmap(bm, 100);
 
+            // upload the photo
             UploadTask uploadTask = null;
             uploadTask = storageReference.putBytes(bytes);
+
+            uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    Toast.makeText(mContext, "photo upload success", Toast.LENGTH_SHORT).show();
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    Log.d(TAG, "onFailure: Photo upload failed");
+                    Toast.makeText(mContext, "Photo upload failed.", Toast.LENGTH_SHORT).show();
+
+                }
+            }).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
+                    double progress = 100 * taskSnapshot.getBytesTransferred() / taskSnapshot.getTotalByteCount();
+
+                    if (progress - 15 > mPhotoUploadProgress){
+                        Toast.makeText(mContext, "photo upload progress: " + String.format("%.0f", progress) + "%", Toast.LENGTH_SHORT).show();
+                        mPhotoUploadProgress = progress;
+                    }
+                    Log.d(TAG, "onProgress: upload progress: " + progress + "% done");
+                }
+            });
+
+            // After uploading a file, get the download Firebase URL to insert into 'photos' node and
+            // 'user_photos' node
+            Task<Uri> urlTask = uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+                @Override
+                public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+                    if (!task.isSuccessful()) {
+                        throw task.getException();
+                    }
+
+                    // Continue with the task to get the download URL
+                    return storageReference.getDownloadUrl();
+                }
+            }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+                @Override
+                public void onComplete(@NonNull Task<Uri> task) {
+                    if (task.isSuccessful()) {
+                        // after successfully upload the image, save the download url(firebase url) for
+                        // that image in the database
+                        Uri firebaseUrl = task.getResult();
+                        Log.d(TAG, "onComplete: firebase url: " + firebaseUrl);
+//                        Toast.makeText(mContext, "photo upload success", Toast.LENGTH_SHORT).show();
+
+                        // add the new photo to 'photos' node and 'user_photos' node
+
+                        // navigate to the main feed so the user can see their photo.
+
+
+                    } else {
+                        // Handle failures
+                        Log.d(TAG, "onComplete: get firebase download url failed.");
+                    }
+                }
+            });
+
+
+
 
 
         }
@@ -171,33 +242,6 @@ public class FirebaseMethods {
                 .setValue(email);
     }
 
-
-
-//    /**
-//     * chek if username is exist in the database
-//     * @param username: with space
-//     * @param dataSnapshot
-//     * @return
-//     */
-//    public boolean checkIfUsernameExists(String username, DataSnapshot dataSnapshot){
-//        Log.d(TAG, "checkIfUsernameExists: checking if " + username + " is exists.");
-//
-//        User user = new User();
-//
-//        // ----------------------- 有bug
-//        for (DataSnapshot ds: dataSnapshot.child(userID).getChildren()){
-//            Log.d(TAG, "checkIfUsernameExists: datasnapshot: " + ds);
-//
-//            user.setUsername(ds.getValue(User.class).getUsername());
-//            Log.d(TAG, "checkIfUsernameExists: username : " + user.getUsername());
-//
-//            if (StringManipulation.expandUsername(user.getUsername()).equals(username)){
-//                Log.d(TAG, "checkIfUsernameExists: Found a MATCH: " + user.getUsername());
-//                return true;
-//            }
-//        }
-//        return false;
-//    }
 
     /**
      * Register a new email and password to Firebase Authentication
