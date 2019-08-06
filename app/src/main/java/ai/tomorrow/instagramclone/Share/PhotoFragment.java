@@ -1,6 +1,7 @@
 package ai.tomorrow.instagramclone.Share;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
@@ -13,6 +14,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import ai.tomorrow.instagramclone.Profile.AccountSettingsActivity;
 import ai.tomorrow.instagramclone.R;
 import ai.tomorrow.instagramclone.Utils.Permissions;
 
@@ -57,13 +59,41 @@ public class PhotoFragment extends Fragment {
         return view;
     }
 
+    private boolean isRootTask(){
+        if (((ShareActivity) getActivity()).getTask() == 0){
+            return true;
+        } else {
+            // It's coming from EditProfileFragment
+            return false;
+        }
+    }
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == CAMERA_REQUEST_CODE){
             Log.d(TAG, "onActivityResult: done taking a photo.");
-            Log.d(TAG, "onActivityResult: attempting to navigate to final share screen");
+
+            Bitmap bitmap = (Bitmap) data.getExtras().get("data");
+
             // navigate to the final share screen to publish photo
+            if (isRootTask()){
+                Log.d(TAG, "onActivityResult: attempting to navigate to final share screen");
+//                Intent intent = new Intent(getActivity(), NextActivity.class);
+//                intent.putExtra(getString(R.string.selected_image), mSelectedImage);
+//                startActivity(intent);
+            } else {
+                try {
+                    Log.d(TAG, "onActivityResult: received new bitmap from camera: " + bitmap);
+                    Intent intent = new Intent(getActivity(), AccountSettingsActivity.class);
+                    intent.putExtra(getString(R.string.selected_bitmap), bitmap);
+                    intent.putExtra(getString(R.string.return_to_fragment), getString(R.string.edit_profile_fragment));
+                    startActivity(intent);
+                    getActivity().finish();
+                }catch (NullPointerException e){
+                    Log.e(TAG, "onActivityResult: NullPointerException: " + e.getMessage() );
+                }
+            }
 
         }
 

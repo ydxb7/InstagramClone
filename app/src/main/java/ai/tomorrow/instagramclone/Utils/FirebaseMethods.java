@@ -67,7 +67,7 @@ public class FirebaseMethods {
         }
     }
 
-    public void uploadNewPhotos(String photoType, final String caption, int count, String imgUrl) {
+    public void uploadNewPhotos(String photoType, final String caption, int count, String imgUrl, Bitmap bm) {
         Log.d(TAG, "uploadNewPhotos: Attempting to upload new photo");
         final FilePaths filePaths = new FilePaths();
         mPhotoUploadProgress = 0;
@@ -81,7 +81,9 @@ public class FirebaseMethods {
                     .child(filePaths.FIRENASE_IMAGE_STORAGE + "/" + user_id + "/photo" + (count + 1));
 
             // convert image url to bitmap
-            Bitmap bm = ImageManager.getBitmap(imgUrl);
+            if (bm == null){
+                bm = ImageManager.getBitmap(imgUrl);
+            }
             byte[] bytes = ImageManager.getBytesFromBitmap(bm, 100);
 
             // upload the photo
@@ -158,7 +160,9 @@ public class FirebaseMethods {
                     .child(filePaths.FIRENASE_IMAGE_STORAGE + "/" + user_id + "/profile_photo");
 
             // convert image url to bitmap
-            Bitmap bm = ImageManager.getBitmap(imgUrl);
+            if (bm == null){
+                bm = ImageManager.getBitmap(imgUrl);
+            }
             byte[] bytes = ImageManager.getBytesFromBitmap(bm, 100);
 
             // upload the photo

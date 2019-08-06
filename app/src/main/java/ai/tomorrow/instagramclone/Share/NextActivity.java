@@ -78,7 +78,7 @@ public class NextActivity extends AppCompatActivity {
 
                 String caption = mCaption.getText().toString();
 
-                mFirebaseMethods.uploadNewPhotos(getString(R.string.new_photo), caption, imageCount, imgUrl);
+                mFirebaseMethods.uploadNewPhotos(getString(R.string.new_photo), caption, imageCount, imgUrl, null);
 
 
 
