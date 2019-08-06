@@ -24,6 +24,7 @@ import java.util.ArrayList;
 
 import ai.tomorrow.instagramclone.R;
 import ai.tomorrow.instagramclone.Utils.BottomNavigationViewHelper;
+import ai.tomorrow.instagramclone.Utils.FirebaseMethods;
 import ai.tomorrow.instagramclone.Utils.SectionsStatePagerAdapter;
 
 public class AccountSettingsActivity extends AppCompatActivity {
@@ -68,6 +69,13 @@ public class AccountSettingsActivity extends AppCompatActivity {
             Log.d(TAG, "getIncomingIntent: received incoming intent from " + getString(R.string.profile_activity));
             setViewPager(pagerAdapter.getFragmentNumber(getString(R.string.edit_profile_fragment)));
         }
+//        if (intent.hasExtra(getString(R.string.return_to_fragment))){
+//            Log.d(TAG, "getIncomingIntent: navigating to EditProfileFragment");
+//            setViewPager(pagerAdapter.getFragmentNumber(getString(R.string.edit_profile_fragment)));
+//            FirebaseMethods firebaseMethods = new FirebaseMethods(AccountSettingsActivity.this);
+//            firebaseMethods.uploadNewPhotos(getString(R.string.profile_photo), null, 0,
+//                    getIntent().getStringExtra(getString(R.string.selected_image)));
+//        }
     }
 
 

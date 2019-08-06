@@ -50,6 +50,17 @@ public class ShareActivity extends AppCompatActivity {
     }
 
     /**
+     * if it getFlags != 0: it's coming from EditProfileFragment, otherwise it's the root Task
+     * @return
+     */
+    public int getTask(){
+        Log.d(TAG, "getTask: getTask: TASK: " + getIntent().getFlags());
+        return getIntent().getFlags();
+    }
+
+
+
+    /**
      * return the current tab number
      * 0 = GalleryFragment
      * 1 = PhotoFragment

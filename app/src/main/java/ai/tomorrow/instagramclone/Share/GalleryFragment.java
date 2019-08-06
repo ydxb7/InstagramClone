@@ -25,6 +25,8 @@ import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 
 import java.util.ArrayList;
 
+import ai.tomorrow.instagramclone.Profile.AccountSettingsActivity;
+import ai.tomorrow.instagramclone.Profile.ProfileActivity;
 import ai.tomorrow.instagramclone.R;
 import ai.tomorrow.instagramclone.Utils.FilePaths;
 import ai.tomorrow.instagramclone.Utils.FileSearch;
@@ -51,7 +53,7 @@ public class GalleryFragment extends Fragment {
 
     @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull final LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_gallery, container, false);
         Log.d(TAG, "onCreateView: stated.");
 
@@ -76,9 +78,17 @@ public class GalleryFragment extends Fragment {
             public void onClick(View v) {
                 Log.d(TAG, "onClick: navigating to the final share screen");
 
-                Intent intent = new Intent(getActivity(), NextActivity.class);
-                intent.putExtra(getString(R.string.selected_image), mSelectedImage);
-                startActivity(intent);
+                if (isRootTask()){
+                    Intent intent = new Intent(getActivity(), NextActivity.class);
+                    intent.putExtra(getString(R.string.selected_image), mSelectedImage);
+                    startActivity(intent);
+                } else {
+                    Intent intent = new Intent(getActivity(), AccountSettingsActivity.class);
+                    intent.putExtra(getString(R.string.selected_image), mSelectedImage);
+                    intent.putExtra(getString(R.string.return_to_fragment), getString(R.string.edit_profile_fragment));
+                    startActivity(intent);
+                }
+
             }
         });
 
@@ -87,6 +97,16 @@ public class GalleryFragment extends Fragment {
 
         return view;
     }
+
+    private boolean isRootTask(){
+        if (((ShareActivity) getActivity()).getTask() == 0){
+            return true;
+        } else {
+            // It's coming from EditProfileFragment
+            return false;
+        }
+    }
+
 
     private void init(){
         FilePaths filePaths = new FilePaths();

@@ -1,6 +1,7 @@
 package ai.tomorrow.instagramclone.Profile;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -35,6 +36,7 @@ import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import ai.tomorrow.instagramclone.R;
+import ai.tomorrow.instagramclone.Share.ShareActivity;
 import ai.tomorrow.instagramclone.Utils.FirebaseMethods;
 import ai.tomorrow.instagramclone.Utils.UniversalImageLoader;
 import ai.tomorrow.instagramclone.dialogs.ConfirmPasswordDialog;
@@ -282,7 +284,15 @@ public class EditProfileFragment extends Fragment implements
         mEmail.setText(userSettings.getUser().getEmail());
         mPhoneNumber.setText(String.valueOf(userSettings.getUser().getPhone_number()));
 
-
+        mChangeProfilePhoto.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d(TAG, "onClick: changing profile photo");
+                Intent intent = new Intent(getActivity(), ShareActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                mContext.startActivity(intent); // 268435456
+            }
+        });
     }
 
     /**
