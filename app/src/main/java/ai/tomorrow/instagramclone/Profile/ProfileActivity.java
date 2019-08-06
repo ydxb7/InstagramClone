@@ -13,6 +13,7 @@ import android.widget.ProgressBar;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
@@ -23,8 +24,10 @@ import ai.tomorrow.instagramclone.R;
 import ai.tomorrow.instagramclone.Utils.BottomNavigationViewHelper;
 import ai.tomorrow.instagramclone.Utils.GridImageAdapter;
 import ai.tomorrow.instagramclone.Utils.UniversalImageLoader;
+import ai.tomorrow.instagramclone.ViewPostFragment;
+import ai.tomorrow.instagramclone.models.Photo;
 
-public class ProfileActivity extends AppCompatActivity {
+public class ProfileActivity extends AppCompatActivity implements ProfileFragment.OnGridImageSelectedListener {
 
     private static final String TAG = "ProfileActivity";
     private static final int ACTIVITY_NUM = 4;
@@ -43,12 +46,22 @@ public class ProfileActivity extends AppCompatActivity {
         init();
 
 
-//        setupBottomNavigationView();
-//        setupToolbar();
-//        setupActivityWidgets();
-//        setProfileImage();
-//
-//        tempGridSetup();
+
+    }
+
+    @Override
+    public void onGridImageSelected(Photo photo, int activityNumber) {
+        Log.d(TAG, "onGridImageSelected: selected an image gridview: " + photo.toString());
+        ViewPostFragment fragment = new ViewPostFragment();
+        Bundle args = new Bundle();
+        args.putInt(getString(R.string.activity_number), activityNumber);
+        args.putParcelable(getString(R.string.photo), photo);
+        fragment.setArguments(args);
+
+        FragmentTransaction transaction = ProfileActivity.this.getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.container, fragment);
+        transaction.addToBackStack(getString(R.string.view_post_fragment));
+        transaction.commit();
     }
 
     private void init(){
@@ -60,87 +73,4 @@ public class ProfileActivity extends AppCompatActivity {
         transaction.addToBackStack(getString(R.string.profile_fragment)); // add fragment into backstack
         transaction.commit();
     }
-
-
-
-
-//    private void tempGridSetup(){
-//        ArrayList<String> imgURLs = new ArrayList<>();
-//        imgURLs.add("https://sjbz-fd.zol-img.com.cn/t_s208x312c5/g5/M00/01/06/ChMkJ1w3FnmIE9dUAADdYQl3C5IAAuTxAKv7x8AAN15869.jpg");
-//        imgURLs.add("http://www.baojiabao.com/bjbnews/pic/20180404/6405f2b36c6ae5a2799980b43156d90f.jpg");
-//        imgURLs.add("https://img.pc841.com/2018/0905/20180905031728569.jpg");
-//        imgURLs.add("https://img0.sc115.com/uploads3/sc/jpgs/1904/zzpic17543_sc115.com.jpg");
-//        imgURLs.add("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRBtCKDzb0O-2VUTyAi_D3Gi2MaZK2y5PTRzibXDlWwcF2h5RWm");
-//        imgURLs.add("http://p9.pstatp.com/large/pgc-image/5552f943362d475c88b3f5cc3ee74a49");
-//        imgURLs.add("http://p99.pstatp.com/large/pgc-image/15407759708280197df4b71");
-//        imgURLs.add("https://upload.wikimedia.org/wikipedia/commons/thumb/f/f6/1_jiuzhaigou_valley_national_park_wu_hua_hai.jpg/250px-1_jiuzhaigou_valley_national_park_wu_hua_hai.jpg");
-//        imgURLs.add("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSfbvMVzqmGmk7TXKxkBplNpybfQOYNGyLhyM4aDM_nIpjj729zGw");
-//        imgURLs.add("http://pic.9ht.com/up/2018-4/2018041315500518788.jpg");
-//        imgURLs.add("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRSpm6jttKtC2mbh9HPYYDSTmpALPz5ngbAF9teFwBG0-vVS7mX");
-//        imgURLs.add("https://cdn1-digiphoto.techbang.com/system/excerpt_images/9862/inpage/3487c5f3a19271d9fab1238faf518293.jpg?1548392543");
-//
-//        setupImageGrid(imgURLs);
-//    }
-//
-//
-//
-//    private void setupImageGrid(ArrayList<String> imgURLs){
-//        GridView gridView = (GridView) findViewById(R.id.gridView);
-//
-//        int gridWidth = getResources().getDisplayMetrics().widthPixels;
-//        int imageWidth = gridWidth / NUM_GRID_COLUMNS;
-//        gridView.setColumnWidth(imageWidth);
-//
-//
-//        GridImageAdapter adapter = new GridImageAdapter(mContext, R.layout.layout_grid_imageview, "", imgURLs);
-//        gridView.setAdapter(adapter);
-//    }
-//
-//
-//    private void setProfileImage(){
-//        String imgURL = "http://k2.jsqq.net/uploads/allimg/1711/17_171129092304_1.jpg";
-//        UniversalImageLoader.setImage(imgURL, profilePhoto, null, "");
-//    }
-//
-//    private void setupActivityWidgets(){
-//        mProgressBar = (ProgressBar) findViewById(R.id.profileProgressBar);
-//        mProgressBar.setVisibility(View.GONE);
-//
-//        profilePhoto = (ImageView) findViewById(R.id.profile_photo);
-//    }
-//
-//
-//
-//    /**
-//     * Responsible for setting up the profile toolbar
-//     */
-//    private void setupToolbar(){
-//        Toolbar toolbar = (Toolbar) findViewById(R.id.profileToolBar);
-//        setSupportActionBar(toolbar);
-//
-//        ImageView profileMenu = (ImageView) findViewById(R.id.profileMenu);
-//        profileMenu.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Intent intent = new Intent(mContext, AccountSettingsActivity.class);
-//                startActivity(intent);
-//            }
-//        });
-//
-//    }
-//
-//
-//    /**
-//     * BottomNavigationView setup
-//     */
-//    private void setupBottomNavigationView() {
-//        BottomNavigationViewEx bottomNavigationViewEx = (BottomNavigationViewEx) findViewById(R.id.bottomNavViewBar);
-//        BottomNavigationViewHelper.setupBottomNavigationView(bottomNavigationViewEx);
-//        BottomNavigationViewHelper.enableNavigation(mContext, bottomNavigationViewEx);
-//        Menu menu = bottomNavigationViewEx.getMenu();
-//        MenuItem menuItem = menu.getItem(ACTIVITY_NUM);
-//        menuItem.setChecked(true);
-//    }
-
-
 }
