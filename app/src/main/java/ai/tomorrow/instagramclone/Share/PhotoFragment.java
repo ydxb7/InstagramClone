@@ -79,9 +79,9 @@ public class PhotoFragment extends Fragment {
             // navigate to the final share screen to publish photo
             if (isRootTask()){
                 Log.d(TAG, "onActivityResult: attempting to navigate to final share screen");
-//                Intent intent = new Intent(getActivity(), NextActivity.class);
-//                intent.putExtra(getString(R.string.selected_image), mSelectedImage);
-//                startActivity(intent);
+                Intent intent = new Intent(getActivity(), NextActivity.class);
+                intent.putExtra(getString(R.string.selected_bitmap), bitmap);
+                startActivity(intent);
             } else {
                 try {
                     Log.d(TAG, "onActivityResult: received new bitmap from camera: " + bitmap);

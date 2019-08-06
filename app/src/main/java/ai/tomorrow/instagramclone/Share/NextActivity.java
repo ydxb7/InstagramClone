@@ -1,6 +1,7 @@
 package ai.tomorrow.instagramclone.Share;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.util.Log;
@@ -35,6 +36,8 @@ public class NextActivity extends AppCompatActivity {
     private String mAppend = "file:/";
     private int imageCount = 0;
     private String imgUrl;
+    private Bitmap bitmap;
+    private Intent intent;
 
     // Firebase
     private FirebaseAuth mAuth;
@@ -78,10 +81,11 @@ public class NextActivity extends AppCompatActivity {
 
                 String caption = mCaption.getText().toString();
 
-                mFirebaseMethods.uploadNewPhotos(getString(R.string.new_photo), caption, imageCount, imgUrl, null);
-
-
-
+                if (intent.hasExtra(getString(R.string.selected_image))){
+                    mFirebaseMethods.uploadNewPhotos(getString(R.string.new_photo), caption, imageCount, imgUrl, null);
+                } else if (intent.hasExtra(getString(R.string.selected_bitmap))){
+                    mFirebaseMethods.uploadNewPhotos(getString(R.string.new_photo), caption, imageCount, null, bitmap);
+                }
 
             }
         });
@@ -115,10 +119,19 @@ public class NextActivity extends AppCompatActivity {
      * gets the image url from the incoming intent and displays the chosen image
      */
     private void setImage(){
-        imgUrl = getIntent().getStringExtra(getString(R.string.selected_image));
         ImageView imageView = (ImageView) findViewById(R.id.imageShare);
-        Intent intent = getIntent();
-        UniversalImageLoader.setImage(intent.getStringExtra(getString(R.string.selected_image)), imageView, null, mAppend);
+        intent = getIntent();
+
+        if (intent.hasExtra(getString(R.string.selected_image))){
+            imgUrl = getIntent().getStringExtra(getString(R.string.selected_image));
+            Log.d(TAG, "setImage: got new image url: " + imgUrl);
+            UniversalImageLoader.setImage(intent.getStringExtra(getString(R.string.selected_image)), imageView, null, mAppend);
+        } else if (intent.hasExtra(getString(R.string.selected_bitmap))){
+            bitmap = intent.getParcelableExtra(getString(R.string.selected_bitmap));
+            Log.d(TAG, "setImage: got new bitmap.");
+            imageView.setImageBitmap(bitmap);
+        }
+
     }
 
     /**
