@@ -65,17 +65,21 @@ public class AccountSettingsActivity extends AppCompatActivity {
 
     private void getIncomingIntent(){
         Intent intent = getIntent();
+
+        // if there is an imageUrl attached as an extra, then it was chosen from the gallery/photo fragment
+        if (intent.hasExtra(getString(R.string.selected_image))){
+            Log.d(TAG, "getIncomingIntent: navigating to EditProfileFragment");
+//            setViewPager(pagerAdapter.getFragmentNumber(getString(R.string.edit_profile_fragment)));
+            // set the new profile picture
+            FirebaseMethods firebaseMethods = new FirebaseMethods(AccountSettingsActivity.this);
+            firebaseMethods.uploadNewPhotos(getString(R.string.profile_photo), null, 0,
+                    getIntent().getStringExtra(getString(R.string.selected_image)));
+        }
+
         if (intent.hasExtra(getString(R.string.calling_activity))){
             Log.d(TAG, "getIncomingIntent: received incoming intent from " + getString(R.string.profile_activity));
             setViewPager(pagerAdapter.getFragmentNumber(getString(R.string.edit_profile_fragment)));
         }
-//        if (intent.hasExtra(getString(R.string.return_to_fragment))){
-//            Log.d(TAG, "getIncomingIntent: navigating to EditProfileFragment");
-//            setViewPager(pagerAdapter.getFragmentNumber(getString(R.string.edit_profile_fragment)));
-//            FirebaseMethods firebaseMethods = new FirebaseMethods(AccountSettingsActivity.this);
-//            firebaseMethods.uploadNewPhotos(getString(R.string.profile_photo), null, 0,
-//                    getIntent().getStringExtra(getString(R.string.selected_image)));
-//        }
     }
 
 
