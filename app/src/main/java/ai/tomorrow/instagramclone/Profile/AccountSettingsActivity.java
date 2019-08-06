@@ -138,7 +138,7 @@ public class AccountSettingsActivity extends AppCompatActivity {
     private void setupBottomNavigationView() {
         BottomNavigationViewEx bottomNavigationViewEx = (BottomNavigationViewEx) findViewById(R.id.bottomNavViewBar);
         BottomNavigationViewHelper.setupBottomNavigationView(bottomNavigationViewEx);
-        BottomNavigationViewHelper.enableNavigation(mContext, bottomNavigationViewEx);
+        BottomNavigationViewHelper.enableNavigation(mContext, this, bottomNavigationViewEx);
         Menu menu = bottomNavigationViewEx.getMenu();
         MenuItem menuItem = menu.getItem(ACTIVITY_NUM);
         menuItem.setChecked(true);
