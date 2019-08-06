@@ -291,6 +291,7 @@ public class EditProfileFragment extends Fragment implements
                 Intent intent = new Intent(getActivity(), ShareActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 mContext.startActivity(intent); // 268435456
+                getActivity().finish();
             }
         });
     }
