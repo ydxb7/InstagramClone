@@ -17,8 +17,16 @@ import androidx.fragment.app.Fragment;
 
 import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
+import java.util.TimeZone;
+
 import ai.tomorrow.instagramclone.Utils.BottomNavigationViewHelper;
 import ai.tomorrow.instagramclone.Utils.SquareImageView;
+import ai.tomorrow.instagramclone.Utils.StringManipulation;
 import ai.tomorrow.instagramclone.Utils.UniversalImageLoader;
 import ai.tomorrow.instagramclone.models.Photo;
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -70,9 +78,45 @@ public class ViewPostFragment extends Fragment {
         }
 
         setupBottomNavigationView();
+        setupWidgets();
 
         return view;
     }
+
+    private void setupWidgets(){
+        String timestampDiff = getTimeStampDifference();
+        if (!timestampDiff.equals("0")){
+            mTimestamp.setText(timestampDiff + " DAYS AGO");
+        }else {
+            mTimestamp.setText("TODAY");
+        }
+
+    }
+
+    /**
+     * return a string presenting the number of days ago the post was made.
+     * @return
+     */
+    private String getTimeStampDifference(){
+        Log.d(TAG, "getTimeStampDifference: getting timestamp difference");
+
+        String difference = "";
+        Calendar c = Calendar.getInstance();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.US);
+        sdf.setTimeZone(TimeZone.getTimeZone("America/Los_Angeles"));
+        Date today = c.getTime();
+        sdf.format(today);
+        Date timestamp;
+        final String photoTimeStamp = mPhoto.getDate_created();
+        try {
+            timestamp = sdf.parse(photoTimeStamp);
+            difference = String.valueOf(Math.round(((today.getTime() - timestamp.getTime()) / 1000 / 60 / 60/ 24)));
+        }catch (ParseException e){
+            Log.d(TAG, "getTimeStampDifference: ParseException: " + e.getMessage());
+        }
+        return difference;
+    }
+
 
     /**
      * return the activityNumber from the incoming bundle from profileActivity interface
