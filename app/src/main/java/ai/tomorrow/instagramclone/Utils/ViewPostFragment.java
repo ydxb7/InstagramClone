@@ -1,11 +1,13 @@
-package ai.tomorrow.instagramclone;
+package ai.tomorrow.instagramclone.Utils;
 
 import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.GestureDetector;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -35,6 +37,7 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
 
+import ai.tomorrow.instagramclone.R;
 import ai.tomorrow.instagramclone.Utils.BottomNavigationViewHelper;
 import ai.tomorrow.instagramclone.Utils.GridImageAdapter;
 import ai.tomorrow.instagramclone.Utils.SquareImageView;
@@ -58,6 +61,8 @@ public class ViewPostFragment extends Fragment {
     private String photoUsername;
     private String mProfileUrl;
     private UserAccountSettings mUserAccountSettings;
+    private GestureDetector mGestureDetector;
+    private Heart mHeart;
 
     //widgets
     private SquareImageView mPostImage;
@@ -91,6 +96,10 @@ public class ViewPostFragment extends Fragment {
         mHeartWhite = (ImageView) view.findViewById(R.id.image_heart);
         mProfileImage = (CircleImageView) view.findViewById(R.id.profile_photo);
 
+        mHeartWhite.setVisibility(View.VISIBLE);
+        mHeartRed.setVisibility(View.GONE);
+        mHeart = new Heart(mHeartWhite, mHeartRed);
+        mGestureDetector = new GestureDetector(getActivity(), new GestureListener());
 
         try {
             mPhoto = getPhotoFromBundle();
@@ -103,9 +112,43 @@ public class ViewPostFragment extends Fragment {
         setupBottomNavigationView();
         setupFirebaseAuth();
         getPhotoDetails();
+        testToggle();
 
         return view;
     }
+
+    private void testToggle(){
+
+        mHeartRed.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                return mGestureDetector.onTouchEvent(event);
+            }
+        });
+
+        mHeartWhite.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                return mGestureDetector.onTouchEvent(event);
+            }
+        });
+
+
+    }
+
+    public class GestureListener extends GestureDetector.SimpleOnGestureListener{
+        @Override
+        public boolean onDown(MotionEvent e) {
+            return true;
+        }
+
+        @Override
+        public boolean onDoubleTap(MotionEvent e) {
+            mHeart.toggleLike();
+            return true;
+        }
+    }
+
 
     private void getPhotoDetails(){
         Log.d(TAG, "getPhotoDetails: getting user account settings");

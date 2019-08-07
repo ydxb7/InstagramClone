@@ -1,30 +1,16 @@
 package ai.tomorrow.instagramclone.Profile;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
-import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
-import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
-
-import java.util.ArrayList;
-
 import ai.tomorrow.instagramclone.R;
-import ai.tomorrow.instagramclone.Utils.BottomNavigationViewHelper;
-import ai.tomorrow.instagramclone.Utils.GridImageAdapter;
-import ai.tomorrow.instagramclone.Utils.UniversalImageLoader;
-import ai.tomorrow.instagramclone.ViewPostFragment;
+import ai.tomorrow.instagramclone.Utils.ViewPostFragment;
 import ai.tomorrow.instagramclone.models.Photo;
 
 public class ProfileActivity extends AppCompatActivity implements ProfileFragment.OnGridImageSelectedListener {
