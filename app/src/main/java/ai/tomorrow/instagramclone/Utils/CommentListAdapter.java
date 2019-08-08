@@ -45,7 +45,7 @@ public class CommentListAdapter extends ArrayAdapter<Comment> {
         super(context, layoutResource, objects);
         mContext = context;
         mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        layoutResource = layoutResource;
+        this.layoutResource = layoutResource;
         mComments = objects;
     }
 
@@ -53,7 +53,7 @@ public class CommentListAdapter extends ArrayAdapter<Comment> {
 
         CircleImageView profileImage;
         TextView username, comment, timePostes, likes, reply;
-        ImageView mHeart;
+        ImageView like;
 
     }
 
@@ -72,7 +72,7 @@ public class CommentListAdapter extends ArrayAdapter<Comment> {
             holder.timePostes = (TextView) convertView.findViewById(R.id.comment_time_posted);
             holder.likes = (TextView) convertView.findViewById(R.id.comment_likes);
             holder.reply = (TextView) convertView.findViewById(R.id.comment_reply);
-            holder.mHeart = (ImageView) convertView.findViewById(R.id.comment_like);
+            holder.like = (ImageView) convertView.findViewById(R.id.comment_like);
 
             convertView.setTag(holder);
         } else {
@@ -111,6 +111,12 @@ public class CommentListAdapter extends ArrayAdapter<Comment> {
 
             }
         });
+
+        if (position == 0){
+            holder.likes.setVisibility(View.GONE);
+            holder.reply.setVisibility(View.GONE);
+            holder.like.setVisibility(View.GONE);
+        }
 
         return convertView;
 

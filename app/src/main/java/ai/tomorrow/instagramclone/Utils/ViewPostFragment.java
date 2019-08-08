@@ -90,7 +90,7 @@ public class ViewPostFragment extends Fragment {
         bottomNavigationView = (BottomNavigationViewEx) view.findViewById(R.id.bottomNavViewBar);
         mContext = getActivity();
         mPostImage = (SquareImageView) view.findViewById(R.id.post_image);
-        mBackArrow = (ImageView) view.findViewById(R.id.backArrow);
+        mBackArrow = (ImageView) view.findViewById(R.id.imageBackArrow);
         mBackLabel = (TextView) view.findViewById(R.id.tvBackLabel);
         mCaption = (TextView) view.findViewById(R.id.image_caption);
         mUsername = (TextView) view.findViewById(R.id.username);
@@ -352,7 +352,6 @@ public class ViewPostFragment extends Fragment {
         UniversalImageLoader.setImage(mUserAccountSettings.getProfile_photo(), mProfileImage, null, "");
         mUsername.setText(mUserAccountSettings.getUsername());
         mCaption.setText(mPhoto.getCaption());
-
         mBackArrow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -365,7 +364,7 @@ public class ViewPostFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Log.d(TAG, "onClick: navigating to comment fragment");
-
+                mOnCommentThreadSelectedListener.onCommentThreadSelectedListener(mPhoto);
             }
         });
 
