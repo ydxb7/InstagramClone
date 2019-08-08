@@ -47,7 +47,7 @@
                 android:layout_marginLeft="5dp"
                 android:textColor="@color/black"
                 android:textSize="18sp"
-                android:layout_toRightOf="@+id/comment_username"
+                android:layout_toRightOf="@id/comment_username"
                 android:id="@+id/comment"/>
 
 
@@ -60,7 +60,7 @@
                 android:id="@+id/comment_time_posted"
                 android:layout_marginTop="15dp"
                 android:layout_marginLeft="15dp"
-                android:layout_below="@+id/comment"/>
+                android:layout_below="@id/comment"/>
 
             <TextView
                 android:layout_width="wrap_content"
@@ -73,7 +73,7 @@
                 android:layout_marginTop="15dp"
                 android:layout_marginLeft="15dp"
                 android:layout_below="@+id/comment"
-                android:layout_toRightOf="@+id/comment_time_posted"/>
+                android:layout_toRightOf="@id/comment_time_posted"/>
 
             <TextView
                 android:layout_width="wrap_content"
