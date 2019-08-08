@@ -179,7 +179,6 @@ public class ViewPostFragment extends Fragment {
                                         + ", " + splitUsers[2]
                                         + " and " + (length - 3) + " others";;
                             }
-                            Log.d(TAG, "onDataChange: aaaaaaaaaaaaaaaaaaaaaaaa1111");
                             setupLikes();
                         }
 
@@ -193,7 +192,6 @@ public class ViewPostFragment extends Fragment {
                 if (!dataSnapshot.exists()){
                     mLikesString = "";
                     mLikedByCurrentUser = false;
-                    Log.d(TAG, "onDataChange: aaaaaaaaaaaaaaaaaaaaaaaa222");
                     setupLikes();
                 }
 
@@ -228,7 +226,6 @@ public class ViewPostFragment extends Fragment {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     for (DataSnapshot singleSnapshot: dataSnapshot.getChildren()){
-                        Log.d(TAG, "onDataChange: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
                         Log.d(TAG, "onDataChange: mLikedByCurrentUser = " + mLikedByCurrentUser);
 
                         String keyId = singleSnapshot.getKey();
@@ -337,7 +334,7 @@ public class ViewPostFragment extends Fragment {
         }
         UniversalImageLoader.setImage(mUserAccountSettings.getProfile_photo(), mProfileImage, null, "");
         mUsername.setText(mUserAccountSettings.getUsername());
-        Log.d(TAG, "onDataChange: aaaaaaaaaaaaaaaaaaaaaaaa3333");
+        mCaption.setText(mPhoto.getCaption());
         setupLikes();
 
         mHeartRed.setOnTouchListener(new View.OnTouchListener() {
