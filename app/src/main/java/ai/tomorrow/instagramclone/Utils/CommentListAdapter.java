@@ -13,6 +13,13 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -33,7 +40,6 @@ public class CommentListAdapter extends ArrayAdapter<Comment> {
     private LayoutInflater mInflater;
     private int layoutResource;
     private List<Comment> mComments;
-    private UserAccountSettings mUserAccountSettings;
 
     public CommentListAdapter(@NonNull Context context, int layoutResource, @NonNull List<Comment> objects) {
         super(context, layoutResource, objects);
@@ -83,30 +89,28 @@ public class CommentListAdapter extends ArrayAdapter<Comment> {
             holder.timePostes.setText("today");
         }
 
-//        Comment comment = getItem(position);
-//
-//        DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
-//        Query query = reference
-//                .child(mContext.getString(R.string.dbname_user_account_settings))
-//                .child(comment.getUser_id());
-//
-//        query.addListenerForSingleValueEvent(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-//                Log.d(TAG, "onDataChange: getting user account settings");
-//                for (DataSnapshot singleSnapshot: dataSnapshot.getChildren()) {
-//                    mUserAccountSettings = singleSnapshot.getValue(UserAccountSettings.class);
-//                    UniversalImageLoader.setImage(mUserAccountSettings.getProfile_photo(), holder.profileImage, null, "");
-//                }
-//            }
-//
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError databaseError) {
-//
-//            }
-//        });
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
+        Query query = reference
+                .child(mContext.getString(R.string.dbname_user_account_settings))
+                .orderByChild(mContext.getString(R.string.field_user_id))
+                .equalTo(getItem(position).getUser_id());
 
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                Log.d(TAG, "onDataChange: getting user account settings");
+                for (DataSnapshot singleSnapshot: dataSnapshot.getChildren()) {
+                    UserAccountSettings userAccountSettings = singleSnapshot.getValue(UserAccountSettings.class);
+                    holder.username.setText(userAccountSettings.getUsername());
+                    UniversalImageLoader.setImage(userAccountSettings.getProfile_photo(), holder.profileImage, null, "");
+                }
+            }
 
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
 
         return convertView;
 

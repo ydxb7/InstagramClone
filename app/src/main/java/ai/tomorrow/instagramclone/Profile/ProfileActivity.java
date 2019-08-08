@@ -13,7 +13,9 @@ import ai.tomorrow.instagramclone.R;
 import ai.tomorrow.instagramclone.Utils.ViewPostFragment;
 import ai.tomorrow.instagramclone.models.Photo;
 
-public class ProfileActivity extends AppCompatActivity implements ProfileFragment.OnGridImageSelectedListener {
+public class ProfileActivity extends AppCompatActivity implements
+        ProfileFragment.OnGridImageSelectedListener,
+        ViewPostFragment.OnCommentThreadSelectedListener {
 
     private static final String TAG = "ProfileActivity";
     private static final int ACTIVITY_NUM = 4;
@@ -31,8 +33,12 @@ public class ProfileActivity extends AppCompatActivity implements ProfileFragmen
 
         init();
 
+    }
 
-
+    @Override
+    public void onCommentThreadSelectedListener(Photo photo) {
+        Log.d(TAG, "onCommentThreadSelectedListener: selected an comment");
+        
     }
 
     @Override

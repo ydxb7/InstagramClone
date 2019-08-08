@@ -45,6 +45,12 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class ViewPostFragment extends Fragment {
     private static final String TAG = "ViewPostFragment";
 
+    public interface OnCommentThreadSelectedListener{
+        void onCommentThreadSelectedListener(Photo photo);
+    }
+
+    OnCommentThreadSelectedListener mOnCommentThreadSelectedListener;
+
     public ViewPostFragment(){
         setArguments(new Bundle());
     }
@@ -53,7 +59,7 @@ public class ViewPostFragment extends Fragment {
     private SquareImageView mPostImage;
     private BottomNavigationViewEx bottomNavigationView;
     private TextView mBackLabel, mCaption, mUsername, mTimestamp, mLikes;
-    private ImageView mBackArrow, mEllipses, mHeartRed, mHeartWhite, mProfileImage;
+    private ImageView mBackArrow, mEllipses, mHeartRed, mHeartWhite, mProfileImage, mComment;
 
     // Firebase
     private FirebaseAuth mAuth;
@@ -94,6 +100,7 @@ public class ViewPostFragment extends Fragment {
         mHeartWhite = (ImageView) view.findViewById(R.id.image_heart);
         mLikes = (TextView) view.findViewById(R.id.image_likes);
         mProfileImage = (CircleImageView) view.findViewById(R.id.profile_photo);
+        mComment = (ImageView) view.findViewById(R.id.speech_bubble);
 
         mHeartWhite.setVisibility(View.VISIBLE);
         mHeartRed.setVisibility(View.GONE);
@@ -116,7 +123,17 @@ public class ViewPostFragment extends Fragment {
         return view;
     }
 
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
 
+        try {
+            mOnCommentThreadSelectedListener = (OnCommentThreadSelectedListener) getActivity();
+        }catch (ClassCastException e){
+            Log.d(TAG, "onAttach: ClassCastException: " + e.getMessage());
+        }
+
+    }
 
     private void getLikesString(){
         Log.d(TAG, "getLikesString: getting likes string");
@@ -335,6 +352,23 @@ public class ViewPostFragment extends Fragment {
         UniversalImageLoader.setImage(mUserAccountSettings.getProfile_photo(), mProfileImage, null, "");
         mUsername.setText(mUserAccountSettings.getUsername());
         mCaption.setText(mPhoto.getCaption());
+
+        mBackArrow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d(TAG, "onClick: navigating back");
+                getActivity().getSupportFragmentManager().popBackStack();
+            }
+        });
+
+        mComment.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d(TAG, "onClick: navigating to comment fragment");
+
+            }
+        });
+
         setupLikes();
 
         mHeartRed.setOnTouchListener(new View.OnTouchListener() {
