@@ -22,7 +22,7 @@ public class ViewCommentsFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_view_comments, container, false);
         Log.d(TAG, "onCreateView: started.");
 
-        
+
         return view;
     }
 }
