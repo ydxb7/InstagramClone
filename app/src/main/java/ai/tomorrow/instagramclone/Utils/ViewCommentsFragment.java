@@ -55,7 +55,6 @@ public class ViewCommentsFragment extends Fragment {
     private ImageView mBackArrow, mCheckMark;
     private EditText mComment;
     private ListView mListView;
-//    private UserAccountSettings mUserAccountSettings;
 
     //vars
     private Photo mPhoto;
@@ -98,6 +97,14 @@ public class ViewCommentsFragment extends Fragment {
                 } else {
                     Toast.makeText(getActivity(), "you can't post an empty comment.", Toast.LENGTH_SHORT).show();
                 }
+            }
+        });
+
+        mBackArrow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d(TAG, "onClick: navigating back.");
+                getActivity().getSupportFragmentManager().popBackStack();
             }
         });
 
@@ -246,7 +253,6 @@ public class ViewCommentsFragment extends Fragment {
 
         myRef.child(getString(R.string.dbname_photos))
                 .child(mPhoto.getPhoto_id())
-                .child(getString(R.string.field_comments))
                 .addChildEventListener(new ChildEventListener() {
                     @Override
                     public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
