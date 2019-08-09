@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -18,25 +19,35 @@ import androidx.fragment.app.Fragment;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.StorageReference;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.TimeZone;
 
 import ai.tomorrow.instagramclone.R;
 import ai.tomorrow.instagramclone.models.Comment;
+import ai.tomorrow.instagramclone.models.Like;
 import ai.tomorrow.instagramclone.models.Photo;
+import ai.tomorrow.instagramclone.models.UserAccountSettings;
 
 public class ViewCommentsFragment extends Fragment {
 
     private static final String TAG = "ViewCommentsFragment";
 
-    public ViewCommentsFragment(){
+    public ViewCommentsFragment() {
         setArguments(new Bundle());
     }
 
@@ -44,18 +55,17 @@ public class ViewCommentsFragment extends Fragment {
     private ImageView mBackArrow, mCheckMark;
     private EditText mComment;
     private ListView mListView;
+//    private UserAccountSettings mUserAccountSettings;
 
     //vars
     private Photo mPhoto;
-    private ArrayList<Comment> mComments;
+    private ArrayList<Comment> mComments = new ArrayList<>();
 
     // Firebase
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
-    private String userID;
     private FirebaseDatabase mFirebaseDatabase;
     private DatabaseReference myRef;
-    private StorageReference mStorageReference;
 
     @Nullable
     @Override
@@ -68,29 +78,18 @@ public class ViewCommentsFragment extends Fragment {
         mComment = view.findViewById(R.id.comment);
         mListView = view.findViewById(R.id.listView);
 
-        setupFirebaseAuth();
-
         try {
             mPhoto = getPhotoFromBundle();
-        }catch (NullPointerException e){
+        } catch (NullPointerException e) {
             Log.d(TAG, "onCreateView: NullPointerException: " + e.getMessage());
         }
 
-        mComments = new ArrayList<>();
-        Comment firstComment = new Comment();
-        firstComment.setUser_id(mPhoto.getUser_id());
-        firstComment.setComment(mPhoto.getCaption());
-        firstComment.setDate_created(mPhoto.getDate_created());
-
-        mComments.add(firstComment);
-
-        CommentListAdapter adapter = new CommentListAdapter(getActivity(), R.layout.layout_comment, mComments);
-        mListView.setAdapter(adapter);
+        setupFirebaseAuth();
 
         mCheckMark.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!mComment.getText().toString().equals("")){
+                if (!mComment.getText().toString().equals("")) {
                     Log.d(TAG, "onClick: post a comment.");
                     addNewComment(mComment.getText().toString());
 
@@ -102,20 +101,74 @@ public class ViewCommentsFragment extends Fragment {
             }
         });
 
-
-
         return view;
     }
 
-    private void closeKeyboard(){
+    private void setupListView() {
+        Log.d(TAG, "setupListView: setting up comments.");
+
+        Query query = myRef
+                .child(getString(R.string.dbname_photos))
+                .child(mPhoto.getPhoto_id())
+                .child(getString(R.string.field_comments));
+
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                mComments.clear();
+                Comment firstComment = new Comment();
+                firstComment.setUser_id(mPhoto.getUser_id());
+                firstComment.setComment(mPhoto.getCaption());
+                firstComment.setDate_created(mPhoto.getDate_created());
+
+                mComments.add(firstComment);
+
+                for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
+                    // In the Photo class, we have a List<Like>, but Firebase thinks it has a HashMap
+                    // so we need to manually insert these into our photos
+//                    photos.add(singleSnapshot.getValue(Photo.class));
+                    Comment comment = new Comment();
+                    Map<String, Object> objectMap = (HashMap<String, Object>) singleSnapshot.getValue();
+
+                    comment.setComment(objectMap.get(getString(R.string.field_comment)).toString());
+                    comment.setUser_id(objectMap.get(getString(R.string.field_user_id)).toString());
+                    comment.setDate_created(objectMap.get(getString(R.string.field_date_created)).toString());
+
+                    List<Like> likesList = new ArrayList<>();
+                    for (DataSnapshot ds : singleSnapshot.child(getString(R.string.field_likes)).getChildren()) {
+                        Like like = new Like();
+                        like.setUser_id(ds.getValue(Like.class).getUser_id());
+                        likesList.add(like);
+                    }
+                    comment.setLikes(likesList);
+                    mComments.add(comment);
+                }
+
+                CommentListAdapter adapter = new CommentListAdapter(getActivity(), R.layout.layout_comment, mComments);
+                mListView.setAdapter(adapter);
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Log.d(TAG, "onCancelled: query cancelled");
+            }
+        });
+
+
+    }
+
+    //hide soft keyboard
+    private void closeKeyboard() {
         View view = getActivity().getCurrentFocus();
-        if (view != null){
+        if (view != null) {
             InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
         }
     }
 
-    private void addNewComment(String newComment){
+    //add new comment into firebase database
+    private void addNewComment(String newComment) {
         Log.d(TAG, "addNewComment: adding new comment: " + newComment);
         Comment comment = new Comment();
         comment.setComment(newComment);
@@ -138,9 +191,10 @@ public class ViewCommentsFragment extends Fragment {
                 .child(getString(R.string.field_comments))
                 .child(commentID)
                 .setValue(comment);
+
     }
 
-    private String getTimeStamp(){
+    private String getTimeStamp() {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.US);
         sdf.setTimeZone(TimeZone.getTimeZone("America/Los_Angeles"));
         return sdf.format(new Date());
@@ -148,15 +202,16 @@ public class ViewCommentsFragment extends Fragment {
 
     /**
      * return the photo from the incoming bundle from profileActivity interface
+     *
      * @return
      */
-    private Photo getPhotoFromBundle(){
+    private Photo getPhotoFromBundle() {
         Log.d(TAG, "getPhotoFromBundle: arguments: " + getArguments());
 
         Bundle bundle = getArguments();
-        if (bundle != null){
+        if (bundle != null) {
             return bundle.getParcelable(getString(R.string.photo));
-        }else {
+        } else {
             return null;
         }
     }
@@ -188,6 +243,36 @@ public class ViewCommentsFragment extends Fragment {
                 }
             }
         };
+
+        myRef.child(getString(R.string.dbname_photos))
+                .child(mPhoto.getPhoto_id())
+                .child(getString(R.string.field_comments))
+                .addChildEventListener(new ChildEventListener() {
+                    @Override
+                    public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                        setupListView();
+                    }
+
+                    @Override
+                    public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+                    }
+
+                    @Override
+                    public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+
+                    }
+
+                    @Override
+                    public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
 
     }
 
