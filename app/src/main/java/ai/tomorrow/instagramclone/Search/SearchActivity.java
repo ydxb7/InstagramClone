@@ -62,6 +62,16 @@ public class SearchActivity extends AppCompatActivity {
 
     }
 
+    private void initTextListener(){
+        Log.d(TAG, "initTextListener: initializing");
+        
+
+
+
+    }
+
+
+
     private void searchForMatch(String keyword){
         Log.d(TAG, "searchForMatch: searching for: " + keyword);
         mUserList.clear();
