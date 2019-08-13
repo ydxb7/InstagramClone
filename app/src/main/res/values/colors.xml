@@ -9,6 +9,8 @@
     <color name="white">#fff</color>
     <color name="black">#000000</color>
     <color name="link_blue">#0044cc</color>
+    <color name="light_blue">#4d94ff</color>
+    <color name="dark_red">#cc0000</color>
 
 
 </resources>

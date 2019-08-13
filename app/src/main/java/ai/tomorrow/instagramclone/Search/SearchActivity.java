@@ -1,6 +1,7 @@
 package ai.tomorrow.instagramclone.Search;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -29,9 +30,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import ai.tomorrow.instagramclone.Profile.ProfileActivity;
 import ai.tomorrow.instagramclone.R;
 import ai.tomorrow.instagramclone.Utils.BottomNavigationViewHelper;
 import ai.tomorrow.instagramclone.Utils.UserListAdapter;
+import ai.tomorrow.instagramclone.Utils.ViewPostFragment;
 import ai.tomorrow.instagramclone.models.User;
 
 public class SearchActivity extends AppCompatActivity {
@@ -131,7 +134,10 @@ public class SearchActivity extends AppCompatActivity {
                 Log.d(TAG, "onItemClick: seleted user: " + mUserList.get(position).toString());
 
                 // navigate to profile activity
-
+                Intent intent = new Intent(SearchActivity.this, ProfileActivity.class);
+                intent.putExtra(getString(R.string.calling_activity), getString(R.string.search_activity));
+                intent.putExtra(getString(R.string.selected_user), mUserList.get(position));
+                startActivity(intent);
             }
         });
 
