@@ -14,6 +14,7 @@ import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -40,13 +41,14 @@ import ai.tomorrow.instagramclone.Profile.ProfileActivity;
 import ai.tomorrow.instagramclone.R;
 import ai.tomorrow.instagramclone.models.Like;
 import ai.tomorrow.instagramclone.models.Photo;
+import ai.tomorrow.instagramclone.models.User;
 import ai.tomorrow.instagramclone.models.UserAccountSettings;
 import ai.tomorrow.instagramclone.models.UserSettings;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class ViewProfileFragment extends Fragment {
 
-    private static final String TAG = "ProfileFragment";
+    private static final String TAG = "ViewProfileFragment";
 
     public interface OnGridImageSelectedListener{
         void onGridImageSelected(Photo photo, int activityNumber);
@@ -73,11 +75,14 @@ public class ViewProfileFragment extends Fragment {
     private DatabaseReference myRef;
     private FirebaseMethods mFirebaseMethods;
 
+    //vars
+    private User mUser;
+
 
     @Nullable
     @Override
     public View onCreateView(@NonNull final LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_profile, container, false);
+        View view = inflater.inflate(R.layout.fragment_view_profile, container, false);
         mDisplayName = (TextView) view.findViewById(R.id.display_name);
         mUsername = (TextView) view.findViewById(R.id.username);
         mWebsite = (TextView) view.findViewById(R.id.website);
@@ -89,32 +94,59 @@ public class ViewProfileFragment extends Fragment {
         mProgressBar = (ProgressBar) view.findViewById(R.id.profileProgressBar);
         gridView = (GridView) view.findViewById(R.id.gridView);
         toolbar = (Toolbar) view.findViewById(R.id.profileToolBar);
-        profileMenu = (ImageView) view.findViewById(R.id.profileMenu);
+//        profileMenu = (ImageView) view.findViewById(R.id.profileMenu);
         bottomNavigationView = (BottomNavigationViewEx) view.findViewById(R.id.bottomNavViewBar);
         mContext = getActivity();
         mFirebaseMethods = new FirebaseMethods(getActivity());
 
         Log.d(TAG, "onCreateView: started");
 
+        try {
+            mUser = getUserFromBundle();
+        }catch (NullPointerException e){
+            Log.d(TAG, "onCreateView: NullPointerException" + e.getMessage());
+            Toast.makeText(mContext, "can't get user correct.", Toast.LENGTH_SHORT).show();
+            getActivity().getSupportFragmentManager().popBackStack();
+        }
+
 
         setupBottomNavigationView();
-        setupToolbar();
+//        setupToolbar();
         setupFirebaseAuth();
+        init();
 
-        TextView editProfile = (TextView) view.findViewById(R.id.textEditProfile);
-        editProfile.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.d(TAG, "onClick: navigating to " + mContext.getString(R.string.edit_profile_fragment));
-                Intent intent = new Intent(mContext, AccountSettingsActivity.class);
-                intent.putExtra(getString(R.string.calling_activity), getString(R.string.profile_activity));
-                startActivity(intent);
-                getActivity().overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
-            }
-        });
+
 
 
         return view;
+    }
+
+    private void init(){
+        // set the profile widgets
+        Query query1 = myRef.child(getString(R.string.dbname_user_account_settings))
+                .orderByChild(getString(R.string.field_user_id))
+                .equalTo(mUser.getUser_id());
+
+        query1.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot singleSnapshot: dataSnapshot.getChildren()){
+                    Log.d(TAG, "onDataChange: found user: " + singleSnapshot.getValue(UserAccountSettings.class).toString());
+                    UserSettings settings = new UserSettings();
+                    settings.setUser(mUser);
+                    settings.setSettings(singleSnapshot.getValue(UserAccountSettings.class));
+                    setProfileWidgets(settings);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+        // get the users profile photos
+        setupGridView();
     }
 
     @Override
@@ -128,6 +160,17 @@ public class ViewProfileFragment extends Fragment {
         super.onAttach(context);
     }
 
+    private User getUserFromBundle(){
+        Log.d(TAG, "getUserFromBundle: arguments: " + getArguments());
+
+        Bundle bundle = this.getArguments();
+        if (bundle != null){
+            return bundle.getParcelable(getString(R.string.selected_user));
+        }else {
+            return null;
+        }
+    }
+
     private void setupGridView() {
         Log.d(TAG, "setupGridView: setting up image grid.");
         final ArrayList<Photo> photos = new ArrayList<>();
@@ -135,7 +178,7 @@ public class ViewProfileFragment extends Fragment {
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
         Query query = reference
                 .child(getString(R.string.dbname_user_photos))
-                .child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+                .child(mUser.getUser_id());
 
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -209,27 +252,25 @@ public class ViewProfileFragment extends Fragment {
         mFollowing.setText(String.valueOf(settings.getFollowing()));
 
         mProgressBar.setVisibility(View.GONE);
-        setupGridView();
-
     }
 
 
-    /**
-     * Responsible for setting up the profile toolbar
-     */
-    private void setupToolbar() {
-        ((ProfileActivity) getActivity()).setSupportActionBar(toolbar);
-
-        profileMenu.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(mContext, AccountSettingsActivity.class);
-                startActivity(intent);
-                getActivity().overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
-            }
-        });
-
-    }
+//    /**
+//     * Responsible for setting up the profile toolbar
+//     */
+//    private void setupToolbar() {
+//        ((ProfileActivity) getActivity()).setSupportActionBar(toolbar);
+//
+//        profileMenu.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Intent intent = new Intent(mContext, AccountSettingsActivity.class);
+//                startActivity(intent);
+//                getActivity().overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+//            }
+//        });
+//
+//    }
 
     /**
      * BottomNavigationView setup
@@ -269,26 +310,6 @@ public class ViewProfileFragment extends Fragment {
                 }
             }
         };
-
-        myRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-
-                //retrieve user information from the database
-                setProfileWidgets(mFirebaseMethods.getUserSettings(dataSnapshot));
-
-
-                //retrieve images for the user in question
-
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-
-
     }
 
     @Override
