@@ -59,7 +59,8 @@ public class ViewProfileFragment extends Fragment {
     private static final int NUM_GRID_COLUMNS = 3;
 
     //widgets
-    private TextView mPosts, mFollowers, mFollowing, mDisplayName, mUsername, mWebsite, mDescription;
+    private TextView mPosts, mFollowers, mFollowing, mDisplayName, mUsername, mWebsite, mDescription,
+            mFollow, mUnfollow, editProfile;
     private ProgressBar mProgressBar;
     private CircleImageView mProfilePhoto;
     private GridView gridView;
@@ -91,6 +92,9 @@ public class ViewProfileFragment extends Fragment {
         mPosts = (TextView) view.findViewById(R.id.tvPosts);
         mFollowers = (TextView) view.findViewById(R.id.tvFollowers);
         mFollowing = (TextView) view.findViewById(R.id.tvFollowing);
+        mFollow = (TextView) view.findViewById(R.id.follow);
+        mUnfollow = (TextView) view.findViewById(R.id.unfollow);
+        editProfile = (TextView) view.findViewById(R.id.textEditProfile);
         mProgressBar = (ProgressBar) view.findViewById(R.id.profileProgressBar);
         gridView = (GridView) view.findViewById(R.id.gridView);
         toolbar = (Toolbar) view.findViewById(R.id.profileToolBar);
@@ -147,6 +151,98 @@ public class ViewProfileFragment extends Fragment {
 
         // get the users profile photos
         setupGridView();
+
+        // set widgets
+        isFollowing();
+
+        mFollow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d(TAG, "onClick: now following: " + mUser.getUsername());
+
+                myRef.child(getString(R.string.dbname_following))
+                        .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                        .child(mUser.getUser_id())
+                        .child(getString(R.string.field_user_id))
+                        .setValue(mUser.getUser_id());
+
+                myRef.child(getString(R.string.dbname_followers))
+                        .child(mUser.getUser_id())
+                        .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                        .child(getString(R.string.field_user_id))
+                        .setValue(FirebaseAuth.getInstance().getCurrentUser().getUid());
+
+                setFollowing();
+            }
+        });
+
+        mUnfollow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d(TAG, "onClick: now unfollowing: " + mUser.getUsername());
+
+                myRef.child(getString(R.string.dbname_following))
+                        .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                        .child(mUser.getUser_id())
+                        .removeValue();
+
+                myRef.child(getString(R.string.dbname_followers))
+                        .child(mUser.getUser_id())
+                        .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                        .removeValue();
+
+                setUnfollowing();
+            }
+        });
+
+    }
+
+    private void setFollowing(){
+        Log.d(TAG, "setFollowing: updating UI for following widgets");
+        mFollow.setVisibility(View.GONE);
+        mUnfollow.setVisibility(View.VISIBLE);
+        editProfile.setVisibility(View.GONE);
+    }
+
+    private void setUnfollowing(){
+        Log.d(TAG, "setFollowing: updating UI for unfollowing widgets");
+        mFollow.setVisibility(View.VISIBLE);
+        mUnfollow.setVisibility(View.GONE);
+        editProfile.setVisibility(View.GONE);
+    }
+
+    private void setCurrentUsersProfile(){
+        Log.d(TAG, "setFollowing: updating UI for showing this user own profile");
+        mFollow.setVisibility(View.GONE);
+        mUnfollow.setVisibility(View.GONE);
+        editProfile.setVisibility(View.VISIBLE);
+    }
+
+    private void isFollowing(){
+        Log.d(TAG, "isFollowing: checking if following this user.");
+        setUnfollowing();
+
+        Query query = myRef.child(getString(R.string.dbname_following))
+                .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                .orderByChild(getString(R.string.field_user_id))
+                .equalTo(mUser.getUser_id());
+
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot singleSnapshot: dataSnapshot.getChildren()){
+                    Log.d(TAG, "onDataChange: found following: " + singleSnapshot.getValue());
+                    setFollowing();
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+
     }
 
     @Override
