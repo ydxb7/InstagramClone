@@ -65,7 +65,7 @@ public class ViewProfileFragment extends Fragment {
     private CircleImageView mProfilePhoto;
     private GridView gridView;
     private Toolbar toolbar;
-    private ImageView profileMenu;
+    private ImageView backArrow;
     private BottomNavigationViewEx bottomNavigationView;
     private Context mContext;
 
@@ -98,7 +98,7 @@ public class ViewProfileFragment extends Fragment {
         mProgressBar = (ProgressBar) view.findViewById(R.id.profileProgressBar);
         gridView = (GridView) view.findViewById(R.id.gridView);
         toolbar = (Toolbar) view.findViewById(R.id.profileToolBar);
-//        profileMenu = (ImageView) view.findViewById(R.id.profileMenu);
+        backArrow = (ImageView) view.findViewById(R.id.backArrow);
         bottomNavigationView = (BottomNavigationViewEx) view.findViewById(R.id.bottomNavViewBar);
         mContext = getActivity();
         mFirebaseMethods = new FirebaseMethods(getActivity());
@@ -115,12 +115,9 @@ public class ViewProfileFragment extends Fragment {
 
 
         setupBottomNavigationView();
-//        setupToolbar();
+        setupToolbar();
         setupFirebaseAuth();
         init();
-
-
-
 
         return view;
     }
@@ -351,22 +348,19 @@ public class ViewProfileFragment extends Fragment {
     }
 
 
-//    /**
-//     * Responsible for setting up the profile toolbar
-//     */
-//    private void setupToolbar() {
-//        ((ProfileActivity) getActivity()).setSupportActionBar(toolbar);
-//
-//        profileMenu.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Intent intent = new Intent(mContext, AccountSettingsActivity.class);
-//                startActivity(intent);
-//                getActivity().overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
-//            }
-//        });
-//
-//    }
+    /**
+     * Responsible for setting up the profile toolbar
+     */
+    private void setupToolbar() {
+        ((ProfileActivity) getActivity()).setSupportActionBar(toolbar);
+
+        backArrow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getActivity().finish();
+            }
+        });
+    }
 
     /**
      * BottomNavigationView setup

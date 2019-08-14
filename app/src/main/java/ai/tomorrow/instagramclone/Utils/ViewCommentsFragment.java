@@ -57,6 +57,7 @@ public class ViewCommentsFragment extends Fragment {
     private ListView mListView;
 
     //vars
+    private Context mContext;
     private Photo mPhoto;
     private ArrayList<Comment> mComments = new ArrayList<>();
 
@@ -72,6 +73,7 @@ public class ViewCommentsFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_view_comments, container, false);
         Log.d(TAG, "onCreateView: started.");
 
+        mContext = getActivity();
         mBackArrow = view.findViewById(R.id.backArrow);
         mCheckMark = view.findViewById(R.id.ivPostComment);
         mComment = view.findViewById(R.id.comment);
@@ -114,10 +116,10 @@ public class ViewCommentsFragment extends Fragment {
     private void setupListView() {
         Log.d(TAG, "setupListView: setting up comments.");
 
-        Query query = myRef
-                .child(getString(R.string.dbname_photos))
+        Query query = FirebaseDatabase.getInstance().getReference()
+                .child(mContext.getString(R.string.dbname_photos))
                 .child(mPhoto.getPhoto_id())
-                .child(getString(R.string.field_comments));
+                .child(mContext.getString(R.string.field_comments));
 
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -137,12 +139,12 @@ public class ViewCommentsFragment extends Fragment {
                     Comment comment = new Comment();
                     Map<String, Object> objectMap = (HashMap<String, Object>) singleSnapshot.getValue();
 
-                    comment.setComment(objectMap.get(getString(R.string.field_comment)).toString());
-                    comment.setUser_id(objectMap.get(getString(R.string.field_user_id)).toString());
-                    comment.setDate_created(objectMap.get(getString(R.string.field_date_created)).toString());
+                    comment.setComment(objectMap.get(mContext.getString(R.string.field_comment)).toString());
+                    comment.setUser_id(objectMap.get(mContext.getString(R.string.field_user_id)).toString());
+                    comment.setDate_created(objectMap.get(mContext.getString(R.string.field_date_created)).toString());
 
                     List<Like> likesList = new ArrayList<>();
-                    for (DataSnapshot ds : singleSnapshot.child(getString(R.string.field_likes)).getChildren()) {
+                    for (DataSnapshot ds : singleSnapshot.child(mContext.getString(R.string.field_likes)).getChildren()) {
                         Like like = new Like();
                         like.setUser_id(ds.getValue(Like.class).getUser_id());
                         likesList.add(like);
@@ -151,7 +153,7 @@ public class ViewCommentsFragment extends Fragment {
                     mComments.add(comment);
                 }
 
-                CommentListAdapter adapter = new CommentListAdapter(getActivity(), R.layout.layout_comment, mComments);
+                CommentListAdapter adapter = new CommentListAdapter(mContext, R.layout.layout_comment, mComments);
                 mListView.setAdapter(adapter);
 
             }
@@ -185,17 +187,19 @@ public class ViewCommentsFragment extends Fragment {
         String commentID = myRef.push().getKey();
 
         //insert into photos node
-        myRef.child(getString(R.string.dbname_photos))
+        FirebaseDatabase.getInstance().getReference()
+                .child(mContext.getString(R.string.dbname_photos))
                 .child(mPhoto.getPhoto_id())
-                .child(getString(R.string.field_comments))
+                .child(mContext.getString(R.string.field_comments))
                 .child(commentID)
                 .setValue(comment);
 
         //insert into user_photos node
-        myRef.child(getString(R.string.dbname_user_photos))
+        FirebaseDatabase.getInstance().getReference()
+                .child(mContext.getString(R.string.dbname_user_photos))
                 .child(mPhoto.getUser_id())
                 .child(mPhoto.getPhoto_id())
-                .child(getString(R.string.field_comments))
+                .child(mContext.getString(R.string.field_comments))
                 .child(commentID)
                 .setValue(comment);
 
@@ -217,7 +221,7 @@ public class ViewCommentsFragment extends Fragment {
 
         Bundle bundle = getArguments();
         if (bundle != null) {
-            return bundle.getParcelable(getString(R.string.photo));
+            return bundle.getParcelable(mContext.getString(R.string.photo));
         } else {
             return null;
         }
@@ -251,7 +255,7 @@ public class ViewCommentsFragment extends Fragment {
             }
         };
 
-        myRef.child(getString(R.string.dbname_photos))
+        myRef.child(mContext.getString(R.string.dbname_photos))
                 .child(mPhoto.getPhoto_id())
                 .addChildEventListener(new ChildEventListener() {
                     @Override
