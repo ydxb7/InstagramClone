@@ -113,7 +113,7 @@ public class ProfileFragment extends Fragment {
             public void onClick(View v) {
                 Log.d(TAG, "onClick: navigating to " + mContext.getString(R.string.edit_profile_fragment));
                 Intent intent = new Intent(mContext, AccountSettingsActivity.class);
-                intent.putExtra(getString(R.string.calling_activity), getString(R.string.profile_activity));
+                intent.putExtra(mContext.getString(R.string.calling_activity), mContext.getString(R.string.profile_activity));
                 startActivity(intent);
                 getActivity().overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
             }
@@ -140,7 +140,7 @@ public class ProfileFragment extends Fragment {
 
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
         Query query = reference
-                .child(getString(R.string.dbname_user_photos))
+                .child(mContext.getString(R.string.dbname_user_photos))
                 .child(FirebaseAuth.getInstance().getCurrentUser().getUid());
 
         query.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -153,15 +153,15 @@ public class ProfileFragment extends Fragment {
                     Photo photo = new Photo();
                     Map<String, Object> objectMap = (HashMap<String, Object>) singleSnapshot.getValue();
 
-                    photo.setPhoto_id(objectMap.get(getString(R.string.field_photo_id)).toString());
-                    photo.setUser_id(objectMap.get(getString(R.string.field_user_id)).toString());
-                    photo.setTags(objectMap.get(getString(R.string.field_tags)).toString());
-                    photo.setImage_path(objectMap.get(getString(R.string.field_image_path)).toString());
-                    photo.setDate_created(objectMap.get(getString(R.string.field_date_created)).toString());
-                    photo.setCaption(objectMap.get(getString(R.string.field_caption)).toString());
+                    photo.setPhoto_id(objectMap.get(mContext.getString(R.string.field_photo_id)).toString());
+                    photo.setUser_id(objectMap.get(mContext.getString(R.string.field_user_id)).toString());
+                    photo.setTags(objectMap.get(mContext.getString(R.string.field_tags)).toString());
+                    photo.setImage_path(objectMap.get(mContext.getString(R.string.field_image_path)).toString());
+                    photo.setDate_created(objectMap.get(mContext.getString(R.string.field_date_created)).toString());
+                    photo.setCaption(objectMap.get(mContext.getString(R.string.field_caption)).toString());
 
                     List<Like> likesList = new ArrayList<>();
-                    for (DataSnapshot ds: singleSnapshot.child(getString(R.string.field_likes)).getChildren()){
+                    for (DataSnapshot ds: singleSnapshot.child(mContext.getString(R.string.field_likes)).getChildren()){
                         Like like = new Like();
                         like.setUser_id(ds.getValue(Like.class).getUser_id());
                         likesList.add(like);

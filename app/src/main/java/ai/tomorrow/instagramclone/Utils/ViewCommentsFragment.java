@@ -260,6 +260,38 @@ public class ViewCommentsFragment extends Fragment {
                 .addChildEventListener(new ChildEventListener() {
                     @Override
                     public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                        Log.d(TAG, "onChildAdded: comment added");
+                        setupListView();
+                    }
+
+                    @Override
+                    public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+                    }
+
+                    @Override
+                    public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+
+                    }
+
+                    @Override
+                    public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+
+        myRef.child(mContext.getString(R.string.dbname_photos))
+                .child(mPhoto.getPhoto_id())
+                .child(mContext.getString(R.string.field_comments))
+                .addChildEventListener(new ChildEventListener() {
+                    @Override
+                    public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                        Log.d(TAG, "onChildAdded: comment added");
                         setupListView();
                     }
 
