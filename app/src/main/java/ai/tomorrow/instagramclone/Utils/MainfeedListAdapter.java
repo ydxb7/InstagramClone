@@ -1,6 +1,7 @@
 package ai.tomorrow.instagramclone.Utils;
 
 import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.LayoutInflater;
@@ -30,7 +31,9 @@ import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
 
+import ai.tomorrow.instagramclone.Profile.ProfileActivity;
 import ai.tomorrow.instagramclone.R;
+import ai.tomorrow.instagramclone.Search.SearchActivity;
 import ai.tomorrow.instagramclone.models.Like;
 import ai.tomorrow.instagramclone.models.Photo;
 import ai.tomorrow.instagramclone.models.User;
@@ -120,6 +123,16 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
                     holder.user = singleSnapshot.getValue(User.class);
                 }
                 getLikesString(holder);
+
+                holder.username.setText(holder.user.getUsername());
+                // set onclicklistener to holder.username, navigate to the user's profile
+                holder.username.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Log.d(TAG, "onClick: navigate to ProfileActivity.");
+                        navigateToProfileActivity(holder);
+                    }
+                });
             }
 
             @Override
@@ -140,7 +153,13 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
                     holder.settings = singleSnapshot.getValue(UserAccountSettings.class);
                 }
                 UniversalImageLoader.setImage(holder.settings.getProfile_photo(), holder.mprofileImage, null, "");
-                holder.username.setText(holder.settings.getUsername());
+                holder.mprofileImage.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Log.d(TAG, "onClick: navigate to ProfileActivity.");
+                        navigateToProfileActivity(holder);
+                    }
+                });
             }
 
             @Override
@@ -153,6 +172,15 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
         holder.caption.setText(holder.photo.getCaption());
 
         return convertView;
+    }
+
+    private void navigateToProfileActivity(ViewHolder holder) {
+        Log.d(TAG, "navigateToProfileActivity: navigating.");
+        // navigate to profile activity
+        Intent intent = new Intent(mContext, ProfileActivity.class);
+        intent.putExtra(mContext.getString(R.string.calling_activity), mContext.getString(R.string.home_activity));
+        intent.putExtra(mContext.getString(R.string.selected_user), holder.user);
+        mContext.startActivity(intent);
     }
 
     public class GestureListener extends GestureDetector.SimpleOnGestureListener{
@@ -285,7 +313,7 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
 
                             String[] splitUsers = holder.users.toString().split(",");
 
-                            if(holder.users.toString().contains(holder.user.getUsername() + ",")){//mitch, mitchell.tabian
+                            if(holder.users.toString().contains(holder.user.getUsername() + ",")){
                                 holder.likeByCurrentUser = true;
                             }else{
                                 holder.likeByCurrentUser = false;
