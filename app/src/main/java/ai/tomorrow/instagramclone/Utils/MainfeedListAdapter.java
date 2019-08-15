@@ -48,7 +48,7 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
     public interface OnCommentThreadSelectedListener{
         void onCommentThreadSelectedListener(Photo photo);
     }
-    ViewPostFragment.OnCommentThreadSelectedListener mOnCommentThreadSelectedListener;
+    MainfeedListAdapter.OnCommentThreadSelectedListener mOnCommentThreadSelectedListener;
 
     public MainfeedListAdapter(@NonNull Context context, int resource, @NonNull List<Photo> objects) {
         super(context, resource, objects);
@@ -56,6 +56,7 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
         mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         this.layoutResource = resource;
         mPhotos = objects;
+        mOnCommentThreadSelectedListener = (OnCommentThreadSelectedListener) mContext;
     }
 
     private static class ViewHolder{
@@ -94,6 +95,7 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
             holder.caption = (TextView) convertView.findViewById(R.id.image_caption);
             holder.mTimestamp = (TextView) convertView.findViewById(R.id.image_time_posted);
             holder.mprofileImage = (CircleImageView) convertView.findViewById(R.id.profile_photo);
+            holder.heart = new Heart(holder.heartWhite, holder.heartRed);
 
             convertView.setTag(holder);
         }else {
