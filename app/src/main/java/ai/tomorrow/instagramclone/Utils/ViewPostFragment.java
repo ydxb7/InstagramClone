@@ -176,9 +176,13 @@ public class ViewPostFragment extends Fragment {
         }
     }
 
+    /**
+     * solve the problem: fragment not attached to activity
+     */
     @Override
     public void onResume() {
         super.onResume();
+        // check if the fragment is added
         if(isAdded()){
             init();
         }

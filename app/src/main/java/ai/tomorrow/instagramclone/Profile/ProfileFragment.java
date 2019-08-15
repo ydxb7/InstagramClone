@@ -79,6 +79,10 @@ public class ProfileFragment extends Fragment {
     private DatabaseReference myRef;
     private FirebaseMethods mFirebaseMethods;
 
+    //vars
+    private int mFollowingCount = 0;
+    private int mFollowersCount = 0;
+    private int mPostsCount = 0;
 
     @Nullable
     @Override
@@ -134,6 +138,79 @@ public class ProfileFragment extends Fragment {
         super.onAttach(context);
     }
 
+    private void setFollowingCount(){
+        Log.d(TAG, "setFollowingCount: set following count");
+        mFollowingCount = 0;
+
+        Query query = myRef.child(mContext.getString(R.string.dbname_following))
+                .child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot singleSnapshot: dataSnapshot.getChildren()){
+                    Log.d(TAG, "onDataChange: found following: " + singleSnapshot.getChildren());
+                    mFollowingCount++;
+                }
+                mFollowing.setText(String.valueOf(mFollowingCount));
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    private void setFollowerCount(){
+        Log.d(TAG, "setFollowingCount: set followers count");
+        mFollowersCount = 0;
+
+        Query query = myRef.child(mContext.getString(R.string.dbname_followers))
+                .child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot singleSnapshot: dataSnapshot.getChildren()){
+                    Log.d(TAG, "onDataChange: found follower: " + singleSnapshot.getChildren());
+                    mFollowersCount++;
+                }
+                mFollowers.setText(String.valueOf(mFollowersCount));
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    private void setPostsCount(){
+        Log.d(TAG, "setFollowingCount: set posts count");
+        mPostsCount = 0;
+
+        Query query = myRef.child(mContext.getString(R.string.dbname_user_photos))
+                .child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot singleSnapshot: dataSnapshot.getChildren()){
+                    Log.d(TAG, "onDataChange: found post: " + singleSnapshot.getChildren());
+                    mPostsCount++;
+                }
+                mPosts.setText(String.valueOf(mPostsCount));
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+
     private void setupGridView() {
         Log.d(TAG, "setupGridView: setting up image grid.");
         final ArrayList<Photo> photos = new ArrayList<>();
@@ -169,7 +246,7 @@ public class ProfileFragment extends Fragment {
                     photo.setLikes(likesList);
                     photos.add(photo);
                 }
-                int gridWidth = getResources().getDisplayMetrics().widthPixels;
+                int gridWidth = mContext.getResources().getDisplayMetrics().widthPixels;
                 int imageWidth = gridWidth / NUM_GRID_COLUMNS;
                 gridView.setColumnWidth(imageWidth);
 
@@ -216,7 +293,9 @@ public class ProfileFragment extends Fragment {
 
         mProgressBar.setVisibility(View.GONE);
         setupGridView();
-
+        setFollowerCount();
+        setFollowingCount();
+        setPostsCount();
     }
 
 

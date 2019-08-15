@@ -1,7 +1,6 @@
 package ai.tomorrow.instagramclone.Utils;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -36,8 +35,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import ai.tomorrow.instagramclone.Profile.AccountSettingsActivity;
-import ai.tomorrow.instagramclone.Profile.ProfileActivity;
 import ai.tomorrow.instagramclone.R;
 import ai.tomorrow.instagramclone.models.Like;
 import ai.tomorrow.instagramclone.models.Photo;
@@ -78,6 +75,9 @@ public class ViewProfileFragment extends Fragment {
 
     //vars
     private User mUser;
+    private int mFollowingCount = 0;
+    private int mFollowersCount = 0;
+    private int mPostsCount = 0;
 
 
     @Nullable
@@ -113,9 +113,7 @@ public class ViewProfileFragment extends Fragment {
             getActivity().getSupportFragmentManager().popBackStack();
         }
 
-
         setupBottomNavigationView();
-        setupToolbar();
         setupFirebaseAuth();
         init();
 
@@ -151,6 +149,9 @@ public class ViewProfileFragment extends Fragment {
 
         // set widgets
         isFollowing();
+        setFollowerCount();
+        setFollowingCount();
+        setPostsCount();
 
         mFollow.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -170,6 +171,9 @@ public class ViewProfileFragment extends Fragment {
                         .setValue(FirebaseAuth.getInstance().getCurrentUser().getUid());
 
                 setFollowing();
+                setFollowerCount();
+                setFollowingCount();
+                setPostsCount();
             }
         });
 
@@ -189,6 +193,9 @@ public class ViewProfileFragment extends Fragment {
                         .removeValue();
 
                 setUnfollowing();
+                setFollowerCount();
+                setFollowingCount();
+                setPostsCount();
             }
         });
 
@@ -214,6 +221,79 @@ public class ViewProfileFragment extends Fragment {
         mUnfollow.setVisibility(View.GONE);
         editProfile.setVisibility(View.VISIBLE);
     }
+
+    private void setFollowingCount(){
+        Log.d(TAG, "setFollowingCount: set following count");
+        mFollowingCount = 0;
+
+        Query query = myRef.child(mContext.getString(R.string.dbname_following))
+                .child(mUser.getUser_id());
+
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot singleSnapshot: dataSnapshot.getChildren()){
+                    Log.d(TAG, "onDataChange: found following: " + singleSnapshot.getChildren());
+                    mFollowingCount++;
+                }
+                mFollowing.setText(String.valueOf(mFollowingCount));
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    private void setFollowerCount(){
+        Log.d(TAG, "setFollowingCount: set followers count");
+        mFollowersCount = 0;
+
+        Query query = myRef.child(mContext.getString(R.string.dbname_followers))
+                .child(mUser.getUser_id());
+
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot singleSnapshot: dataSnapshot.getChildren()){
+                    Log.d(TAG, "onDataChange: found follower: " + singleSnapshot.getChildren());
+                    mFollowersCount++;
+                }
+                mFollowers.setText(String.valueOf(mFollowersCount));
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    private void setPostsCount(){
+        Log.d(TAG, "setFollowingCount: set posts count");
+        mPostsCount = 0;
+
+        Query query = myRef.child(mContext.getString(R.string.dbname_user_photos))
+                .child(mUser.getUser_id());
+
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot singleSnapshot: dataSnapshot.getChildren()){
+                    Log.d(TAG, "onDataChange: found post: " + singleSnapshot.getChildren());
+                    mPostsCount++;
+                }
+                mPosts.setText(String.valueOf(mPostsCount));
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
 
     private void isFollowing(){
         Log.d(TAG, "isFollowing: checking if following this user.");
@@ -299,7 +379,7 @@ public class ViewProfileFragment extends Fragment {
                     photo.setLikes(likesList);
                     photos.add(photo);
                 }
-                int gridWidth = getResources().getDisplayMetrics().widthPixels;
+                int gridWidth = mContext.getResources().getDisplayMetrics().widthPixels;
                 int imageWidth = gridWidth / NUM_GRID_COLUMNS;
                 gridView.setColumnWidth(imageWidth);
 
@@ -345,18 +425,11 @@ public class ViewProfileFragment extends Fragment {
         mFollowing.setText(String.valueOf(settings.getFollowing()));
 
         mProgressBar.setVisibility(View.GONE);
-    }
-
-
-    /**
-     * Responsible for setting up the profile toolbar
-     */
-    private void setupToolbar() {
-        ((ProfileActivity) getActivity()).setSupportActionBar(toolbar);
 
         backArrow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                getActivity().getSupportFragmentManager().popBackStack();
                 getActivity().finish();
             }
         });
