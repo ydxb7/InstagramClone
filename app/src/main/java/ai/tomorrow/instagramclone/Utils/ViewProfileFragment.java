@@ -420,9 +420,6 @@ public class ViewProfileFragment extends Fragment {
         mUsername.setText(settings.getUsername());
         mWebsite.setText(settings.getWebsite());
         mDescription.setText(settings.getDescription());
-        mPosts.setText(String.valueOf(settings.getPosts()));
-        mFollowers.setText(String.valueOf(settings.getFollowers()));
-        mFollowing.setText(String.valueOf(settings.getFollowing()));
 
         mProgressBar.setVisibility(View.GONE);
 

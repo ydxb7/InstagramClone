@@ -428,9 +428,6 @@ public class FirebaseMethods {
         UserAccountSettings settings = new UserAccountSettings(
                 description,
                 username,
-                0L,
-                0L,
-                0L,
                 profile_photo,
                 StringManipulation.condenseUsername(username),
                 website,
@@ -488,21 +485,6 @@ public class FirebaseMethods {
                             ds.child(userID)
                                     .getValue(UserAccountSettings.class)
                                     .getProfile_photo()
-                    );
-                    settings.setPosts(
-                            ds.child(userID)
-                                    .getValue(UserAccountSettings.class)
-                                    .getPosts()
-                    );
-                    settings.setFollowing(
-                            ds.child(userID)
-                                    .getValue(UserAccountSettings.class)
-                                    .getFollowing()
-                    );
-                    settings.setFollowers(
-                            ds.child(userID)
-                                    .getValue(UserAccountSettings.class)
-                                    .getFollowers()
                     );
 
                     Log.d(TAG, "getUserAccountSettings: retrieved user_account_settings information: " + settings.toString());
