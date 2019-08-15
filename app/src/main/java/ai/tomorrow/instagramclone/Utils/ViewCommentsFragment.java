@@ -37,6 +37,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.TimeZone;
 
+import ai.tomorrow.instagramclone.Home.HomeActivity;
 import ai.tomorrow.instagramclone.R;
 import ai.tomorrow.instagramclone.models.Comment;
 import ai.tomorrow.instagramclone.models.Like;
@@ -107,6 +108,12 @@ public class ViewCommentsFragment extends Fragment {
             public void onClick(View v) {
                 Log.d(TAG, "onClick: navigating back.");
                 getActivity().getSupportFragmentManager().popBackStack();
+                Bundle bundle = getArguments();
+                if (bundle != null &&
+                        bundle.getString(mContext.getString(R.string.calling_activity))
+                                .equals(mContext.getString(R.string.home_activity))){
+                    ((HomeActivity)getActivity()).showRelativeLayout();
+                }
             }
         });
 
