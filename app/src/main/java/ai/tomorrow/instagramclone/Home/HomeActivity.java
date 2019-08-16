@@ -31,7 +31,8 @@ import ai.tomorrow.instagramclone.Utils.UniversalImageLoader;
 import ai.tomorrow.instagramclone.Utils.ViewCommentsFragment;
 import ai.tomorrow.instagramclone.models.Photo;
 
-public class HomeActivity extends AppCompatActivity implements MainfeedListAdapter.OnCommentThreadSelectedListener {
+public class HomeActivity extends AppCompatActivity implements
+        MainfeedListAdapter.OnCommentThreadSelectedListener {
 
     private static final String TAG = "HomeActivity";
     private static final int ACTIVITY_NUM = 0;

@@ -47,6 +47,7 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
     private LayoutInflater mInflater;
     private int layoutResource;
     private List<Photo> mPhotos;
+    private String currentUsername;
 
     public interface OnCommentThreadSelectedListener{
         void onCommentThreadSelectedListener(Photo photo);
@@ -60,6 +61,7 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
         this.layoutResource = resource;
         mPhotos = objects;
         mOnCommentThreadSelectedListener = (OnCommentThreadSelectedListener) mContext;
+        getCurrentUsername();
     }
 
     private static class ViewHolder{
@@ -313,7 +315,7 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
 
                             String[] splitUsers = holder.users.toString().split(",");
 
-                            if(holder.users.toString().contains(holder.user.getUsername() + ",")){
+                            if(holder.users.toString().contains(currentUsername + ",")){
                                 holder.likeByCurrentUser = true;
                             }else{
                                 holder.likeByCurrentUser = false;
@@ -426,9 +428,34 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
                 }
             });
         }
+    }
+
+    private void getCurrentUsername(){
+        Log.d(TAG, "getCurrentUsername: get current username.");
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
+        Query query = reference.child(mContext.getString(R.string.dbname_users))
+                .orderByChild(mContext.getString(R.string.field_user_id))
+                .equalTo(FirebaseAuth.getInstance().getCurrentUser().getUid());
+
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot singleSnapshot: dataSnapshot.getChildren()){
+                    currentUsername = singleSnapshot.getValue(User.class).getUsername();
+                }
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
 
 
     }
+
 
     /**
      * Returns a string representing the number of days ago the post was made
