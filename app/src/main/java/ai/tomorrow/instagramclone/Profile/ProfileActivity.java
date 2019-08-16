@@ -9,7 +9,10 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
+
+import com.google.firebase.auth.FirebaseAuth;
 
 import ai.tomorrow.instagramclone.R;
 import ai.tomorrow.instagramclone.Utils.ViewCommentsFragment;
@@ -77,16 +80,28 @@ public class ProfileActivity extends AppCompatActivity implements
         if (intent.hasExtra(mContext.getString(R.string.calling_activity))){
             Log.d(TAG, "init: searching for user object attached as intent extra");
             if (intent.hasExtra(mContext.getString(R.string.selected_user))){
-                ViewProfileFragment fragment = new ViewProfileFragment();
-                Bundle args = new Bundle();
-                args.putParcelable(mContext.getString(R.string.selected_user),
-                        intent.getParcelableExtra(mContext.getString(R.string.selected_user)));
-                fragment.setArguments(args);
+                User user = intent.getParcelableExtra(getString(R.string.selected_user));
+                if (user.getUser_id().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())){
+                    Log.d(TAG, "init: view user is our own user.");
+                    Log.d(TAG, "init: inflating Profile");
+                    ProfileFragment fragment = new ProfileFragment();
+                    FragmentTransaction transaction = ProfileActivity.this.getSupportFragmentManager().beginTransaction();
+                    transaction.replace(R.id.container, fragment);
+                    transaction.addToBackStack(getString(R.string.profile_fragment)); // add fragment into backstack
+                    transaction.commit();
+                } else {
+                    Log.d(TAG, "init: view profile for other user.");
+                    ViewProfileFragment fragment = new ViewProfileFragment();
+                    Bundle args = new Bundle();
+                    args.putParcelable(mContext.getString(R.string.selected_user),
+                            intent.getParcelableExtra(mContext.getString(R.string.selected_user)));
+                    fragment.setArguments(args);
 
-                FragmentTransaction transaction = ProfileActivity.this.getSupportFragmentManager().beginTransaction();
-                transaction.replace(R.id.container, fragment);
-                transaction.addToBackStack(getString(R.string.view_profile_fragment)); // add fragment into backstack
-                transaction.commit();
+                    FragmentTransaction transaction = ProfileActivity.this.getSupportFragmentManager().beginTransaction();
+                    transaction.replace(R.id.container, fragment);
+                    transaction.addToBackStack(getString(R.string.view_profile_fragment)); // add fragment into backstack
+                    transaction.commit();
+                }
             }else {
                 Toast.makeText(mContext, "something went wrong", Toast.LENGTH_SHORT).show();
             }
@@ -99,5 +114,15 @@ public class ProfileActivity extends AppCompatActivity implements
             transaction.commit();
         }
 
+    }
+
+    @Override
+    public void onBackPressed() {
+        Log.d(TAG, "onBackPressed.");
+        Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.container);
+        if (currentFragment instanceof ProfileFragment){
+            finish();
+        }
+        super.onBackPressed();
     }
 }
