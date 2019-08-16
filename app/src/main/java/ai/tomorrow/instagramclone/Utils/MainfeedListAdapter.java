@@ -58,13 +58,23 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
     }
     MainfeedListAdapter.OnCommentThreadSelectedListener mOnCommentThreadSelectedListener;
 
+    public interface OnLoadMoreItemsListener{
+        void onLoadMoreItems();
+    }
+    OnLoadMoreItemsListener mOnLoadMoreItemsListener;
+
     public MainfeedListAdapter(@NonNull Context context, int resource, @NonNull List<Photo> objects) {
         super(context, resource, objects);
         mContext = context;
         mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         this.layoutResource = resource;
         mPhotos = objects;
-        mOnCommentThreadSelectedListener = (OnCommentThreadSelectedListener) mContext;
+        try {
+            mOnCommentThreadSelectedListener = (OnCommentThreadSelectedListener) mContext;
+            mOnLoadMoreItemsListener = (OnLoadMoreItemsListener) mContext;
+        }catch (ClassCastException e){
+            Log.d(TAG, "MainfeedListAdapter: ClassCastException: " + e.getMessage());
+        }
         getCurrentUsername();
     }
 
@@ -208,7 +218,17 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
                     }
                 });
 
+        // if reach the end of the list, load more data
+        if (position == getCount() - 1){
+            loadMoreData();
+        }
+
         return convertView;
+    }
+
+    private void loadMoreData(){
+        Log.d(TAG, "loadMoreData: loading more data.");
+        mOnLoadMoreItemsListener.onLoadMoreItems();
     }
 
     private void navigateToProfileActivity(ViewHolder holder) {

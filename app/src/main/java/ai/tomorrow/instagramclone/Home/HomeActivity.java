@@ -32,7 +32,7 @@ import ai.tomorrow.instagramclone.Utils.ViewCommentsFragment;
 import ai.tomorrow.instagramclone.models.Photo;
 
 public class HomeActivity extends AppCompatActivity implements
-        MainfeedListAdapter.OnCommentThreadSelectedListener {
+        MainfeedListAdapter.OnCommentThreadSelectedListener, MainfeedListAdapter.OnLoadMoreItemsListener {
 
     private static final String TAG = "HomeActivity";
     private static final int ACTIVITY_NUM = 0;
@@ -47,6 +47,32 @@ public class HomeActivity extends AppCompatActivity implements
     private RelativeLayout mRelativeLayout;
     private FrameLayout mFrameLayout;
     private ViewPager mViewPager;
+
+    @Override
+    public void onCommentThreadSelectedListener(Photo photo) {
+        Log.d(TAG, "onCommentThreadSelectedListener: selected an comment thread");
+        ViewCommentsFragment fragment = new ViewCommentsFragment();
+        Bundle args = new Bundle();
+        args.putParcelable(getString(R.string.photo), photo);
+        args.putString(getString(R.string.calling_activity), getString(R.string.home_activity));
+        fragment.setArguments(args);
+
+        FragmentTransaction transaction = HomeActivity.this.getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.container, fragment);
+        transaction.addToBackStack(getString(R.string.view_comments_fragment));
+        transaction.commit();
+        hideRelativeLayout();
+    }
+
+    @Override
+    public void onLoadMoreItems() {
+        Log.d(TAG, "onLoadMoreItems: displaying more photos");
+        HomeFragment fragment = (HomeFragment)getSupportFragmentManager()
+                .findFragmentByTag("android:switcher:" + R.id.viewpager_container + ":" + mViewPager.getCurrentItem());
+        if(fragment != null){
+            fragment.loadMorePhotos();
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,23 +114,6 @@ public class HomeActivity extends AppCompatActivity implements
         tabLayout.getTabAt(0).setIcon(R.drawable.ic_camera);
         tabLayout.getTabAt(1).setIcon(R.drawable.ic_action_name);
         tabLayout.getTabAt(2).setIcon(R.drawable.ic_arrow);
-    }
-
-
-    @Override
-    public void onCommentThreadSelectedListener(Photo photo) {
-        Log.d(TAG, "onCommentThreadSelectedListener: selected an comment thread");
-        ViewCommentsFragment fragment = new ViewCommentsFragment();
-        Bundle args = new Bundle();
-        args.putParcelable(getString(R.string.photo), photo);
-        args.putString(getString(R.string.calling_activity), getString(R.string.home_activity));
-        fragment.setArguments(args);
-
-        FragmentTransaction transaction = HomeActivity.this.getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.container, fragment);
-        transaction.addToBackStack(getString(R.string.view_comments_fragment));
-        transaction.commit();
-        hideRelativeLayout();
     }
 
     public void hideRelativeLayout(){

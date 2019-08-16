@@ -39,12 +39,15 @@ public class HomeFragment extends Fragment {
     //widgets
     private ListView mListView;
 
-
     //vars
     private Context mContext;
+    private MainfeedListAdapter mAdapter;
     private ArrayList<Photo> mPhotos = new ArrayList<>();
+    private ArrayList<Photo> mPaginatedPhotos = new ArrayList<>();
     private ArrayList<String> mFollowingUserIDs = new ArrayList<>();
     private DatabaseReference myRef;
+    private static final int LOAD_COUNT = 5;
+
 
     @Nullable
     @Override
@@ -124,17 +127,42 @@ public class HomeFragment extends Fragment {
     private void displayPhotos(){
         Log.d(TAG, "displayPhotos: sort photos and set listView");
         // sort photos
-        if (mPhotos != null){
+        if (mPhotos.size() > 0){
             Collections.sort(mPhotos, new Comparator<Photo>() {
                 @Override
                 public int compare(Photo o1, Photo o2) {
                     return o2.getDate_created().compareTo(o1.getDate_created());
                 }
             });
+
+            int iterations = LOAD_COUNT;
+            if (mPhotos.size() < LOAD_COUNT){
+                iterations = mPhotos.size();
+            }
+
+            for (int i = 0; i < iterations; i++){
+                mPaginatedPhotos.add(mPhotos.get(i));
+            }
+
             // set listView
-            MainfeedListAdapter adapter = new MainfeedListAdapter(mContext, R.layout.layout_mainfeed_listitem, mPhotos);
-            mListView.setAdapter(adapter);
+            mAdapter = new MainfeedListAdapter(mContext, R.layout.layout_mainfeed_listitem, mPaginatedPhotos);
+            mListView.setAdapter(mAdapter);
         }
+    }
+
+    public void loadMorePhotos(){
+        Log.d(TAG, "loadMorePhotos: loading more photos.");
+
+        if (mPaginatedPhotos.size() < mPhotos.size()){
+            int iterations = Math.min(mPhotos.size() - mPaginatedPhotos.size(), LOAD_COUNT);
+
+            int start = mPaginatedPhotos.size();
+            for (int i = start; i < start + iterations; i++){
+                mPaginatedPhotos.add(mPhotos.get(i));
+            }
+            mAdapter.notifyDataSetChanged();
+        }
+
     }
 
     private Photo getPhoto(DataSnapshot singleSnapshot) {
