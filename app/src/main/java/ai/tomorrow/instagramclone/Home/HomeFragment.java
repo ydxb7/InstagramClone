@@ -137,40 +137,6 @@ public class HomeFragment extends Fragment {
         }
     }
 
-
-//    private void setupListView() {
-//        Log.d(TAG, "setupListView: setting up comments.");
-//
-//        Query query = FirebaseDatabase.getInstance().getReference()
-//                .child(mContext.getString(R.string.dbname_user_photos))
-//                .child(FirebaseAuth.getInstance().getCurrentUser().getUid());
-//
-//        query.addListenerForSingleValueEvent(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-//                mPhotos.clear();
-//
-//                for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
-//                    Log.d(TAG, "onDataChange: found photo: " + singleSnapshot.getValue());
-//                    Photo photo = getPhoto(singleSnapshot);
-//
-//                    mPhotos.add(photo);
-//                }
-//
-//                MainfeedListAdapter adapter = new MainfeedListAdapter(mContext, R.layout.layout_mainfeed_listitem, mPhotos);
-//                mListView.setAdapter(adapter);
-//
-//            }
-//
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError databaseError) {
-//                Log.d(TAG, "onCancelled: query cancelled");
-//            }
-//        });
-//
-//
-//    }
-
     private Photo getPhoto(DataSnapshot singleSnapshot) {
         Photo photo = new Photo();
         Map<String, Object> objectMap = (HashMap<String, Object>) singleSnapshot.getValue();

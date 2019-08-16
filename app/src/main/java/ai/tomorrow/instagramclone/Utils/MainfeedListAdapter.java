@@ -16,15 +16,18 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.nostra13.universalimageloader.utils.L;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -34,6 +37,7 @@ import java.util.TimeZone;
 import ai.tomorrow.instagramclone.Profile.ProfileActivity;
 import ai.tomorrow.instagramclone.R;
 import ai.tomorrow.instagramclone.Search.SearchActivity;
+import ai.tomorrow.instagramclone.models.Comment;
 import ai.tomorrow.instagramclone.models.Like;
 import ai.tomorrow.instagramclone.models.Photo;
 import ai.tomorrow.instagramclone.models.User;
@@ -82,7 +86,7 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
 
     @NonNull
     @Override
-    public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+    public View getView(final int position, @Nullable View convertView, @NonNull ViewGroup parent) {
 
         final ViewHolder holder;
 
@@ -172,6 +176,37 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
 
         // set widgets
         holder.caption.setText(holder.photo.getCaption());
+
+        // set comments
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
+        reference.child(mContext.getString(R.string.dbname_photos))
+                .child(holder.photo.getPhoto_id())
+                .child(mContext.getString(R.string.field_comments))
+                .addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        List<Comment> commentList = new ArrayList<>();
+                        for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                            Log.d(TAG, "onChildAdded: found comment: " + ds);
+                            Comment comment = new Comment();
+                            comment.setUser_id(ds.getValue(Comment.class).getUser_id());
+                            comment.setDate_created(ds.getValue(Comment.class).getDate_created());
+                            comment.setComment(ds.getValue(Comment.class).getComment());
+                            commentList.add(comment);
+                        }
+                        mPhotos.get(position).setComments(commentList);
+                        if(holder.photo.getComments().size() > 0){
+                            holder.comments.setText("View all " + holder.photo.getComments().size() + " comments");
+                        }else{
+                            holder.comments.setText("");
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
 
         return convertView;
     }
@@ -381,12 +416,6 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
         }
 
         holder.likes.setText(holder.mLikesString);
-
-        if(holder.photo.getComments().size() > 0){
-            holder.comments.setText("View all " + holder.photo.getComments().size() + " comments");
-        }else{
-            holder.comments.setText("");
-        }
 
         holder.comments.setOnClickListener(new View.OnClickListener() {
             @Override
