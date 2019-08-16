@@ -74,6 +74,7 @@ public class HomeFragment extends Fragment {
                     Log.d(TAG, "onDataChange: found following: " + singleSnapshot.getValue());
                     mFollowingUserIDs.add(singleSnapshot.child(mContext.getString(R.string.field_user_id)).getValue().toString());
                 }
+                mFollowingUserIDs.add(FirebaseAuth.getInstance().getCurrentUser().getUid());
                 // get photos
                 getPhotos();
             }
