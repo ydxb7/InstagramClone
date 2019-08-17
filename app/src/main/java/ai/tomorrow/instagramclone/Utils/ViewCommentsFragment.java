@@ -109,9 +109,10 @@ public class ViewCommentsFragment extends Fragment {
                 Log.d(TAG, "onClick: navigating back.");
                 getActivity().getSupportFragmentManager().popBackStack();
                 Bundle bundle = getArguments();
-                if (bundle != null &&
-                        bundle.getString(mContext.getString(R.string.calling_activity))
-                                .equals(mContext.getString(R.string.home_activity))){
+                Log.d(TAG, "onClick: bundle.getString(mContext.getString(R.string.calling_activity)):" + bundle.getString(mContext.getString(R.string.calling_activity)));
+                if (bundle != null
+                        && bundle.getString(mContext.getString(R.string.calling_activity)) != null
+                        && bundle.getString(mContext.getString(R.string.calling_activity)).equals(mContext.getString(R.string.home_activity))){
                     ((HomeActivity)getActivity()).showRelativeLayout();
                 }
             }

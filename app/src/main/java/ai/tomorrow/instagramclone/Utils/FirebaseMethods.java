@@ -71,6 +71,22 @@ public class FirebaseMethods {
         }
     }
 
+    private void removeLike(String photoID){
+        Log.d(TAG, "removeLike: remove like.");
+
+        myRef.child(mContext.getString(R.string.dbname_photos))
+                .child(photoID)
+                .child(mContext.getString(R.string.field_likes))
+                .child(mAuth.getCurrentUser().getUid())
+                .removeValue();
+
+        myRef.child(mContext.getString(R.string.dbname_user_photos))
+                .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                .child(photoID)
+                .child(mContext.getString(R.string.field_likes))
+                .child(mAuth.getCurrentUser().getUid())
+                .removeValue();
+    }
 
     public void addNewLike(String photoID, String photoUserID){
         Log.d(TAG, "addNewLike: adding new like to photo: " + photoID);

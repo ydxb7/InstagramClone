@@ -32,6 +32,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -80,6 +82,7 @@ public class ViewPostFragment extends Fragment {
 
 
     //vars
+    private Context mContext;
     private Photo mPhoto;
     private int mActivityNumber = 0;
     private String photoUsername = "";
@@ -96,6 +99,7 @@ public class ViewPostFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_view_post, container, false);
+        mContext = getActivity();
         mPostImage = (SquareImageView) view.findViewById(R.id.post_image);
         bottomNavigationView = (BottomNavigationViewEx) view.findViewById(R.id.bottomNavViewBar);
         mBackArrow = (ImageView) view.findViewById(R.id.imageBackArrow);
@@ -202,6 +206,90 @@ public class ViewPostFragment extends Fragment {
     }
 
     private void getLikesString() {
+        Log.d(TAG, "getLikesString: getting likes string");
+
+        mLikedByCurrentUser = false;
+        Query query = myRef.child(mContext.getString(R.string.dbname_photos))
+                .child(mPhoto.getPhoto_id())
+                .child(mContext.getString(R.string.field_likes));
+
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (!dataSnapshot.exists()){
+                    Log.d(TAG, "onDataChange: there is no likes node in photo: " + mPhoto.getPhoto_id());
+                    mLikesString = "";
+                    setupWidgets();
+                } else {
+                    final List<Like> likes = new ArrayList<>();
+
+                    // get all likes for this photo
+                    for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
+                        Log.d(TAG, "onDataChange: found Like: " + singleSnapshot);
+                        Like like = singleSnapshot.getValue(Like.class);
+                        likes.add(like);
+                        Log.d(TAG, "onDataChange: like.getUser_id(): " + like.getUser_id());
+                        Log.d(TAG, "onDataChange: current user id: " + FirebaseAuth.getInstance().getCurrentUser().getUid());
+                        if (like.getUser_id().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
+                            Log.d(TAG, "onDataChange: likeByCurrentUser");
+                            mLikedByCurrentUser = true;
+                        }
+                    }
+
+                    // sort likes by date created
+                    Collections.sort(likes, new Comparator<Like>() {
+                        @Override
+                        public int compare(Like o1, Like o2) {
+                            return o2.getDate_created().compareTo(o1.getDate_created());
+                        }
+                    });
+
+                    // get likes usernames list
+                    final ArrayList<String> likesUsername = new ArrayList<>();
+
+                    for (int i = 0; i < Math.min(likes.size(), 4); i++) {
+                        final int count = i;
+                        Like eachLike = likes.get(i);
+                        Query query = myRef.child(mContext.getString(R.string.dbname_users))
+                                .orderByChild(mContext.getString(R.string.field_user_id))
+                                .equalTo(eachLike.getUser_id());
+
+                        query.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
+                                    Log.d(TAG, "onDataChange: found user: " + singleSnapshot);
+                                    likesUsername.add(singleSnapshot.getValue(User.class).getUsername());
+                                }
+                                if (count == Math.min(likes.size(), 4) - 1){
+                                    mLikesString= StringManipulation.getLikesString(likes.size(), likesUsername);
+                                    setupWidgets();
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                            }
+                        });
+
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+
+        });
+
+
+    }
+
+
+
+    private void getLikesString1() {
         Log.d(TAG, "getLikesString: getting likes string");
 
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
