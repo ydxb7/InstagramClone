@@ -217,8 +217,10 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
                         }
                         mPhotos.get(position).setComments(commentList);
                         if (holder.photo.getComments().size() > 0) {
+                            holder.comments.setVisibility(View.VISIBLE);
                             holder.comments.setText("View all " + holder.photo.getComments().size() + " comments");
                         } else {
+                            holder.comments.setVisibility(View.GONE);
                             holder.comments.setText("");
                         }
                     }
@@ -411,91 +413,6 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
     }
 
 
-//    private void getLikesString(final ViewHolder holder) {
-//        Log.d(TAG, "getLikesString: getting likes string");
-//
-//        DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
-//        Query query = reference
-//                .child(mContext.getString(R.string.dbname_photos))
-//                .child(holder.photo.getPhoto_id())
-//                .child(mContext.getString(R.string.field_likes));
-//        query.addListenerForSingleValueEvent(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(DataSnapshot dataSnapshot) {
-//                holder.users = new StringBuilder();
-//                for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
-//
-//                    DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
-//                    Query query = reference
-//                            .child(mContext.getString(R.string.dbname_users))
-//                            .orderByChild(mContext.getString(R.string.field_user_id))
-//                            .equalTo(singleSnapshot.getValue(Like.class).getUser_id());
-//                    query.addListenerForSingleValueEvent(new ValueEventListener() {
-//                        @Override
-//                        public void onDataChange(DataSnapshot dataSnapshot) {
-//                            for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
-//                                Log.d(TAG, "onDataChange: found like: " +
-//                                        singleSnapshot.getValue(User.class).getUsername());
-//
-//                                holder.users.append(singleSnapshot.getValue(User.class).getUsername());
-//                                holder.users.append(",");
-//                            }
-//
-//                            String[] splitUsers = holder.users.toString().split(",");
-//
-//                            if (holder.users.toString().contains(currentUsername + ",")) {
-//                                holder.likeByCurrentUser = true;
-//                            } else {
-//                                holder.likeByCurrentUser = false;
-//                            }
-//
-//                            int length = splitUsers.length;
-//                            if (length == 1) {
-//                                holder.mLikesString = "Liked by " + splitUsers[0];
-//                            } else if (length == 2) {
-//                                holder.mLikesString = "Liked by " + splitUsers[0]
-//                                        + " and " + splitUsers[1];
-//                            } else if (length == 3) {
-//                                holder.mLikesString = "Liked by " + splitUsers[0]
-//                                        + ", " + splitUsers[1]
-//                                        + " and " + splitUsers[2];
-//
-//                            } else if (length == 4) {
-//                                holder.mLikesString = "Liked by " + splitUsers[0]
-//                                        + ", " + splitUsers[1]
-//                                        + ", " + splitUsers[2]
-//                                        + " and " + splitUsers[3];
-//                            } else if (length > 4) {
-//                                holder.mLikesString = "Liked by " + splitUsers[0]
-//                                        + ", " + splitUsers[1]
-//                                        + ", " + splitUsers[2]
-//                                        + " and " + (splitUsers.length - 3) + " others";
-//                            }
-//                            Log.d(TAG, "onDataChange: likes string: " + holder.mLikesString);
-//                            setupWidgets(holder);
-//                        }
-//
-//                        @Override
-//                        public void onCancelled(DatabaseError databaseError) {
-//
-//                        }
-//                    });
-//                }
-//                if (!dataSnapshot.exists()) {
-//                    holder.mLikesString = "";
-//                    holder.likeByCurrentUser = false;
-//                    setupWidgets(holder);
-//                }
-//            }
-//
-//            @Override
-//            public void onCancelled(DatabaseError databaseError) {
-//
-//            }
-//        });
-//
-//    }
-
     private void setupWidgets(final ViewHolder holder) {
         String timestampDiff = getTimestampDifference(holder.photo.getDate_created());
         if (!timestampDiff.equals("0")) {
@@ -504,7 +421,12 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
             holder.mTimestamp.setText("today");
         }
 
-        holder.likes.setText(holder.mLikesString);
+        if (holder.mLikesString.equals("")){
+            holder.likes.setVisibility(View.GONE);
+        } else {
+            holder.likes.setVisibility(View.VISIBLE);
+            holder.likes.setText(holder.mLikesString);
+        }
 
         holder.comments.setOnClickListener(new View.OnClickListener() {
             @Override
