@@ -19,8 +19,11 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
@@ -33,6 +36,7 @@ import java.util.TimeZone;
 
 import ai.tomorrow.instagramclone.Home.HomeActivity;
 import ai.tomorrow.instagramclone.R;
+import ai.tomorrow.instagramclone.models.Like;
 import ai.tomorrow.instagramclone.models.Photo;
 import ai.tomorrow.instagramclone.models.User;
 import ai.tomorrow.instagramclone.models.UserAccountSettings;
@@ -66,6 +70,75 @@ public class FirebaseMethods {
             userID = mAuth.getCurrentUser().getUid();
         }
     }
+
+
+    public void addNewLike(String photoID, String photoUserID){
+        Log.d(TAG, "addNewLike: adding new like to photo: " + photoID);
+
+        String currentUserID = mAuth.getCurrentUser().getUid();
+        Like like = new Like();
+        like.setUser_id(mAuth.getCurrentUser().getUid());
+        like.setDate_created(getTimeStamp());
+
+        myRef.child(mContext.getString(R.string.dbname_photos))
+                .child(photoID)
+                .child(mContext.getString(R.string.field_likes))
+                .child(currentUserID)
+                .setValue(like);
+
+        myRef.child(mContext.getString(R.string.dbname_user_photos))
+                .child(photoUserID)
+                .child(photoID)
+                .child(mContext.getString(R.string.field_likes))
+                .child(currentUserID)
+                .setValue(like);
+    }
+
+    public void addNewLike(final String photoID){
+        Log.d(TAG, "addNewLike: adding new like to photo: " + photoID);
+
+        final String currentUserID = mAuth.getCurrentUser().getUid();
+        final Like like = new Like();
+        like.setUser_id(mAuth.getCurrentUser().getUid());
+        like.setDate_created(getTimeStamp());
+
+        Query query = myRef.child(mContext.getString(R.string.dbname_photos))
+                .orderByChild(mContext.getString(R.string.project_id))
+                .equalTo(photoID);
+
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                String photoUserID = null;
+                for (DataSnapshot singleSnapshot: dataSnapshot.getChildren()){
+                    Log.d(TAG, "onDataChange: found photo: " + singleSnapshot);
+                    photoUserID = singleSnapshot.getValue(Photo.class).getPhoto_id();
+                }
+
+                try {
+                    myRef.child(mContext.getString(R.string.dbname_user_photos))
+                            .child(photoUserID)
+                            .child(photoID)
+                            .child(mContext.getString(R.string.field_likes))
+                            .child(currentUserID)
+                            .setValue(like);
+                }catch (NullPointerException e){
+                    Log.d(TAG, "onDataChange: NullPointerException: " + e.getMessage());
+                }
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+        myRef.child(mContext.getString(R.string.dbname_photos))
+                .child(photoID)
+                .child(mContext.getString(R.string.field_likes))
+                .child(currentUserID)
+                .setValue(like);
+    }
+
 
     public void uploadNewPhotos(String photoType, final String caption, int count, String imgUrl, Bitmap bm) {
         Log.d(TAG, "uploadNewPhotos: Attempting to upload new photo");
