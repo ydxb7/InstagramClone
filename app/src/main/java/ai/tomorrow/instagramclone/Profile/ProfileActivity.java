@@ -84,6 +84,7 @@ public class ProfileActivity extends AppCompatActivity implements
                 if (user.getUser_id().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())){
                     Log.d(TAG, "init: view user is our own user.");
                     Log.d(TAG, "init: inflating Profile");
+
                     ProfileFragment fragment = new ProfileFragment();
                     FragmentTransaction transaction = ProfileActivity.this.getSupportFragmentManager().beginTransaction();
                     transaction.replace(R.id.container, fragment);
@@ -95,6 +96,7 @@ public class ProfileActivity extends AppCompatActivity implements
                     Bundle args = new Bundle();
                     args.putParcelable(mContext.getString(R.string.selected_user),
                             intent.getParcelableExtra(mContext.getString(R.string.selected_user)));
+                    args.putInt(mContext.getString(R.string.activity_number), mContext.getResources().getInteger(R.integer.home_activity_number));
                     fragment.setArguments(args);
 
                     FragmentTransaction transaction = ProfileActivity.this.getSupportFragmentManager().beginTransaction();
@@ -107,6 +109,7 @@ public class ProfileActivity extends AppCompatActivity implements
             }
         }else {
             Log.d(TAG, "init: inflating Profile");
+
             ProfileFragment fragment = new ProfileFragment();
             FragmentTransaction transaction = ProfileActivity.this.getSupportFragmentManager().beginTransaction();
             transaction.replace(R.id.container, fragment);

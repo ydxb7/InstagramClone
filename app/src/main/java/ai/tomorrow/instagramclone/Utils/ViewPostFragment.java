@@ -84,7 +84,7 @@ public class ViewPostFragment extends Fragment {
     //vars
     private Context mContext;
     private Photo mPhoto;
-    private int mActivityNumber = 0;
+    private int mActivityNumber = 4;
     private String photoUsername = "";
     private String profilePhotoUrl = "";
     private UserAccountSettings mUserAccountSettings;
@@ -98,6 +98,7 @@ public class ViewPostFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        Log.d(TAG, "onCreateView: started.");
         View view = inflater.inflate(R.layout.fragment_view_post, container, false);
         mContext = getActivity();
         mPostImage = (SquareImageView) view.findViewById(R.id.post_image);
@@ -631,10 +632,17 @@ public class ViewPostFragment extends Fragment {
      */
     private void setupBottomNavigationView() {
         Log.d(TAG, "setupBottomNavigationView: setting up BottomNavigationView");
+        Bundle bundle = this.getArguments();
+
         BottomNavigationViewHelper.setupBottomNavigationView(bottomNavigationView);
         BottomNavigationViewHelper.enableNavigation(getActivity(), getActivity(), bottomNavigationView);
         Menu menu = bottomNavigationView.getMenu();
-        MenuItem menuItem = menu.getItem(mActivityNumber);
+        try {
+            mActivityNumber = bundle.getInt(mContext.getString(R.string.activity_number));
+        }catch (NullPointerException e){
+            Log.d(TAG, "setupBottomNavigationView: NullPointerException" + e.getMessage());
+        }
+        MenuItem menuItem  = menu.getItem(mActivityNumber);
         menuItem.setChecked(true);
     }
 
