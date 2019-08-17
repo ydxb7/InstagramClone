@@ -163,8 +163,10 @@ public class GalleryFragment extends Fragment {
 
         // set the first image to be displayed when the activity fragment is inflated.
         try {
-            setImage(imgURLs.get(0), galleryImage, mAppend);
-            mSelectedImage = imgURLs.get(0);
+            if (imgURLs.size() > 0){
+                setImage(imgURLs.get(0), galleryImage, mAppend);
+                mSelectedImage = imgURLs.get(0);
+            }
         }catch (ArrayIndexOutOfBoundsException e){
             Log.d(TAG, "setupGridView: ArrayIndexOutOfBoundsException: " + e.getMessage());
         }

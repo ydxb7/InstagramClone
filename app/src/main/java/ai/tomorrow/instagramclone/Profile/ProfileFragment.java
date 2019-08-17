@@ -33,6 +33,8 @@ import com.google.firebase.storage.StorageReference;
 import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -246,6 +248,17 @@ public class ProfileFragment extends Fragment {
                     photo.setLikes(likesList);
                     photos.add(photo);
                 }
+
+                // sort photos by date created
+                if (photos.size() > 0){
+                    Collections.sort(photos, new Comparator<Photo>() {
+                        @Override
+                        public int compare(Photo o1, Photo o2) {
+                            return o2.getDate_created().compareTo(o1.getDate_created());
+                        }
+                    });
+                }
+
                 int gridWidth = mContext.getResources().getDisplayMetrics().widthPixels;
                 int imageWidth = gridWidth / NUM_GRID_COLUMNS;
                 gridView.setColumnWidth(imageWidth);
