@@ -59,7 +59,7 @@ public class BottomNavigationViewHelper {
                         callingActivity.overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
                         break;
 
-                    case R.id.ic_android:
+                    case R.id.ic_account:
                         Intent intent4 = new Intent(context, ProfileActivity.class); // ACTIVITY_NUM = 4
                         context.startActivity(intent4);
                         callingActivity.overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
