@@ -22,11 +22,14 @@ import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import ai.tomorrow.instagramclone.Login.LoginActivity;
+import ai.tomorrow.instagramclone.Profile.EditProfileFragment;
 import ai.tomorrow.instagramclone.Profile.ProfileActivity;
+import ai.tomorrow.instagramclone.Profile.SignOutFragment;
 import ai.tomorrow.instagramclone.R;
 import ai.tomorrow.instagramclone.Utils.BottomNavigationViewHelper;
 import ai.tomorrow.instagramclone.Utils.MainfeedListAdapter;
 import ai.tomorrow.instagramclone.Utils.SectionsPagerAdapter;
+import ai.tomorrow.instagramclone.Utils.SectionsStatePagerAdapter;
 import ai.tomorrow.instagramclone.Utils.UniversalImageLoader;
 import ai.tomorrow.instagramclone.Utils.ViewCommentsFragment;
 import ai.tomorrow.instagramclone.models.Photo;
@@ -47,6 +50,9 @@ public class HomeActivity extends AppCompatActivity implements
     private RelativeLayout mRelativeLayout;
     private FrameLayout mFrameLayout;
     private ViewPager mViewPager;
+
+    //vars
+    private SectionsStatePagerAdapter pagerAdapter;
 
     @Override
     public void onCommentThreadSelectedListener(Photo photo) {
@@ -91,9 +97,7 @@ public class HomeActivity extends AppCompatActivity implements
         if (isLoggedin()){
             // logged in
             Log.d(TAG, "onCreate: user logged in.");
-            initImageLoader();
-            setupBottomNavigationView();
-            setupViewPager();
+            init();
         } else {
             // sign out
             Log.d(TAG, "onCreate: user signed out.");
@@ -102,27 +106,32 @@ public class HomeActivity extends AppCompatActivity implements
         }
     }
 
+    private void init() {
+        initImageLoader();
+        setupBottomNavigationView();
+        setupFragments();
+        Log.d(TAG, "onCreate: getFragmentNumber: " + pagerAdapter.getFragmentNumber(getString(R.string.home_fragment)));
+        setViewPager(pagerAdapter.getFragmentNumber(getString(R.string.home_fragment)));
+    }
+
     private void initImageLoader() {
         UniversalImageLoader universalImageLoader = new UniversalImageLoader(mContext);
         ImageLoader.getInstance().init(universalImageLoader.getConfig());
     }
 
-    /**
-     * Responsible for adding the 3 tabs: Camera, Home, Messages
-     */
-    private void setupViewPager() {
-        SectionsPagerAdapter adapter = new SectionsPagerAdapter(getSupportFragmentManager());
-        adapter.addFragment(new CameraFragment()); // index 0
-        adapter.addFragment(new HomeFragment()); // index 1
-        adapter.addFragment(new MessagesFragment()); // index 2
-        mViewPager.setAdapter(adapter);
+    private void setupFragments(){
+        pagerAdapter = new SectionsStatePagerAdapter(getSupportFragmentManager());
+        pagerAdapter.addFragment(new HomeFragment(), getString(R.string.home_fragment)); // fragment 0
+        pagerAdapter.addFragment(new MessagesFragment(), getString(R.string.messages_fragment)); // fragment 1
+    }
 
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
-        tabLayout.setupWithViewPager(mViewPager);
+    private void setViewPager(int fragmentNumber){
+        mRelativeLayout.setVisibility(View.VISIBLE);
+        mFrameLayout.setVisibility(View.GONE);
+        Log.d(TAG, "setViewPager: navigating to fragment #: " + fragmentNumber);
 
-        tabLayout.getTabAt(0).setIcon(R.drawable.ic_camera);
-        tabLayout.getTabAt(1).setIcon(R.drawable.ic_instagram_text_logo);
-        tabLayout.getTabAt(2).setIcon(R.drawable.ic_arrow);
+        mViewPager.setAdapter(pagerAdapter);
+        mViewPager.setCurrentItem(fragmentNumber);
     }
 
     public void hideRelativeLayout() {
@@ -212,7 +221,6 @@ public class HomeActivity extends AppCompatActivity implements
         Log.d(TAG, "onStart.");
         super.onStart();
         mAuth.addAuthStateListener(mAuthListener);
-        mViewPager.setCurrentItem(HOME_FRAGMENT);
         // check if user is logged in
         checkCurrentUser(mAuth.getCurrentUser());
     }

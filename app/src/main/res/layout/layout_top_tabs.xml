@@ -7,15 +7,49 @@
 
         <com.google.android.material.appbar.AppBarLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:background="@drawable/white_grey_border_bottom">
 
-            <com.google.android.material.tabs.TabLayout
-                android:id="@+id/tabs"
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/profileToolBar"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@drawable/white_grey_border_bottom">
+                android:layout_height="match_parent">
 
-            </com.google.android.material.tabs.TabLayout>
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <ImageView
+                        android:id="@+id/ivCamera"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_centerVertical="true"
+                        android:layout_marginEnd="20dp"
+                        android:src="@drawable/ic_camera" />
+
+                    <ImageView
+                        android:id="@+id/iv_instagram_logo"
+                        android:layout_width="100dp"
+                        android:layout_height="25dp"
+                        android:layout_marginTop="8dp"
+                        android:layout_toRightOf="@id/ivCamera"
+                        android:src="@drawable/ic_instagram_text_logo"
+                        android:tint="@color/black" />
+
+
+                    <ImageView
+                        android:id="@+id/ivSend"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_marginEnd="20dp"
+                        android:layout_centerVertical="true"
+                        android:src="@drawable/ic_send" />
+
+
+                </RelativeLayout>
+
+            </androidx.appcompat.widget.Toolbar>
 
         </com.google.android.material.appbar.AppBarLayout>
 

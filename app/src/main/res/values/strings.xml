@@ -7,6 +7,8 @@
     <string name="sign_out_fragment">Sign Out</string>
     <string name="profile_fragment">Profile</string>
     <string name="view_profile_fragment">View Profile</string>
+    <string name="home_fragment">Home Profile</string>
+    <string name="messages_fragment">Messages Profile</string>
 
     <!--dialog names-->
     <string name="confirm_password_dialog">ConfirmPasswordDialog</string>
