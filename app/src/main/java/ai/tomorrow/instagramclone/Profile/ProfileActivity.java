@@ -120,7 +120,7 @@ public class ProfileActivity extends AppCompatActivity implements
     public void onBackPressed() {
         Log.d(TAG, "onBackPressed.");
         Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.container);
-        if (currentFragment instanceof ProfileFragment){
+        if (currentFragment instanceof ProfileFragment || currentFragment instanceof ViewProfileFragment){
             finish();
         }
         super.onBackPressed();
