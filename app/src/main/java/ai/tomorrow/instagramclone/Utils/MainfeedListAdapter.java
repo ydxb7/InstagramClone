@@ -499,9 +499,9 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
     private void setupWidgets(final ViewHolder holder) {
         String timestampDiff = getTimestampDifference(holder.photo.getDate_created());
         if (!timestampDiff.equals("0")) {
-            holder.mTimestamp.setText(timestampDiff + " DAYS AGO");
+            holder.mTimestamp.setText(timestampDiff + " days ago");
         } else {
-            holder.mTimestamp.setText("TODAY");
+            holder.mTimestamp.setText("today");
         }
 
         holder.likes.setText(holder.mLikesString);

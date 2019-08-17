@@ -3,12 +3,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
     android:background="@color/white">
 
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/comment_profile_image"
-        android:layout_width="45dp"
-        android:layout_height="45dp"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
         android:layout_marginLeft="20dp"
         android:layout_marginTop="15dp"
         android:src="@drawable/ic_android"
@@ -20,8 +21,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="15dp"
-        android:layout_toRightOf="@+id/comment_profile_image"
-        android:background="@drawable/grey_border_bottom">
+        android:layout_toRightOf="@+id/comment_profile_image">
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -35,9 +35,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="15dp"
-                android:text="yini.duanmu"
+                tools:text="yini.duanmu"
                 android:textColor="@color/black"
-                android:textSize="18sp"
+                android:textSize="14sp"
                 android:textStyle="bold" />
 
             <TextView
@@ -46,9 +46,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="5dp"
                 android:layout_toRightOf="@id/comment_username"
-                android:text="this is a comment"
+                tools:text="this is a comment"
                 android:textColor="@color/black"
-                android:textSize="18sp" />
+                android:textSize="14sp" />
 
 
             <TextView
@@ -57,10 +57,10 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@id/comment"
                 android:layout_marginLeft="15dp"
-                android:layout_marginTop="15dp"
-                android:text="3 d"
+                android:layout_marginTop="5dp"
+                tools:text="3 d"
                 android:textColor="@color/grey"
-                android:textSize="14sp" />
+                android:textSize="12sp" />
 
             <TextView
                 android:id="@+id/comment_likes"
@@ -68,11 +68,11 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@id/comment"
                 android:layout_marginLeft="15dp"
-                android:layout_marginTop="15dp"
+                android:layout_marginTop="5dp"
                 android:layout_toRightOf="@id/comment_time_posted"
-                android:text="20 likes"
+                tools:text="20 likes"
                 android:textColor="@color/grey"
-                android:textSize="14sp"
+                android:textSize="12sp"
                 android:textStyle="bold" />
 
             <TextView
@@ -81,11 +81,11 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@id/comment"
                 android:layout_marginLeft="15dp"
-                android:layout_marginTop="15dp"
+                android:layout_marginTop="5dp"
                 android:layout_toRightOf="@+id/comment_likes"
                 android:text="Reply"
                 android:textColor="@color/grey"
-                android:textSize="14sp"
+                android:textSize="12sp"
                 android:textStyle="bold" />
 
 
@@ -93,11 +93,11 @@
 
         <ImageView
             android:id="@+id/comment_like"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
+            android:layout_width="14dp"
+            android:layout_height="14dp"
             android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
             android:layout_marginRight="20dp"
+            android:layout_marginTop="12dp"
             android:src="@drawable/ic_heart_white" />
 
 

@@ -493,9 +493,9 @@ public class ViewPostFragment extends Fragment {
     private void setupWidgets() {
         String timestampDiff = getTimestampDifference();
         if (!timestampDiff.equals("0")) {
-            mTimestamp.setText(timestampDiff + " DAYS AGO");
+            mTimestamp.setText(timestampDiff + " days ago");
         } else {
-            mTimestamp.setText("TODAY");
+            mTimestamp.setText("today");
         }
         UniversalImageLoader.setImage(mUserAccountSettings.getProfile_photo(), mProfileImage, null, "");
         mUsername.setText(mUserAccountSettings.getUsername());
