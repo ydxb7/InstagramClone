@@ -1,6 +1,7 @@
 package ai.tomorrow.instagramclone.Utils;
 
 import android.content.Context;
+import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -59,7 +60,7 @@ public class CommentListAdapter extends ArrayAdapter<Comment> {
 
     @NonNull
     @Override
-    public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+    public View getView(final int position, @Nullable View convertView, @NonNull ViewGroup parent) {
 
         final ViewHolder holder;
 
@@ -67,7 +68,7 @@ public class CommentListAdapter extends ArrayAdapter<Comment> {
             convertView = mInflater.inflate(layoutResource, parent, false);
             holder = new ViewHolder();
             holder.profileImage = (CircleImageView) convertView.findViewById(R.id.comment_profile_image);
-            holder.username = (TextView) convertView.findViewById(R.id.comment_username);
+//            holder.username = (TextView) convertView.findViewById(R.id.comment_username);
             holder.comment = (TextView) convertView.findViewById(R.id.comment);
             holder.timePostes = (TextView) convertView.findViewById(R.id.comment_time_posted);
             holder.likes = (TextView) convertView.findViewById(R.id.comment_likes);
@@ -78,9 +79,6 @@ public class CommentListAdapter extends ArrayAdapter<Comment> {
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
-        // set comment
-        holder.comment.setText(getItem(position).getComment());
-
         // set the time difference
         String timestampDifference = getTimeStampDifference(getItem(position));
         if (!timestampDifference.equals("0")){
@@ -101,7 +99,10 @@ public class CommentListAdapter extends ArrayAdapter<Comment> {
                 Log.d(TAG, "onDataChange: getting user account settings");
                 for (DataSnapshot singleSnapshot: dataSnapshot.getChildren()) {
                     UserAccountSettings userAccountSettings = singleSnapshot.getValue(UserAccountSettings.class);
-                    holder.username.setText(userAccountSettings.getUsername());
+                    // set comment
+                    String commentString = String.format("<b>%s</b> %s",
+                            userAccountSettings.getUsername(), getItem(position).getComment());
+                    holder.comment.setText(Html.fromHtml(commentString));
                     UniversalImageLoader.setImage(userAccountSettings.getProfile_photo(), holder.profileImage, null, "");
                 }
             }
