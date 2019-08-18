@@ -96,7 +96,7 @@ public class ViewCommentsFragment extends Fragment {
                     addNewComment(mComment.getText().toString());
 
                     mComment.setText("");
-                    closeKeyboard();
+                    Helpers.hideSoftKeyboard(getActivity());
                 } else {
                     Toast.makeText(getActivity(), "you can't post an empty comment.", Toast.LENGTH_SHORT).show();
                 }
@@ -175,14 +175,14 @@ public class ViewCommentsFragment extends Fragment {
 
     }
 
-    //hide soft keyboard
-    private void closeKeyboard() {
-        View view = getActivity().getCurrentFocus();
-        if (view != null) {
-            InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
-        }
-    }
+//    //hide soft keyboard
+//    private void closeKeyboard() {
+//        View view = getActivity().getCurrentFocus();
+//        if (view != null) {
+//            InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+//            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+//        }
+//    }
 
     //add new comment into firebase database
     private void addNewComment(String newComment) {

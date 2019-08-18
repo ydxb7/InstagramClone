@@ -1,5 +1,6 @@
 package ai.tomorrow.instagramclone.Share;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
@@ -26,6 +27,9 @@ public class PhotoFragment extends Fragment {
     private static final int GALLERY_FRAGMENT_NUM = 0;
     private static final int CAMERA_REQUEST_CODE = 5;
 
+    //vars
+    private Context mContext;
+
 
     @Nullable
     @Override
@@ -33,13 +37,14 @@ public class PhotoFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_photo, container, false);
         Log.d(TAG, "onCreateView: stated.");
 
+        mContext = getActivity();
         Button btnLaunchCamera = (Button) view.findViewById(R.id.btnLaunchCamera);
         btnLaunchCamera.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Log.d(TAG, "onClick: launching camera.");
                 if (((ShareActivity) getActivity()).getCurrentTabNumber() == PHOTO_FRAGMENT_NUM){
-                    if (((ShareActivity) getActivity()).checkPermissions(Permissions.CAMERA_PERMISSION[0])){
+                    if (Permissions.checkPermissions(mContext, Permissions.CAMERA_PERMISSION[0])){
                         Log.d(TAG, "onClick: starting camera");
                         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                         if (takePictureIntent.resolveActivity(getActivity().getPackageManager()) != null) {
@@ -53,8 +58,6 @@ public class PhotoFragment extends Fragment {
                 }
             }
         });
-
-
 
         return view;
     }

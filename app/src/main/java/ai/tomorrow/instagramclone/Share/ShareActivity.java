@@ -38,12 +38,17 @@ public class ShareActivity extends AppCompatActivity {
         setContentView(R.layout.activiy_share);
         Log.d(TAG, "onCreate: starting");
 
-        if (checkPermissionArray(Permissions.PERMISSIONS)){
+        if (Permissions.checkPermissionArray(this, Permissions.PERMISSIONS)){
             // all permissions are granted
             setupViewPager();
         } else {
             // verify permissions
-            verifyPermissions(Permissions.PERMISSIONS);
+            Log.d(TAG, "verifyPermissions: verifying permissions");
+            ActivityCompat.requestPermissions(
+                    this,
+                    Permissions.PERMISSIONS,
+                    VERIFY_PERMISSION_REQUEST
+            );
         }
 
 //        setupBottomNavigationView();
@@ -90,62 +95,30 @@ public class ShareActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String[] permissions, int[] grantResults) {
+        switch (requestCode) {
+            case VERIFY_PERMISSION_REQUEST: {
+                // If request is cancelled, the result arrays are empty.
+                boolean isAllGranted = true;
+                if (grantResults.length > 0){
+                    for (int result: grantResults){
+                        if (result != PackageManager.PERMISSION_GRANTED){
+                            isAllGranted = false;
+                        }
+                    }
+                }
 
-
-
-    /**
-     * verify all the permissions passed to the array
-     * @param permissions
-     */
-    public void verifyPermissions(String[] permissions){
-        Log.d(TAG, "verifyPermissions: verifying permissions");
-
-        ActivityCompat.requestPermissions(
-                ShareActivity.this,
-                permissions,
-                VERIFY_PERMISSION_REQUEST
-        );
-    }
-
-    /**
-     * check an array of permissions are they have been granted
-     * @param permissions
-     * @return
-     */
-    public boolean checkPermissionArray(String[] permissions){
-        Log.d(TAG, "checkPermissionArray: checking permissions array.");
-
-        for (int i = 0; i < permissions.length; i++){
-            String check = permissions[i];
-            if (!checkPermissions(check)){
-                return false;
+                if (isAllGranted){
+                    setupViewPager();
+                } else {
+                    finish();
+                }
             }
-        }
-        return true;
-    }
 
-    /**
-     * check a single permission is it has been granted
-     * @param permission
-     * @return
-     */
-    public boolean checkPermissions(String permission){
-        Log.d(TAG, "checkPermissions: checking permission: " + permission);
-
-        int permissionRequest = ActivityCompat.checkSelfPermission(ShareActivity.this, permission);
-
-        if (permissionRequest != PackageManager.PERMISSION_GRANTED){
-            Log.d(TAG, "checkPermissions: Permission was not granted for: " + permission);
-            return false;
-        } else {
-            Log.d(TAG, "checkPermissions: Permission was granted for: " + permission);
-            return true;
         }
     }
-
-
-
-
 
     /**
      * BottomNavigationView setup

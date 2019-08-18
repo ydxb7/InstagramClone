@@ -23,6 +23,7 @@ import com.google.firebase.auth.FirebaseUser;
 
 import ai.tomorrow.instagramclone.Home.HomeActivity;
 import ai.tomorrow.instagramclone.R;
+import ai.tomorrow.instagramclone.Utils.Helpers;
 
 public class LoginActivity extends AppCompatActivity {
     private static final String TAG = "LoginActivity";
@@ -74,6 +75,7 @@ public class LoginActivity extends AppCompatActivity {
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Helpers.hideSoftKeyboard(LoginActivity.this);
                 String email = mEmail.getText().toString();
                 String password = mPassword.getText().toString();
 

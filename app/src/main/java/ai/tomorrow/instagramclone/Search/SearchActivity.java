@@ -33,9 +33,12 @@ import java.util.Locale;
 import ai.tomorrow.instagramclone.Profile.ProfileActivity;
 import ai.tomorrow.instagramclone.R;
 import ai.tomorrow.instagramclone.Utils.BottomNavigationViewHelper;
+import ai.tomorrow.instagramclone.Utils.Helpers;
 import ai.tomorrow.instagramclone.Utils.UserListAdapter;
 import ai.tomorrow.instagramclone.Utils.ViewPostFragment;
 import ai.tomorrow.instagramclone.models.User;
+
+import static ai.tomorrow.instagramclone.Utils.Helpers.hideSoftKeyboard;
 
 public class SearchActivity extends AppCompatActivity {
 
@@ -61,7 +64,7 @@ public class SearchActivity extends AppCompatActivity {
         mSearch = (EditText) findViewById(R.id.search);
         mListView = (ListView) findViewById(R.id.listView);
 
-        hideSoftKeyboard();
+        Helpers.hideSoftKeyboard(this);
 
         setupBottomNavigationView();
 
@@ -144,12 +147,12 @@ public class SearchActivity extends AppCompatActivity {
     }
 
 
-    private void hideSoftKeyboard(){
-        if (getCurrentFocus() != null){
-            InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
-            imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
-        }
-    }
+//    private void hideSoftKeyboard(){
+//        if (getCurrentFocus() != null){
+//            InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+//            imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+//        }
+//    }
 
     /**
      * BottomNavigationView setup

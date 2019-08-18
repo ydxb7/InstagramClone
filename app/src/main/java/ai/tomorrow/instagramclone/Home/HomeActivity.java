@@ -2,16 +2,21 @@ package ai.tomorrow.instagramclone.Home;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.media.Image;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.viewpager.widget.ViewPager;
 
@@ -28,6 +33,7 @@ import ai.tomorrow.instagramclone.Profile.SignOutFragment;
 import ai.tomorrow.instagramclone.R;
 import ai.tomorrow.instagramclone.Utils.BottomNavigationViewHelper;
 import ai.tomorrow.instagramclone.Utils.MainfeedListAdapter;
+import ai.tomorrow.instagramclone.Utils.Permissions;
 import ai.tomorrow.instagramclone.Utils.SectionsPagerAdapter;
 import ai.tomorrow.instagramclone.Utils.SectionsStatePagerAdapter;
 import ai.tomorrow.instagramclone.Utils.UniversalImageLoader;
@@ -37,9 +43,10 @@ import ai.tomorrow.instagramclone.models.Photo;
 public class HomeActivity extends AppCompatActivity implements
         MainfeedListAdapter.OnCommentThreadSelectedListener, MainfeedListAdapter.OnLoadMoreItemsListener {
 
+    //constants
     private static final String TAG = "HomeActivity";
     private static final int ACTIVITY_NUM = 0;
-    private static final int HOME_FRAGMENT = 1;
+    private static final int CAMERA_REQUEST_CODE = 5;
 
     private Context mContext = HomeActivity.this;
     // FirebaseAuth
@@ -50,6 +57,7 @@ public class HomeActivity extends AppCompatActivity implements
     private RelativeLayout mRelativeLayout;
     private FrameLayout mFrameLayout;
     private ViewPager mViewPager;
+    private ImageView mCamera, mSend;
 
     //vars
     private SectionsStatePagerAdapter pagerAdapter;
@@ -88,8 +96,9 @@ public class HomeActivity extends AppCompatActivity implements
 
         mRelativeLayout = (RelativeLayout) findViewById(R.id.relLayoutParent);
         mFrameLayout = (FrameLayout) findViewById(R.id.container);
-
         mViewPager = (ViewPager) findViewById(R.id.viewpager_container);
+        mCamera = (ImageView) findViewById(R.id.ivCamera);
+        mSend = (ImageView) findViewById(R.id.ivSend);
 
         setupFirebaseAuth();
 
@@ -112,6 +121,46 @@ public class HomeActivity extends AppCompatActivity implements
         setupFragments();
         Log.d(TAG, "onCreate: getFragmentNumber: " + pagerAdapter.getFragmentNumber(getString(R.string.home_fragment)));
         setViewPager(pagerAdapter.getFragmentNumber(getString(R.string.home_fragment)));
+
+        mCamera.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.d(TAG, "onClick: navigate to camera.");
+                if (Permissions.checkPermissions(mContext, Permissions.CAMERA_PERMISSION[0])){
+                    // camera permission is granted
+                    startTakePicture();
+                } else {
+                    // verify permission
+                    ActivityCompat.requestPermissions(
+                            HomeActivity.this, Permissions.CAMERA_PERMISSION, CAMERA_REQUEST_CODE
+                    );
+                }
+            }
+        });
+    }
+
+    private void startTakePicture() {
+        Log.d(TAG, "onClick: starting camera");
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+            startActivityForResult(takePictureIntent, CAMERA_REQUEST_CODE);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String[] permissions, int[] grantResults) {
+        switch (requestCode) {
+            case CAMERA_REQUEST_CODE: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // permission was granted, yay! Do the
+                    // contacts-related task you need to do.
+                    startTakePicture();
+                }
+            }
+        }
     }
 
     private void initImageLoader() {
