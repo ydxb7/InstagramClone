@@ -89,16 +89,14 @@ public class FirebaseMethods {
         List<Like> likesList = new ArrayList<>();
         for (DataSnapshot ds : singleSnapshot.child(mContext.getString(R.string.field_likes)).getChildren()) {
             Like like = new Like();
-            like.setUser_id(ds.getValue(Like.class).getUser_id());
+            like.setLiked_by_user_id(ds.getValue(Like.class).getLiked_by_user_id());
+            like.setLiked_to_user_id(ds.getValue(Like.class).getLiked_to_user_id());
             likesList.add(like);
         }
 
         List<Comment> commentList = new ArrayList<>();
         for (DataSnapshot ds : singleSnapshot.child(mContext.getString(R.string.field_comments)).getChildren()) {
-            Comment comment = new Comment();
-            comment.setUser_id(ds.getValue(Comment.class).getUser_id());
-            comment.setDate_created(ds.getValue(Comment.class).getDate_created());
-            comment.setComment(ds.getValue(Comment.class).getComment());
+            Comment comment = getComment(ds);
             commentList.add(comment);
         }
 
@@ -107,9 +105,78 @@ public class FirebaseMethods {
         return photo;
     }
 
+    public Comment getComment(DataSnapshot ds) {
+        Comment comment = new Comment();
+        comment.setUser_id(ds.getValue(Comment.class).getUser_id());
+        comment.setDate_created(ds.getValue(Comment.class).getDate_created());
+        comment.setComment(ds.getValue(Comment.class).getComment());
+        comment.setReply_to_username(ds.getValue(Comment.class).getReply_to_username());
 
-    public void removeLike(String photoID){
-        Log.d(TAG, "removeLike: remove like.");
+        List<Like> commentLikesList = new ArrayList<>();
+        for (DataSnapshot dsCommentLikes: ds.child(mContext.getString(R.string.field_likes)).getChildren()){
+            Like like = new Like();
+            like.setLiked_by_user_id(dsCommentLikes.getValue(Like.class).getLiked_by_user_id());
+            like.setLiked_to_user_id(dsCommentLikes.getValue(Like.class).getLiked_to_user_id());
+            commentLikesList.add(like);
+        }
+
+        comment.setLikes(commentLikesList);
+        return comment;
+    }
+
+    public void removeCommentLike(String photoID, String photoUserID, String commentID){
+        Log.d(TAG, "removeCommentLike: remove comment like: " + commentID);
+
+        String currentUserID = mAuth.getCurrentUser().getUid();
+        myRef.child(mContext.getString(R.string.dbname_photos))
+                .child(photoID)
+                .child(mContext.getString(R.string.field_comments))
+                .child(commentID)
+                .child(mContext.getString(R.string.field_likes))
+                .child(currentUserID)
+                .removeValue();
+
+        myRef.child(mContext.getString(R.string.dbname_user_photos))
+                .child(photoUserID)
+                .child(photoID)
+                .child(mContext.getString(R.string.field_comments))
+                .child(commentID)
+                .child(mContext.getString(R.string.field_likes))
+                .child(currentUserID)
+                .removeValue();
+    }
+
+    public void addCommentNewLike(String photoID, String photoUserID, String commentID, String commentOwnerID){
+        Log.d(TAG, "addCommentNewLike: adding new like to comment: " + commentID);
+
+        String currentUserID = mAuth.getCurrentUser().getUid();
+        Like like = new Like();
+        like.setLiked_by_user_id(mAuth.getCurrentUser().getUid());
+        like.setLiked_to_user_id(commentOwnerID);
+
+        like.setDate_created(getTimeStamp());
+
+        myRef.child(mContext.getString(R.string.dbname_photos))
+                .child(photoID)
+                .child(mContext.getString(R.string.field_comments))
+                .child(commentID)
+                .child(mContext.getString(R.string.field_likes))
+                .child(currentUserID)
+                .setValue(like);
+
+        myRef.child(mContext.getString(R.string.dbname_user_photos))
+                .child(photoUserID)
+                .child(photoID)
+                .child(mContext.getString(R.string.field_comments))
+                .child(commentID)
+                .child(mContext.getString(R.string.field_likes))
+                .child(currentUserID)
+                .setValue(like);
+    }
+
+    public void removePhotoLike(String photoID, String photoUserID){
+        Log.d(TAG, "removePhotoLike: remove like.");
+        String currentUserID = mAuth.getCurrentUser().getUid();
 
         myRef.child(mContext.getString(R.string.dbname_photos))
                 .child(photoID)
@@ -118,19 +185,26 @@ public class FirebaseMethods {
                 .removeValue();
 
         myRef.child(mContext.getString(R.string.dbname_user_photos))
-                .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                .child(photoUserID)
                 .child(photoID)
                 .child(mContext.getString(R.string.field_likes))
                 .child(mAuth.getCurrentUser().getUid())
                 .removeValue();
+
+        myRef.child(mContext.getString(R.string.dbname_user_likes))
+                .child(currentUserID)
+                .child(mContext.getString(R.string.field_photo_likes))
+                .child(photoID)
+                .removeValue();
     }
 
-    public void addNewLike(String photoID, String photoUserID){
-        Log.d(TAG, "addNewLike: adding new like to photo: " + photoID);
+    public void addPhotoNewLike(String photoID, String photoUserID){
+        Log.d(TAG, "addPhotoNewLike: adding new like to photo: " + photoID);
 
         String currentUserID = mAuth.getCurrentUser().getUid();
         Like like = new Like();
-        like.setUser_id(mAuth.getCurrentUser().getUid());
+        like.setLiked_by_user_id(mAuth.getCurrentUser().getUid());
+        like.setLiked_to_user_id(photoUserID);
         like.setDate_created(getTimeStamp());
 
         myRef.child(mContext.getString(R.string.dbname_photos))
@@ -145,53 +219,13 @@ public class FirebaseMethods {
                 .child(mContext.getString(R.string.field_likes))
                 .child(currentUserID)
                 .setValue(like);
-    }
 
-    public void addNewLike(final String photoID){
-        Log.d(TAG, "addNewLike: adding new like to photo: " + photoID);
-
-        final String currentUserID = mAuth.getCurrentUser().getUid();
-        final Like like = new Like();
-        like.setUser_id(mAuth.getCurrentUser().getUid());
-        like.setDate_created(getTimeStamp());
-
-        Query query = myRef.child(mContext.getString(R.string.dbname_photos))
-                .orderByChild(mContext.getString(R.string.project_id))
-                .equalTo(photoID);
-
-        query.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                String photoUserID = null;
-                for (DataSnapshot singleSnapshot: dataSnapshot.getChildren()){
-                    Log.d(TAG, "onDataChange: found photo: " + singleSnapshot);
-                    photoUserID = singleSnapshot.getValue(Photo.class).getPhoto_id();
-                }
-
-                try {
-                    myRef.child(mContext.getString(R.string.dbname_user_photos))
-                            .child(photoUserID)
-                            .child(photoID)
-                            .child(mContext.getString(R.string.field_likes))
-                            .child(currentUserID)
-                            .setValue(like);
-                }catch (NullPointerException e){
-                    Log.d(TAG, "onDataChange: NullPointerException: " + e.getMessage());
-                }
-            }
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-
-        myRef.child(mContext.getString(R.string.dbname_photos))
-                .child(photoID)
-                .child(mContext.getString(R.string.field_likes))
+        myRef.child(mContext.getString(R.string.dbname_user_likes))
                 .child(currentUserID)
+                .child(mContext.getString(R.string.field_photo_likes))
+                .child(photoID)
                 .setValue(like);
     }
-
 
     public void uploadNewPhotos(String photoType, final String caption, int count, String imgUrl, Bitmap bm) {
         Log.d(TAG, "uploadNewPhotos: Attempting to upload new photo");

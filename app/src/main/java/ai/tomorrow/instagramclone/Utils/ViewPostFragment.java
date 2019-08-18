@@ -25,7 +25,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.storage.StorageReference;
 import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
 
 import java.text.ParseException;
@@ -35,20 +34,15 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 import java.util.TimeZone;
 
 import ai.tomorrow.instagramclone.R;
-import ai.tomorrow.instagramclone.Share.NextActivity;
-import ai.tomorrow.instagramclone.models.Comment;
 import ai.tomorrow.instagramclone.models.Like;
 import ai.tomorrow.instagramclone.models.Photo;
 import ai.tomorrow.instagramclone.models.User;
 import ai.tomorrow.instagramclone.models.UserAccountSettings;
-import de.hdodenhof.circleimageview.CircleImageView;
 
 public class ViewPostFragment extends Fragment {
 
@@ -234,9 +228,9 @@ public class ViewPostFragment extends Fragment {
                         Log.d(TAG, "onDataChange: found Like: " + singleSnapshot);
                         Like like = singleSnapshot.getValue(Like.class);
                         likes.add(like);
-                        Log.d(TAG, "onDataChange: like.getUser_id(): " + like.getUser_id());
+                        Log.d(TAG, "onDataChange: like.getUser_id(): " + like.getLiked_by_user_id());
                         Log.d(TAG, "onDataChange: current user id: " + FirebaseAuth.getInstance().getCurrentUser().getUid());
-                        if (like.getUser_id().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
+                        if (like.getLiked_by_user_id().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
                             Log.d(TAG, "onDataChange: likeByCurrentUser");
                             mLikedByCurrentUser = true;
                         }
@@ -258,7 +252,7 @@ public class ViewPostFragment extends Fragment {
                         Like eachLike = likes.get(i);
                         Query query = myRef.child(mContext.getString(R.string.dbname_users))
                                 .orderByChild(mContext.getString(R.string.field_user_id))
-                                .equalTo(eachLike.getUser_id());
+                                .equalTo(eachLike.getLiked_by_user_id());
 
                         query.addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
@@ -313,7 +307,7 @@ public class ViewPostFragment extends Fragment {
                     Query query = reference
                             .child(getString(R.string.dbname_users))
                             .orderByChild(getString(R.string.field_user_id))
-                            .equalTo(singleSnapshot.getValue(Like.class).getUser_id());
+                            .equalTo(singleSnapshot.getValue(Like.class).getLiked_by_user_id());
                     query.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
@@ -426,10 +420,10 @@ public class ViewPostFragment extends Fragment {
 
                         //case1: Then user already liked the photo
                         if (mLikedByCurrentUser &&
-                                singleSnapshot.getValue(Like.class).getUser_id()
+                                singleSnapshot.getValue(Like.class).getLiked_by_user_id()
                                         .equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
 
-                            mFirebaseMethods.removeLike(mPhoto.getPhoto_id());
+                            mFirebaseMethods.removePhotoLike(mPhoto.getPhoto_id(), mPhoto.getUser_id());
 
                             mHeart.toggleLike();
                             getLikesString();
@@ -437,7 +431,7 @@ public class ViewPostFragment extends Fragment {
                         //case2: The user has not liked the photo
                         else if (!mLikedByCurrentUser) {
                             //add new like
-                            mFirebaseMethods.addNewLike(mPhoto.getPhoto_id(), mPhoto.getUser_id());
+                            mFirebaseMethods.addPhotoNewLike(mPhoto.getPhoto_id(), mPhoto.getUser_id());
                             mHeart.toggleLike();
                             getLikesString();
                             break;
@@ -445,7 +439,7 @@ public class ViewPostFragment extends Fragment {
                     }
                     if (!dataSnapshot.exists()) {
                         //add new like
-                        mFirebaseMethods.addNewLike(mPhoto.getPhoto_id(), mPhoto.getUser_id());
+                        mFirebaseMethods.addPhotoNewLike(mPhoto.getPhoto_id(), mPhoto.getUser_id());
                         mHeart.toggleLike();
                         getLikesString();
                     }

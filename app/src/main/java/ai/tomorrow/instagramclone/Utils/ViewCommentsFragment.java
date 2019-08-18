@@ -67,6 +67,7 @@ public class ViewCommentsFragment extends Fragment {
     private FirebaseAuth.AuthStateListener mAuthListener;
     private FirebaseDatabase mFirebaseDatabase;
     private DatabaseReference myRef;
+    private FirebaseMethods mFirebaseMethods;
 
     @Nullable
     @Override
@@ -79,6 +80,7 @@ public class ViewCommentsFragment extends Fragment {
         mCheckMark = view.findViewById(R.id.ivPostComment);
         mComment = view.findViewById(R.id.comment);
         mListView = view.findViewById(R.id.listView);
+        mFirebaseMethods = new FirebaseMethods(mContext);
 
         try {
             mPhoto = getPhotoFromBundle();
@@ -141,24 +143,7 @@ public class ViewCommentsFragment extends Fragment {
                 mComments.add(firstComment);
 
                 for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
-                    // In the Photo class, we have a List<Like>, but Firebase thinks it has a HashMap
-                    // so we need to manually insert these into our photos
-//                    photos.add(singleSnapshot.getValue(Photo.class));
-                    Comment comment = new Comment();
-                    Map<String, Object> objectMap = (HashMap<String, Object>) singleSnapshot.getValue();
-
-                    comment.setComment(objectMap.get(mContext.getString(R.string.field_comment)).toString());
-                    comment.setUser_id(objectMap.get(mContext.getString(R.string.field_user_id)).toString());
-                    comment.setDate_created(objectMap.get(mContext.getString(R.string.field_date_created)).toString());
-
-                    List<Like> likesList = new ArrayList<>();
-                    for (DataSnapshot ds : singleSnapshot.child(mContext.getString(R.string.field_likes)).getChildren()) {
-                        Like like = new Like();
-                        like.setUser_id(ds.getValue(Like.class).getUser_id());
-                        likesList.add(like);
-                    }
-                    comment.setLikes(likesList);
-                    mComments.add(comment);
+                    mComments.add(mFirebaseMethods.getComment(singleSnapshot));
                 }
 
                 CommentListAdapter adapter = new CommentListAdapter(mContext, R.layout.layout_comment, mComments);

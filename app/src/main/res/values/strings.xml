@@ -25,6 +25,7 @@
     <string name="dbname_user_photos">user_photos</string>
     <string name="dbname_following">following</string>
     <string name="dbname_followers">followers</string>
+    <string name="dbname_user_likes">user_likes</string>
     <string name="field_username">username</string>
     <string name="field_email">email</string>
     <string name="field_display_name">display_name</string>
@@ -41,6 +42,8 @@
     <string name="field_comments">comments</string>
     <string name="field_comment">comment</string>
     <string name="field_reply_to_username">reply_to_username</string>
+    <string name="field_photo_likes">photo_likes</string>
+    <string name="field_comment_likes">comment_likes</string>
 
     <!--photo types-->
     <string name="new_photo">new_photo</string>

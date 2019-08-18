@@ -10,21 +10,18 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
-import com.nostra13.universalimageloader.utils.L;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -39,7 +36,6 @@ import java.util.TimeZone;
 
 import ai.tomorrow.instagramclone.Profile.ProfileActivity;
 import ai.tomorrow.instagramclone.R;
-import ai.tomorrow.instagramclone.Search.SearchActivity;
 import ai.tomorrow.instagramclone.models.Comment;
 import ai.tomorrow.instagramclone.models.Like;
 import ai.tomorrow.instagramclone.models.Photo;
@@ -284,10 +280,10 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
 
                         //case1: Then user already liked the photo
                         if (mHolder.likeByCurrentUser &&
-                                singleSnapshot.getValue(Like.class).getUser_id()
+                                singleSnapshot.getValue(Like.class).getLiked_by_user_id()
                                         .equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
 
-                            mFirebaseMethods.removeLike(mHolder.photo.getPhoto_id());
+                            mFirebaseMethods.removePhotoLike(mHolder.photo.getPhoto_id(), mHolder.photo.getUser_id());
 
                             mHolder.heart.toggleLike();
                             getLikesString(mHolder);
@@ -295,7 +291,7 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
                         //case2: The user has not liked the photo
                         else if (!mHolder.likeByCurrentUser) {
                             //add new like
-                            mFirebaseMethods.addNewLike(mHolder.photo.getPhoto_id(), mHolder.photo.getUser_id());
+                            mFirebaseMethods.addPhotoNewLike(mHolder.photo.getPhoto_id(), mHolder.photo.getUser_id());
                             mHolder.heart.toggleLike();
                             getLikesString(mHolder);
                             break;
@@ -303,7 +299,7 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
                     }
                     if (!dataSnapshot.exists()) {
                         //add new like
-                        mFirebaseMethods.addNewLike(mHolder.photo.getPhoto_id(), mHolder.photo.getUser_id());
+                        mFirebaseMethods.addPhotoNewLike(mHolder.photo.getPhoto_id(), mHolder.photo.getUser_id());
                         mHolder.heart.toggleLike();
                         getLikesString(mHolder);
                     }
@@ -342,9 +338,9 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
                         Log.d(TAG, "onDataChange: found Like: " + singleSnapshot);
                         Like like = singleSnapshot.getValue(Like.class);
                         likes.add(like);
-                        Log.d(TAG, "onDataChange: like.getUser_id(): " + like.getUser_id());
+                        Log.d(TAG, "onDataChange: like.getUser_id(): " + like.getLiked_by_user_id());
                         Log.d(TAG, "onDataChange: current user id: " + FirebaseAuth.getInstance().getCurrentUser().getUid());
-                        if (like.getUser_id().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
+                        if (like.getLiked_by_user_id().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
                             Log.d(TAG, "onDataChange: likeByCurrentUser");
                             holder.likeByCurrentUser = true;
                         }
@@ -366,7 +362,7 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
                         Like eachLike = likes.get(i);
                         Query query = myRef.child(mContext.getString(R.string.dbname_users))
                                 .orderByChild(mContext.getString(R.string.field_user_id))
-                                .equalTo(eachLike.getUser_id());
+                                .equalTo(eachLike.getLiked_by_user_id());
 
                         query.addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
