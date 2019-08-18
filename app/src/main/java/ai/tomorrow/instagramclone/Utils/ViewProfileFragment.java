@@ -1,6 +1,8 @@
 package ai.tomorrow.instagramclone.Utils;
 
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -59,7 +61,7 @@ public class ViewProfileFragment extends Fragment {
 
     //widgets
     private TextView mPosts, mFollowers, mFollowing, mDisplayName, mUsername, mWebsite, mDescription,
-            mFollow, mUnfollow;
+            mFollow, mUnfollow, mSendEmail;
     private ProgressBar mProgressBar;
     private CircleImageView mProfilePhoto;
     private GridView gridView;
@@ -101,6 +103,7 @@ public class ViewProfileFragment extends Fragment {
         toolbar = (Toolbar) view.findViewById(R.id.profileToolBar);
         backArrow = (ImageView) view.findViewById(R.id.backArrow);
         bottomNavigationView = (BottomNavigationViewEx) view.findViewById(R.id.bottomNavViewBar);
+        mSendEmail = (TextView) view.findViewById(R.id.sendEmail);
         mContext = getActivity();
         mFirebaseMethods = new FirebaseMethods(getActivity());
 
@@ -200,6 +203,24 @@ public class ViewProfileFragment extends Fragment {
             }
         });
 
+        // send email implicit intent
+        mSendEmail.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.d(TAG, "onClick: open email implicit intent");
+                String[] addresses = new String[]{mUser.getEmail()};
+                startEmailIntent(addresses);
+            }
+        });
+    }
+
+    public void startEmailIntent(String[] addresses) {
+        Intent intent = new Intent(Intent.ACTION_SENDTO);
+        intent.setData(Uri.parse("mailto:")); // only email apps should handle this
+        intent.putExtra(Intent.EXTRA_EMAIL, addresses);
+        if (intent.resolveActivity(mContext.getPackageManager()) != null) {
+            startActivity(intent);
+        }
     }
 
     private void setFollowing(){
