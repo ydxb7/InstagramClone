@@ -85,8 +85,7 @@ public class HomeActivity extends AppCompatActivity implements
     @Override
     public void onLoadMoreItems() {
         Log.d(TAG, "onLoadMoreItems: displaying more photos");
-        HomeFragment fragment = (HomeFragment) getSupportFragmentManager()
-                .findFragmentByTag("android:switcher:" + R.id.viewpager_container + ":" + mViewPager.getCurrentItem());
+        HomeFragment fragment = (HomeFragment) pagerAdapter.getFragmentFromName(getString(R.string.home_fragment));
         if (fragment != null) {
             fragment.loadMorePhotos();
         }

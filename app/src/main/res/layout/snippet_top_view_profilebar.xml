@@ -1,5 +1,6 @@
 <merge xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
 
     <com.google.android.material.appbar.AppBarLayout
@@ -36,7 +37,8 @@
                     android:id="@+id/username"
                     android:layout_centerVertical="true"
                     android:layout_toRightOf="@+id/backArrow"
-                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:textSize="18sp"
                     android:textColor="@color/black"
                     android:layout_marginStart="10dp"
                     android:text="yini.duanmu"/>

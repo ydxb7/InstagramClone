@@ -59,7 +59,7 @@ public class ViewProfileFragment extends Fragment {
 
     //widgets
     private TextView mPosts, mFollowers, mFollowing, mDisplayName, mUsername, mWebsite, mDescription,
-            mFollow, mUnfollow, editProfile;
+            mFollow, mUnfollow;
     private ProgressBar mProgressBar;
     private CircleImageView mProfilePhoto;
     private GridView gridView;
@@ -96,7 +96,6 @@ public class ViewProfileFragment extends Fragment {
         mFollowing = (TextView) view.findViewById(R.id.tvFollowing);
         mFollow = (TextView) view.findViewById(R.id.follow);
         mUnfollow = (TextView) view.findViewById(R.id.unfollow);
-        editProfile = (TextView) view.findViewById(R.id.textEditProfile);
         mProgressBar = (ProgressBar) view.findViewById(R.id.profileProgressBar);
         gridView = (GridView) view.findViewById(R.id.gridView);
         toolbar = (Toolbar) view.findViewById(R.id.profileToolBar);
@@ -207,21 +206,18 @@ public class ViewProfileFragment extends Fragment {
         Log.d(TAG, "setFollowing: updating UI for following widgets");
         mFollow.setVisibility(View.GONE);
         mUnfollow.setVisibility(View.VISIBLE);
-        editProfile.setVisibility(View.GONE);
     }
 
     private void setUnfollowing(){
         Log.d(TAG, "setFollowing: updating UI for unfollowing widgets");
         mFollow.setVisibility(View.VISIBLE);
         mUnfollow.setVisibility(View.GONE);
-        editProfile.setVisibility(View.GONE);
     }
 
     private void setCurrentUsersProfile(){
         Log.d(TAG, "setFollowing: updating UI for showing this user own profile");
         mFollow.setVisibility(View.GONE);
         mUnfollow.setVisibility(View.GONE);
-        editProfile.setVisibility(View.VISIBLE);
     }
 
     private void setFollowingCount(){
