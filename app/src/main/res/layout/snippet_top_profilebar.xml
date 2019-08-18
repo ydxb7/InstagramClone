@@ -1,9 +1,10 @@
-<merge xmlns:android="http://schemas.android.com/apk/res/android">
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:background="@drawable/white_grey_border_bottom">
+        android:background="@color/white">
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/profileToolBar"
@@ -19,19 +20,20 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
-                    android:layout_marginStart="15dp"
-                    android:text="yini.duanmu"
+                    android:layout_marginStart="4dp"
+                    tools:text="yini.duanmu"
                     android:textColor="@color/black"
-                    android:textSize="20sp" />
+                    android:textStyle="bold"
+                    android:textSize="18sp" />
 
                 <ImageView
                     android:id="@+id/profileMenu"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
                     android:layout_alignParentEnd="true"
                     android:layout_centerVertical="true"
                     android:layout_marginEnd="20dp"
-                    android:src="@drawable/ic_ellipses" />
+                    android:src="@drawable/ic_3lines" />
 
             </RelativeLayout>
 
