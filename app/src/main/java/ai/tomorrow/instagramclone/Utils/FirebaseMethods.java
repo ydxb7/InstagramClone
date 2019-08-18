@@ -105,6 +105,35 @@ public class FirebaseMethods {
         return photo;
     }
 
+    //add new comment into firebase database
+    public void addNewComment(String newComment, String photoID, String photoOwnerID) {
+        Log.d(TAG, "addNewComment: adding new comment: " + newComment);
+        Comment comment = new Comment();
+        comment.setComment(newComment);
+        comment.setUser_id(FirebaseAuth.getInstance().getCurrentUser().getUid());
+        comment.setDate_created(getTimeStamp());
+
+        String commentID = myRef.push().getKey();
+
+        //insert into photos node
+        FirebaseDatabase.getInstance().getReference()
+                .child(mContext.getString(R.string.dbname_photos))
+                .child(photoID)
+                .child(mContext.getString(R.string.field_comments))
+                .child(commentID)
+                .setValue(comment);
+
+        //insert into user_photos node
+        FirebaseDatabase.getInstance().getReference()
+                .child(mContext.getString(R.string.dbname_user_photos))
+                .child(photoOwnerID)
+                .child(photoID)
+                .child(mContext.getString(R.string.field_comments))
+                .child(commentID)
+                .setValue(comment);
+
+    }
+
     public Comment getComment(DataSnapshot ds) {
         Comment comment = new Comment();
         comment.setUser_id(ds.getValue(Comment.class).getUser_id());
@@ -144,6 +173,12 @@ public class FirebaseMethods {
                 .child(mContext.getString(R.string.field_likes))
                 .child(currentUserID)
                 .removeValue();
+
+        myRef.child(mContext.getString(R.string.dbname_user_likes))
+                .child(currentUserID)
+                .child(mContext.getString(R.string.field_comment_likes))
+                .child(commentID)
+                .removeValue();
     }
 
     public void addCommentNewLike(String photoID, String photoUserID, String commentID, String commentOwnerID){
@@ -171,6 +206,12 @@ public class FirebaseMethods {
                 .child(commentID)
                 .child(mContext.getString(R.string.field_likes))
                 .child(currentUserID)
+                .setValue(like);
+
+        myRef.child(mContext.getString(R.string.dbname_user_likes))
+                .child(currentUserID)
+                .child(mContext.getString(R.string.field_comment_likes))
+                .child(commentID)
                 .setValue(like);
     }
 

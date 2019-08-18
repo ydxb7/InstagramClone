@@ -95,7 +95,7 @@ public class ViewCommentsFragment extends Fragment {
             public void onClick(View v) {
                 if (!mComment.getText().toString().equals("")) {
                     Log.d(TAG, "onClick: post a comment.");
-                    addNewComment(mComment.getText().toString());
+                    mFirebaseMethods.addNewComment(mComment.getText().toString(), mPhoto.getPhoto_id(), mPhoto.getUser_id());
 
                     mComment.setText("");
                     Helpers.hideSoftKeyboard(getActivity());
@@ -158,50 +158,6 @@ public class ViewCommentsFragment extends Fragment {
         });
 
 
-    }
-
-//    //hide soft keyboard
-//    private void closeKeyboard() {
-//        View view = getActivity().getCurrentFocus();
-//        if (view != null) {
-//            InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-//            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
-//        }
-//    }
-
-    //add new comment into firebase database
-    private void addNewComment(String newComment) {
-        Log.d(TAG, "addNewComment: adding new comment: " + newComment);
-        Comment comment = new Comment();
-        comment.setComment(newComment);
-        comment.setUser_id(FirebaseAuth.getInstance().getCurrentUser().getUid());
-        comment.setDate_created(getTimeStamp());
-
-        String commentID = myRef.push().getKey();
-
-        //insert into photos node
-        FirebaseDatabase.getInstance().getReference()
-                .child(mContext.getString(R.string.dbname_photos))
-                .child(mPhoto.getPhoto_id())
-                .child(mContext.getString(R.string.field_comments))
-                .child(commentID)
-                .setValue(comment);
-
-        //insert into user_photos node
-        FirebaseDatabase.getInstance().getReference()
-                .child(mContext.getString(R.string.dbname_user_photos))
-                .child(mPhoto.getUser_id())
-                .child(mPhoto.getPhoto_id())
-                .child(mContext.getString(R.string.field_comments))
-                .child(commentID)
-                .setValue(comment);
-
-    }
-
-    private String getTimeStamp() {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.US);
-        sdf.setTimeZone(TimeZone.getTimeZone("America/Los_Angeles"));
-        return sdf.format(new Date());
     }
 
     /**
