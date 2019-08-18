@@ -8,15 +8,17 @@ public class Comment {
     private String user_id;
     private List<Like> likes;
     private String date_created;
+    private String reply_to_username;
 
     public Comment() {
     }
 
-    public Comment(String comment, String user_id, List<Like> likes, String date_created) {
+    public Comment(String comment, String user_id, List<Like> likes, String date_created, String reply_to_username) {
         this.comment = comment;
         this.user_id = user_id;
         this.likes = likes;
         this.date_created = date_created;
+        this.reply_to_username = reply_to_username;
     }
 
     public String getComment() {
@@ -51,6 +53,14 @@ public class Comment {
         this.date_created = date_created;
     }
 
+    public String getReply_to_username() {
+        return reply_to_username;
+    }
+
+    public void setReply_to_username(String reply_to_username) {
+        this.reply_to_username = reply_to_username;
+    }
+
     @Override
     public String toString() {
         return "Comment{" +
@@ -58,6 +68,7 @@ public class Comment {
                 ", user_id='" + user_id + '\'' +
                 ", likes=" + likes +
                 ", date_created='" + date_created + '\'' +
+                ", reply_to_username='" + reply_to_username + '\'' +
                 '}';
     }
 }

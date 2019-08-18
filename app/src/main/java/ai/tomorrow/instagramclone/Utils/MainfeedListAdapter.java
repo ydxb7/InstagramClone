@@ -287,18 +287,7 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
                                 singleSnapshot.getValue(Like.class).getUser_id()
                                         .equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
 
-                            reference.child(mContext.getString(R.string.dbname_photos))
-                                    .child(mHolder.photo.getPhoto_id())
-                                    .child(mContext.getString(R.string.field_likes))
-                                    .child(keyID)
-                                    .removeValue();
-///
-                            reference.child(mContext.getString(R.string.dbname_user_photos))
-                                    .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                                    .child(mHolder.photo.getPhoto_id())
-                                    .child(mContext.getString(R.string.field_likes))
-                                    .child(keyID)
-                                    .removeValue();
+                            mFirebaseMethods.removeLike(mHolder.photo.getPhoto_id());
 
                             mHolder.heart.toggleLike();
                             getLikesString(mHolder);

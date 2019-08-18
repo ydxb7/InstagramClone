@@ -40,6 +40,7 @@
     <string name="field_tags">tags</string>
     <string name="field_comments">comments</string>
     <string name="field_comment">comment</string>
+    <string name="field_reply_to_username">reply_to_username</string>
 
     <!--photo types-->
     <string name="new_photo">new_photo</string>

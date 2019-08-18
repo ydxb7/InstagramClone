@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.Map;
 
 import ai.tomorrow.instagramclone.R;
+import ai.tomorrow.instagramclone.Utils.FirebaseMethods;
 import ai.tomorrow.instagramclone.Utils.MainfeedListAdapter;
 import ai.tomorrow.instagramclone.models.Comment;
 import ai.tomorrow.instagramclone.models.Like;
@@ -46,6 +47,7 @@ public class HomeFragment extends Fragment {
     private ArrayList<Photo> mPaginatedPhotos = new ArrayList<>();
     private ArrayList<String> mFollowingUserIDs = new ArrayList<>();
     private DatabaseReference myRef;
+    private FirebaseMethods mFirebaseMethods;
     private static final int LOAD_COUNT = 5;
 
 
@@ -58,6 +60,7 @@ public class HomeFragment extends Fragment {
         mContext = getActivity();
         mListView = (ListView) view.findViewById(R.id.listView);
         myRef = FirebaseDatabase.getInstance().getReference();
+        mFirebaseMethods = new FirebaseMethods(mContext);
 
         getFollowing();
 
@@ -105,7 +108,7 @@ public class HomeFragment extends Fragment {
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
                         Log.d(TAG, "onDataChange: found photo: " + singleSnapshot.getValue());
-                        Photo photo = getPhoto(singleSnapshot);
+                        Photo photo = mFirebaseMethods.getPhoto(singleSnapshot);
                         mPhotos.add(photo);
                     }
                     if (count == mFollowingUserIDs.size() - 1) {
@@ -165,34 +168,34 @@ public class HomeFragment extends Fragment {
 
     }
 
-    private Photo getPhoto(DataSnapshot singleSnapshot) {
-        Photo photo = new Photo();
-        Map<String, Object> objectMap = (HashMap<String, Object>) singleSnapshot.getValue();
-        photo.setCaption(objectMap.get(mContext.getString(R.string.field_caption)).toString());
-        photo.setDate_created(objectMap.get(mContext.getString(R.string.field_date_created)).toString());
-        photo.setImage_path(objectMap.get(mContext.getString(R.string.field_image_path)).toString());
-        photo.setTags(objectMap.get(mContext.getString(R.string.field_tags)).toString());
-        photo.setUser_id(objectMap.get(mContext.getString(R.string.field_user_id)).toString());
-        photo.setPhoto_id(objectMap.get(mContext.getString(R.string.field_photo_id)).toString());
-
-        List<Like> likesList = new ArrayList<>();
-        for (DataSnapshot ds : singleSnapshot.child(mContext.getString(R.string.field_likes)).getChildren()) {
-            Like like = new Like();
-            like.setUser_id(ds.getValue(Like.class).getUser_id());
-            likesList.add(like);
-        }
-
-        List<Comment> commentList = new ArrayList<>();
-        for (DataSnapshot ds : singleSnapshot.child(mContext.getString(R.string.field_comments)).getChildren()) {
-            Comment comment = new Comment();
-            comment.setUser_id(ds.getValue(Comment.class).getUser_id());
-            comment.setDate_created(ds.getValue(Comment.class).getDate_created());
-            comment.setComment(ds.getValue(Comment.class).getComment());
-            commentList.add(comment);
-        }
-
-        photo.setLikes(likesList);
-        photo.setComments(commentList);
-        return photo;
-    }
+//    private Photo getPhoto(DataSnapshot singleSnapshot) {
+//        Photo photo = new Photo();
+//        Map<String, Object> objectMap = (HashMap<String, Object>) singleSnapshot.getValue();
+//        photo.setCaption(objectMap.get(mContext.getString(R.string.field_caption)).toString());
+//        photo.setDate_created(objectMap.get(mContext.getString(R.string.field_date_created)).toString());
+//        photo.setImage_path(objectMap.get(mContext.getString(R.string.field_image_path)).toString());
+//        photo.setTags(objectMap.get(mContext.getString(R.string.field_tags)).toString());
+//        photo.setUser_id(objectMap.get(mContext.getString(R.string.field_user_id)).toString());
+//        photo.setPhoto_id(objectMap.get(mContext.getString(R.string.field_photo_id)).toString());
+//
+//        List<Like> likesList = new ArrayList<>();
+//        for (DataSnapshot ds : singleSnapshot.child(mContext.getString(R.string.field_likes)).getChildren()) {
+//            Like like = new Like();
+//            like.setUser_id(ds.getValue(Like.class).getUser_id());
+//            likesList.add(like);
+//        }
+//
+//        List<Comment> commentList = new ArrayList<>();
+//        for (DataSnapshot ds : singleSnapshot.child(mContext.getString(R.string.field_comments)).getChildren()) {
+//            Comment comment = new Comment();
+//            comment.setUser_id(ds.getValue(Comment.class).getUser_id());
+//            comment.setDate_created(ds.getValue(Comment.class).getDate_created());
+//            comment.setComment(ds.getValue(Comment.class).getComment());
+//            commentList.add(comment);
+//        }
+//
+//        photo.setLikes(likesList);
+//        photo.setComments(commentList);
+//        return photo;
+//    }
 }

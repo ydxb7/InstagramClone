@@ -142,26 +142,7 @@ public class ViewPostFragment extends Fragment {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
-                        Photo newPhoto = new Photo();
-                        Map<String, Object> objectMap = (HashMap<String, Object>) singleSnapshot.getValue();
-
-                        newPhoto.setCaption(objectMap.get(getString(R.string.field_caption)).toString());
-                        newPhoto.setTags(objectMap.get(getString(R.string.field_tags)).toString());
-                        newPhoto.setPhoto_id(objectMap.get(getString(R.string.field_photo_id)).toString());
-                        newPhoto.setUser_id(objectMap.get(getString(R.string.field_user_id)).toString());
-                        newPhoto.setDate_created(objectMap.get(getString(R.string.field_date_created)).toString());
-                        newPhoto.setImage_path(objectMap.get(getString(R.string.field_image_path)).toString());
-
-                        List<Comment> commentsList = new ArrayList<Comment>();
-                        for (DataSnapshot dSnapshot : singleSnapshot
-                                .child(getString(R.string.field_comments)).getChildren()) {
-                            Comment comment = new Comment();
-                            comment.setUser_id(dSnapshot.getValue(Comment.class).getUser_id());
-                            comment.setComment(dSnapshot.getValue(Comment.class).getComment());
-                            comment.setDate_created(dSnapshot.getValue(Comment.class).getDate_created());
-                            commentsList.add(comment);
-                        }
-                        newPhoto.setComments(commentsList);
+                        Photo newPhoto = mFirebaseMethods.getPhoto(singleSnapshot);
 
                         mPhoto = newPhoto;
 
@@ -183,6 +164,30 @@ public class ViewPostFragment extends Fragment {
             Log.e(TAG, "onCreateView: NullPointerException: " + e.getMessage());
         }
     }
+
+//    private Photo getPhoto(DataSnapshot singleSnapshot) {
+//        Photo newPhoto = new Photo();
+//        Map<String, Object> objectMap = (HashMap<String, Object>) singleSnapshot.getValue();
+//
+//        newPhoto.setCaption(objectMap.get(getString(R.string.field_caption)).toString());
+//        newPhoto.setTags(objectMap.get(getString(R.string.field_tags)).toString());
+//        newPhoto.setPhoto_id(objectMap.get(getString(R.string.field_photo_id)).toString());
+//        newPhoto.setUser_id(objectMap.get(getString(R.string.field_user_id)).toString());
+//        newPhoto.setDate_created(objectMap.get(getString(R.string.field_date_created)).toString());
+//        newPhoto.setImage_path(objectMap.get(getString(R.string.field_image_path)).toString());
+//
+//        List<Comment> commentsList = new ArrayList<Comment>();
+//        for (DataSnapshot dSnapshot : singleSnapshot
+//                .child(getString(R.string.field_comments)).getChildren()) {
+//            Comment comment = new Comment();
+//            comment.setUser_id(dSnapshot.getValue(Comment.class).getUser_id());
+//            comment.setComment(dSnapshot.getValue(Comment.class).getComment());
+//            comment.setDate_created(dSnapshot.getValue(Comment.class).getDate_created());
+//            commentsList.add(comment);
+//        }
+//        newPhoto.setComments(commentsList);
+//        return newPhoto;
+//    }
 
     /**
      * solve the problem: fragment not attached to activity
@@ -424,18 +429,7 @@ public class ViewPostFragment extends Fragment {
                                 singleSnapshot.getValue(Like.class).getUser_id()
                                         .equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
 
-                            myRef.child(getString(R.string.dbname_photos))
-                                    .child(mPhoto.getPhoto_id())
-                                    .child(getString(R.string.field_likes))
-                                    .child(keyID)
-                                    .removeValue();
-///
-                            myRef.child(getString(R.string.dbname_user_photos))
-                                    .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                                    .child(mPhoto.getPhoto_id())
-                                    .child(getString(R.string.field_likes))
-                                    .child(keyID)
-                                    .removeValue();
+                            mFirebaseMethods.removeLike(mPhoto.getPhoto_id());
 
                             mHeart.toggleLike();
                             getLikesString();

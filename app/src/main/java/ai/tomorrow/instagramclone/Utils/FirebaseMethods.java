@@ -30,12 +30,17 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.TimeZone;
 
 import ai.tomorrow.instagramclone.Home.HomeActivity;
 import ai.tomorrow.instagramclone.R;
+import ai.tomorrow.instagramclone.models.Comment;
 import ai.tomorrow.instagramclone.models.Like;
 import ai.tomorrow.instagramclone.models.Photo;
 import ai.tomorrow.instagramclone.models.User;
@@ -71,7 +76,39 @@ public class FirebaseMethods {
         }
     }
 
-    private void removeLike(String photoID){
+    public Photo getPhoto(DataSnapshot singleSnapshot) {
+        Photo photo = new Photo();
+        Map<String, Object> objectMap = (HashMap<String, Object>) singleSnapshot.getValue();
+        photo.setCaption(objectMap.get(mContext.getString(R.string.field_caption)).toString());
+        photo.setDate_created(objectMap.get(mContext.getString(R.string.field_date_created)).toString());
+        photo.setImage_path(objectMap.get(mContext.getString(R.string.field_image_path)).toString());
+        photo.setTags(objectMap.get(mContext.getString(R.string.field_tags)).toString());
+        photo.setUser_id(objectMap.get(mContext.getString(R.string.field_user_id)).toString());
+        photo.setPhoto_id(objectMap.get(mContext.getString(R.string.field_photo_id)).toString());
+
+        List<Like> likesList = new ArrayList<>();
+        for (DataSnapshot ds : singleSnapshot.child(mContext.getString(R.string.field_likes)).getChildren()) {
+            Like like = new Like();
+            like.setUser_id(ds.getValue(Like.class).getUser_id());
+            likesList.add(like);
+        }
+
+        List<Comment> commentList = new ArrayList<>();
+        for (DataSnapshot ds : singleSnapshot.child(mContext.getString(R.string.field_comments)).getChildren()) {
+            Comment comment = new Comment();
+            comment.setUser_id(ds.getValue(Comment.class).getUser_id());
+            comment.setDate_created(ds.getValue(Comment.class).getDate_created());
+            comment.setComment(ds.getValue(Comment.class).getComment());
+            commentList.add(comment);
+        }
+
+        photo.setLikes(likesList);
+        photo.setComments(commentList);
+        return photo;
+    }
+
+
+    public void removeLike(String photoID){
         Log.d(TAG, "removeLike: remove like.");
 
         myRef.child(mContext.getString(R.string.dbname_photos))

@@ -376,27 +376,7 @@ public class ViewProfileFragment extends Fragment {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for (DataSnapshot singleSnapshot: dataSnapshot.getChildren()){
-                    // In the Photo class, we have a List<Like>, but Firebase thinks it has a HashMap
-                    // so we need to manually insert these into our photos
-//                    photos.add(singleSnapshot.getValue(Photo.class));
-                    Photo photo = new Photo();
-                    Map<String, Object> objectMap = (HashMap<String, Object>) singleSnapshot.getValue();
-
-                    photo.setPhoto_id(objectMap.get(getString(R.string.field_photo_id)).toString());
-                    photo.setUser_id(objectMap.get(getString(R.string.field_user_id)).toString());
-                    photo.setTags(objectMap.get(getString(R.string.field_tags)).toString());
-                    photo.setImage_path(objectMap.get(getString(R.string.field_image_path)).toString());
-                    photo.setDate_created(objectMap.get(getString(R.string.field_date_created)).toString());
-                    photo.setCaption(objectMap.get(getString(R.string.field_caption)).toString());
-
-                    List<Like> likesList = new ArrayList<>();
-                    for (DataSnapshot ds: singleSnapshot.child(getString(R.string.field_likes)).getChildren()){
-                        Like like = new Like();
-                        like.setUser_id(ds.getValue(Like.class).getUser_id());
-                        likesList.add(like);
-                    }
-                    photo.setLikes(likesList);
-                    photos.add(photo);
+                    photos.add(mFirebaseMethods.getPhoto(singleSnapshot));
                 }
 
                 // sort photos by date created
