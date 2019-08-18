@@ -3,6 +3,7 @@ package ai.tomorrow.instagramclone.Home;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.media.Image;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -27,10 +28,12 @@ import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import ai.tomorrow.instagramclone.Login.LoginActivity;
+import ai.tomorrow.instagramclone.Profile.AccountSettingsActivity;
 import ai.tomorrow.instagramclone.Profile.EditProfileFragment;
 import ai.tomorrow.instagramclone.Profile.ProfileActivity;
 import ai.tomorrow.instagramclone.Profile.SignOutFragment;
 import ai.tomorrow.instagramclone.R;
+import ai.tomorrow.instagramclone.Share.NextActivity;
 import ai.tomorrow.instagramclone.Utils.BottomNavigationViewHelper;
 import ai.tomorrow.instagramclone.Utils.MainfeedListAdapter;
 import ai.tomorrow.instagramclone.Utils.Permissions;
@@ -47,6 +50,7 @@ public class HomeActivity extends AppCompatActivity implements
     private static final String TAG = "HomeActivity";
     private static final int ACTIVITY_NUM = 0;
     private static final int CAMERA_REQUEST_CODE = 5;
+    private static final int VERIFY_PERMISSION_REQUEST = 1;
 
     private Context mContext = HomeActivity.this;
     // FirebaseAuth
@@ -103,7 +107,7 @@ public class HomeActivity extends AppCompatActivity implements
         setupFirebaseAuth();
 
         // check if user is logged in
-        if (isLoggedin()){
+        if (isLoggedin()) {
             // logged in
             Log.d(TAG, "onCreate: user logged in.");
             init();
@@ -126,13 +130,13 @@ public class HomeActivity extends AppCompatActivity implements
             @Override
             public void onClick(View view) {
                 Log.d(TAG, "onClick: navigate to camera.");
-                if (Permissions.checkPermissions(mContext, Permissions.CAMERA_PERMISSION[0])){
+                if (Permissions.checkPermissions(mContext, Permissions.CAMERA_PERMISSION[0])) {
                     // camera permission is granted
                     startTakePicture();
                 } else {
                     // verify permission
                     ActivityCompat.requestPermissions(
-                            HomeActivity.this, Permissions.CAMERA_PERMISSION, CAMERA_REQUEST_CODE
+                            HomeActivity.this, Permissions.CAMERA_PERMISSION, VERIFY_PERMISSION_REQUEST
                     );
                 }
             }
@@ -151,7 +155,7 @@ public class HomeActivity extends AppCompatActivity implements
     public void onRequestPermissionsResult(int requestCode,
                                            String[] permissions, int[] grantResults) {
         switch (requestCode) {
-            case CAMERA_REQUEST_CODE: {
+            case VERIFY_PERMISSION_REQUEST: {
                 // If request is cancelled, the result arrays are empty.
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
@@ -168,13 +172,13 @@ public class HomeActivity extends AppCompatActivity implements
         ImageLoader.getInstance().init(universalImageLoader.getConfig());
     }
 
-    private void setupFragments(){
+    private void setupFragments() {
         pagerAdapter = new SectionsStatePagerAdapter(getSupportFragmentManager());
         pagerAdapter.addFragment(new HomeFragment(), getString(R.string.home_fragment)); // fragment 0
         pagerAdapter.addFragment(new MessagesFragment(), getString(R.string.messages_fragment)); // fragment 1
     }
 
-    private void setViewPager(int fragmentNumber){
+    private void setViewPager(int fragmentNumber) {
         mRelativeLayout.setVisibility(View.VISIBLE);
         mFrameLayout.setVisibility(View.GONE);
         Log.d(TAG, "setViewPager: navigating to fragment #: " + fragmentNumber);
@@ -216,13 +220,28 @@ public class HomeActivity extends AppCompatActivity implements
         menuItem.setChecked(true);
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == CAMERA_REQUEST_CODE) {
+            Log.d(TAG, "onActivityResult: done taking a photo.");
+
+            Bitmap bitmap = (Bitmap) data.getExtras().get("data");
+
+            // navigate to the final share screen to publish photo
+            Log.d(TAG, "onActivityResult: attempting to navigate to final share screen");
+            Intent intent = new Intent(this, NextActivity.class);
+            intent.putExtra(getString(R.string.selected_bitmap), bitmap);
+            startActivity(intent);
+        }
+    }
 
     /**
      * -------------------------------- firebase --------------------------
      */
 
-    private boolean isLoggedin(){
-        if (FirebaseAuth.getInstance().getCurrentUser() == null){
+    private boolean isLoggedin() {
+        if (FirebaseAuth.getInstance().getCurrentUser() == null) {
             return false;
         } else {
             return true;
