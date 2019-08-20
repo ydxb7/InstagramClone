@@ -395,12 +395,8 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
 
 
     private void setupWidgets(final ViewHolder holder) {
-        String timestampDiff = getTimestampDifference(holder.photo.getDate_created());
-        if (!timestampDiff.equals("0")) {
-            holder.mTimestamp.setText(timestampDiff + " days ago");
-        } else {
-            holder.mTimestamp.setText("today");
-        }
+        String timestampDiff = StringManipulation.getTimeStampDifference(holder.photo.getDate_created());
+        holder.mTimestamp.setText(timestampDiff);
 
         if (holder.mLikesString.equals("")){
             holder.likes.setVisibility(View.GONE);
@@ -473,32 +469,6 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
         });
 
 
-    }
-
-
-    /**
-     * Returns a string representing the number of days ago the post was made
-     *
-     * @return
-     */
-    private String getTimestampDifference(String photoTimestamp) {
-        Log.d(TAG, "getTimestampDifference: getting timestamp difference.");
-
-        String difference = "";
-        Calendar c = Calendar.getInstance();
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.CANADA);
-        sdf.setTimeZone(TimeZone.getTimeZone("Canada/Pacific"));//google 'android list of timezones'
-        Date today = c.getTime();
-        sdf.format(today);
-        Date timestamp;
-        try {
-            timestamp = sdf.parse(photoTimestamp);
-            difference = String.valueOf(Math.round(((today.getTime() - timestamp.getTime()) / 1000 / 60 / 60 / 24)));
-        } catch (ParseException e) {
-            Log.e(TAG, "getTimestampDifference: ParseException: " + e.getMessage());
-            difference = "0";
-        }
-        return difference;
     }
 
 }

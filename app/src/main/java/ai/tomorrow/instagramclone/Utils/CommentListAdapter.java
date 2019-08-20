@@ -158,12 +158,8 @@ public class CommentListAdapter extends ArrayAdapter<Comment> {
         }
 
         // set the time difference
-        String timestampDifference = getTimeStampDifference(getItem(position));
-        if (!timestampDifference.equals("0")) {
-            holder.timePostes.setText(timestampDifference + " d");
-        } else {
-            holder.timePostes.setText("today");
-        }
+        String timestampDifference = StringManipulation.getTimeStampDifference(getItem(position).getDate_created());
+        holder.timePostes.setText(timestampDifference);
 
         // set comment string
         Query query1 = myRef
@@ -344,29 +340,4 @@ public class CommentListAdapter extends ArrayAdapter<Comment> {
         });
     }
 
-
-    /**
-     * return a string presenting the number of days ago the post was made.
-     *
-     * @return
-     */
-    private String getTimeStampDifference(Comment comment) {
-        Log.d(TAG, "getTimeStampDifference: getting timestamp difference");
-
-        String difference = "";
-        Calendar c = Calendar.getInstance();
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.US);
-        sdf.setTimeZone(TimeZone.getTimeZone("America/Los_Angeles"));
-        Date today = c.getTime();
-        sdf.format(today);
-        Date timestamp;
-        final String photoTimeStamp = comment.getDate_created();
-        try {
-            timestamp = sdf.parse(photoTimeStamp);
-            difference = String.valueOf(Math.round(((today.getTime() - timestamp.getTime()) / 1000 / 60 / 60 / 24)));
-        } catch (ParseException e) {
-            Log.d(TAG, "getTimeStampDifference: ParseException: " + e.getMessage());
-        }
-        return difference;
-    }
 }

@@ -2,11 +2,76 @@ package ai.tomorrow.instagramclone.Utils;
 
 import android.util.Log;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
+import java.util.TimeZone;
+
+import ai.tomorrow.instagramclone.models.Comment;
 
 public class StringManipulation {
     private static final String TAG = "StringManipulation";
+
+
+    /**
+     * return a string presenting the number of days ago the post was made.
+     *
+     * @return
+     */
+    public static String getTimeStampDifference(String oldTimeStamp) {
+        Log.d(TAG, "getTimeStampDifference: getting timestamp difference");
+
+        String difference = "";
+        Calendar c = Calendar.getInstance();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.US);
+        sdf.setTimeZone(TimeZone.getTimeZone("America/Los_Angeles"));
+        Date today = c.getTime();
+        sdf.format(today);
+        Date timestamp;
+        try {
+            timestamp = sdf.parse(oldTimeStamp);
+            int diff_year= Math.round(((today.getTime() - timestamp.getTime()) / 1000 / 60 / 60 / 24 / 365));
+            int diff_month = Math.round(((today.getTime() - timestamp.getTime()) / 1000 / 60 / 60 / 24 / 30));
+            int diff_week = Math.round(((today.getTime() - timestamp.getTime()) / 1000 / 60 / 60 / 24 / 7));
+            int diff_day = Math.round(((today.getTime() - timestamp.getTime()) / 1000 / 60 / 60 / 24));
+            int diff_hour = Math.round(((today.getTime() - timestamp.getTime()) / 1000 / 60 / 60));
+            int diff_minute = Math.round(((today.getTime() - timestamp.getTime()) / 1000 / 60));
+            int diff_second = Math.round(((today.getTime() - timestamp.getTime()) / 1000));
+
+
+            if (diff_year != 0){
+                difference = diff_year + "year";
+            } else if (diff_month != 0){
+                difference = diff_month + "month";
+            } else if (diff_week != 0){
+                difference = diff_week + "w";
+            } else if (diff_day != 0) {
+                difference = diff_day + "d";
+            } else if (diff_hour != 0){
+                difference = diff_hour + "h";
+            } else if (diff_minute != 0){
+                difference = diff_minute + "m";
+            } else if (diff_second != 0){
+                difference = diff_second + "s";
+            } else if (diff_second == 0){
+                difference = "just now";
+            }
+
+        } catch (ParseException e) {
+            Log.d(TAG, "getTimeStampDifference: ParseException: " + e.getMessage());
+        }
+        return difference;
+    }
+
+    public static String getTimeStamp(){
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.US);
+        sdf.setTimeZone(TimeZone.getTimeZone("America/Los_Angeles"));
+        return sdf.format(new Date());
+    }
 
     public static List<String> splitCommentString(String string){
         if (string.trim().equals(""))

@@ -47,6 +47,8 @@ import ai.tomorrow.instagramclone.models.User;
 import ai.tomorrow.instagramclone.models.UserAccountSettings;
 import ai.tomorrow.instagramclone.models.UserSettings;
 
+import static ai.tomorrow.instagramclone.Utils.StringManipulation.getTimeStamp;
+
 public class FirebaseMethods {
 
     private static final String TAG = "FirebaseMethods";
@@ -451,11 +453,6 @@ public class FirebaseMethods {
                 .setValue(firebaseUrl.toString());
     }
 
-    private String getTimeStamp(){
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.US);
-        sdf.setTimeZone(TimeZone.getTimeZone("America/Los_Angeles"));
-        return sdf.format(new Date());
-    }
 
     private void addPhotoToDatabase(String caption, String url){
         Log.d(TAG, "addPhotoToDatabase: add photo to database");
