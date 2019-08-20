@@ -27,7 +27,6 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import ai.tomorrow.instagramclone.Home.HomeActivity;
@@ -62,6 +61,7 @@ public class ViewCommentsFragment extends Fragment implements CommentListAdapter
     private Context mContext;
     private Photo mPhoto;
     private ArrayList<Comment> mComments = new ArrayList<>();
+    private CommentListAdapter mAdapter;
 
     // Firebase
     private FirebaseAuth mAuth;
@@ -89,7 +89,12 @@ public class ViewCommentsFragment extends Fragment implements CommentListAdapter
             Log.d(TAG, "onCreateView: NullPointerException: " + e.getMessage());
         }
 
+        mAdapter = new CommentListAdapter(mContext, R.layout.layout_comment,
+                mComments, mPhoto.getPhoto_id(), mPhoto.getUser_id(), ViewCommentsFragment.this);
+        mListView.setAdapter(mAdapter);
         setupFirebaseAuth();
+
+        refreshListView();
 
         mCheckMark.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -104,9 +109,11 @@ public class ViewCommentsFragment extends Fragment implements CommentListAdapter
                     String comment = commentResults.get(1);
 
                     mFirebaseMethods.addNewComment(comment, mPhoto.getPhoto_id(), mPhoto.getUser_id(), replyToUername);
+                    refreshListView();
 
                     mComment.setText("");
                     Helpers.hideSoftKeyboard(getActivity());
+                    mListView.smoothScrollToPosition(mListView.getCount());
                 } else {
                     Toast.makeText(getActivity(), "you can't post an empty comment.", Toast.LENGTH_SHORT).show();
                 }
@@ -131,8 +138,8 @@ public class ViewCommentsFragment extends Fragment implements CommentListAdapter
         return view;
     }
 
-    private void setupListView() {
-        Log.d(TAG, "setupListView: setting up comments.");
+    private void refreshListView() {
+        Log.d(TAG, "refreshListView: setting up comments.");
 
         Query query = FirebaseDatabase.getInstance().getReference()
                 .child(mContext.getString(R.string.dbname_photos))
@@ -155,10 +162,7 @@ public class ViewCommentsFragment extends Fragment implements CommentListAdapter
                     mComments.add(mFirebaseMethods.getComment(singleSnapshot));
                 }
 
-                CommentListAdapter adapter = new CommentListAdapter(mContext, R.layout.layout_comment,
-                        mComments, mPhoto.getPhoto_id(), mPhoto.getUser_id(), ViewCommentsFragment.this);
-                mListView.setAdapter(adapter);
-
+                mAdapter.setNewData(mComments);
             }
 
             @Override
@@ -166,8 +170,6 @@ public class ViewCommentsFragment extends Fragment implements CommentListAdapter
                 Log.d(TAG, "onCancelled: query cancelled");
             }
         });
-
-
     }
 
     /**
@@ -213,68 +215,6 @@ public class ViewCommentsFragment extends Fragment implements CommentListAdapter
                 }
             }
         };
-
-        myRef.child(mContext.getString(R.string.dbname_photos))
-                .child(mPhoto.getPhoto_id())
-                .addChildEventListener(new ChildEventListener() {
-                    @Override
-                    public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                        Log.d(TAG, "onChildAdded: comment added");
-                        setupListView();
-                    }
-
-                    @Override
-                    public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
-                    }
-
-                    @Override
-                    public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-
-                    }
-
-                    @Override
-                    public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                    }
-                });
-
-        myRef.child(mContext.getString(R.string.dbname_photos))
-                .child(mPhoto.getPhoto_id())
-                .child(mContext.getString(R.string.field_comments))
-                .addChildEventListener(new ChildEventListener() {
-                    @Override
-                    public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                        Log.d(TAG, "onChildAdded: comment added");
-                        setupListView();
-                    }
-
-                    @Override
-                    public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
-                    }
-
-                    @Override
-                    public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-
-                    }
-
-                    @Override
-                    public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                    }
-                });
-
     }
 
     @Override

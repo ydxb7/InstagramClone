@@ -38,6 +38,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -117,6 +118,11 @@ public class CommentListAdapter extends ArrayAdapter<Comment> {
         setupWidgets(position, holder);
 
         return convertView;
+    }
+
+    public void setNewData(ArrayList<Comment> comments){
+        mComments = comments;
+        notifyDataSetChanged();
     }
 
     private void setupWidgets(final int position, final ViewHolder holder) {
