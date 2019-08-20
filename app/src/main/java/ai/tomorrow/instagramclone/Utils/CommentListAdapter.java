@@ -202,12 +202,75 @@ public class CommentListAdapter extends ArrayAdapter<Comment> {
                         }
                     });
 
-                    // set comment
-                    if (getItem(position).getReply_to_username().equals("")) {
-                        String commentString = String.format("<b>%s</b> %s",
-                                commentUser.getUsername(), getItem(position).getComment());
-                        holder.comment.setText(Html.fromHtml(commentString));
+                    // set profile image onclick event
+                    holder.profileImage.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            Log.d(TAG, "onClick: navigating to user's profile.");
+                            Intent intent = new Intent(mContext, ProfileActivity.class);
+                            intent.putExtra(mContext.getString(R.string.calling_activity), mContext.getString(R.string.home_activity));
+                            intent.putExtra(mContext.getString(R.string.selected_user), commentUser);
+                            mContext.startActivity(intent);
+                        }
+                    });
+
+                    if (!getItem(position).getReply_to_username().equals("")){
+                        // reply to comment, this comment has @username
+                        Query query = myRef.child(mContext.getString(R.string.dbname_users))
+                                .orderByChild(mContext.getString(R.string.field_username))
+                                .equalTo(getItem(position).getReply_to_username());
+                        query.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
+                                    final User replyToUser = singleSnapshot.getValue(User.class);
+
+                                    // set comment
+                                    SpannableStringBuilder spannableString = new SpannableStringBuilder();
+
+                                    // Current user's username
+                                    spannableString.append(commentUser.getUsername());
+                                    StyleSpan boldStyleSpan = new StyleSpan(Typeface.BOLD);//粗体
+                                    int s1 = spannableString.length();
+                                    spannableString.setSpan(boldStyleSpan, 0, s1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+                                    Log.d(TAG, "onDataChange: getItem(position).getReply_to_username(): " + getItem(position).getReply_to_username());
+
+                                    // reply to user's username link
+                                    spannableString.append(" @" + getItem(position).getReply_to_username());
+                                    int s2 = spannableString.length();
+
+                                    ClickableSpan clickSpan = new ClickableSpan() {
+                                        @Override
+                                        public void onClick(View widget) {
+                                            //put whatever you like here, below is an example
+                                            Intent intent = new Intent(mContext, ProfileActivity.class);
+                                            intent.putExtra(mContext.getString(R.string.calling_activity), mContext.getString(R.string.home_activity));
+                                            intent.putExtra(mContext.getString(R.string.selected_user), replyToUser);
+                                            mContext.startActivity(intent);
+                                        }
+
+                                        @Override
+                                        public void updateDrawState(TextPaint ds) {// override updateDrawState
+                                            ds.setColor(mContext.getResources().getColor(R.color.link_blue));
+                                            ds.setUnderlineText(false); // set to false to remove underline
+                                        }
+                                    };
+                                    spannableString.setSpan(clickSpan, s1 + 1, s2, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                                    holder.comment.setMovementMethod(LinkMovementMethod.getInstance());
+                                    // comment body
+                                    spannableString.append(" " + getItem(position).getComment());
+                                    holder.comment.setText(spannableString);
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                            }
+                        });
                     } else {
+                        // reply to photo
                         SpannableStringBuilder spannableString = new SpannableStringBuilder();
 
                         // Current user's username
@@ -216,34 +279,9 @@ public class CommentListAdapter extends ArrayAdapter<Comment> {
                         int s1 = spannableString.length();
                         spannableString.setSpan(boldStyleSpan, 0, s1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 
-                        // reply to user's username link
-                        spannableString.append(" @" + getItem(position).getReply_to_username());
-                        int s2 = spannableString.length();
-
-                        ClickableSpan clickSpan = new ClickableSpan() {
-                            @Override
-                            public void onClick(View widget) {
-                                //put whatever you like here, below is an example
-                                Intent intent = new Intent(mContext, ProfileActivity.class);
-                                intent.putExtra(mContext.getString(R.string.calling_activity), mContext.getString(R.string.home_activity));
-                                intent.putExtra(mContext.getString(R.string.selected_user), commentUser);
-                                mContext.startActivity(intent);
-                            }
-
-                            @Override
-                            public void updateDrawState(TextPaint ds) {// override updateDrawState
-                                ds.setColor(mContext.getResources().getColor(R.color.link_blue));
-//                                ds.setARGB(36, 74, 96, 1);
-
-                                ds.setUnderlineText(false); // set to false to remove underline
-                            }
-                        };
-                        spannableString.setSpan(clickSpan, s1 + 1, s2, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-
                         // comment body
                         spannableString.append(" " + getItem(position).getComment());
                         holder.comment.setText(spannableString);
-                        holder.comment.setMovementMethod(LinkMovementMethod.getInstance());
                     }
                 }
             }
