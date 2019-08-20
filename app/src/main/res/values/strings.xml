@@ -45,6 +45,7 @@
     <string name="field_photo_likes">photo_likes</string>
     <string name="field_comment_likes">comment_likes</string>
     <string name="field_comment_id">comment_id</string>
+    <string name="field_liked_by_user_id">liked_by_user_id</string>
 
     <!--photo types-->
     <string name="new_photo">new_photo</string>

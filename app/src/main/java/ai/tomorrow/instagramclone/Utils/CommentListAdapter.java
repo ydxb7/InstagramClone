@@ -110,17 +110,19 @@ public class CommentListAdapter extends ArrayAdapter<Comment> {
                     .child(mContext.getString(R.string.field_comments))
                     .child(getItem(position).getComment_id())
                     .child(mContext.getString(R.string.field_likes))
-                    .orderByChild(mContext.getString(R.string.field_user_id))
+                    .orderByChild(mContext.getString(R.string.field_liked_by_user_id))
                     .equalTo(FirebaseAuth.getInstance().getCurrentUser().getUid());
 
             query2.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    Log.d(TAG, "onDataChange: comment's like state change.");
                     mLikedByCurrentUser = false;
                     for (DataSnapshot singleSnapshot: dataSnapshot.getChildren()){
                         Log.d(TAG, "onDataChange: found comment like: " + singleSnapshot);
                         mLikedByCurrentUser = true;
                     }
+                    Log.d(TAG, "onDataChange: comment mLikedByCurrentUser: " + mLikedByCurrentUser);
 
                     if (mLikedByCurrentUser){
                         holder.heart_red.setVisibility(View.VISIBLE);
