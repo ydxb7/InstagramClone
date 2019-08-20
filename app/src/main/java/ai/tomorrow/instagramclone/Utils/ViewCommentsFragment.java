@@ -2,6 +2,7 @@ package ai.tomorrow.instagramclone.Utils;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -44,9 +45,19 @@ import ai.tomorrow.instagramclone.models.Like;
 import ai.tomorrow.instagramclone.models.Photo;
 import ai.tomorrow.instagramclone.models.UserAccountSettings;
 
-public class ViewCommentsFragment extends Fragment {
+public class ViewCommentsFragment extends Fragment implements CommentListAdapter.OnReplyClickedListener {
 
     private static final String TAG = "ViewCommentsFragment";
+
+    @Override
+    public void OnReplyClick(String replyToUsername) {
+        Log.d(TAG, "OnReplyClick.");
+        String usernameString = String.format("<font color=#2e5cb8>@%s</font><font color=#000000/> ", replyToUsername);
+        mComment.setText(Html.fromHtml(usernameString));
+        mComment.requestFocus();
+        mComment.setSelection(mComment.getText().length());
+        Helpers.showSoftKeyboard(mContext);
+    }
 
     public ViewCommentsFragment() {
         setArguments(new Bundle());
@@ -147,7 +158,7 @@ public class ViewCommentsFragment extends Fragment {
                 }
 
                 CommentListAdapter adapter = new CommentListAdapter(mContext, R.layout.layout_comment,
-                        mComments, mPhoto.getPhoto_id(), mPhoto.getUser_id());
+                        mComments, mPhoto.getPhoto_id(), mPhoto.getUser_id(), ViewCommentsFragment.this);
                 mListView.setAdapter(adapter);
 
             }

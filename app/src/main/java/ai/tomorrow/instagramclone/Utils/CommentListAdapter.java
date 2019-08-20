@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -39,6 +40,10 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class CommentListAdapter extends ArrayAdapter<Comment> {
     private static final String TAG = "CommentListAdapter";
 
+    public interface OnReplyClickedListener{
+        void OnReplyClick(String replyToUsername);
+    }
+
     private Context mContext;
     private LayoutInflater mInflater;
     private int layoutResource;
@@ -47,10 +52,12 @@ public class CommentListAdapter extends ArrayAdapter<Comment> {
     private String photoID, photoOwnerID;
     private FirebaseMethods mFirebaseMethods;
     private DatabaseReference myRef;
+    private Fragment mFragment;
 
     public CommentListAdapter(@NonNull Context context, int layoutResource, @NonNull List<Comment> objects,
-                              String photoID, String photoOwnerID) {
+                              String photoID, String photoOwnerID, Fragment fragment) {
         super(context, layoutResource, objects);
+        mFragment = fragment;
         mContext = context;
         mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         this.layoutResource = layoutResource;
@@ -148,11 +155,26 @@ public class CommentListAdapter extends ArrayAdapter<Comment> {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 Log.d(TAG, "onDataChange: getting user account settings");
                 for (DataSnapshot singleSnapshot: dataSnapshot.getChildren()) {
-                    UserAccountSettings userAccountSettings = singleSnapshot.getValue(UserAccountSettings.class);
+                    final UserAccountSettings userAccountSettings = singleSnapshot.getValue(UserAccountSettings.class);
+
+                    // click reply, set the username in edit textView
+                    holder.reply.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            Log.d(TAG, "onClick: reply comment.");
+                            ((ViewCommentsFragment) mFragment).OnReplyClick(userAccountSettings.getUsername());
+                        }
+                    });
+
                     // set comment
-                    String commentString = String.format("<b>%s</b> %s",
-                            userAccountSettings.getUsername(), getItem(position).getComment());
-                    holder.comment.setText(Html.fromHtml(commentString));
+//                    if (getItem(position).getReply_to_username().equals("")){
+                        String commentString = String.format("<b>%s</b> %s",
+                                userAccountSettings.getUsername(), getItem(position).getComment());
+                        holder.comment.setText(Html.fromHtml(commentString));
+//                    }else {
+//                        /////////////////////////////////////////////
+//                    }
+
                     UniversalImageLoader.setImage(userAccountSettings.getProfile_photo(), holder.profileImage, null, "");
                 }
             }
@@ -162,6 +184,8 @@ public class CommentListAdapter extends ArrayAdapter<Comment> {
 
             }
         });
+
+
 
     }
 
