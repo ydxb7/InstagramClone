@@ -23,6 +23,7 @@ import com.google.firebase.auth.FirebaseUser;
 
 import ai.tomorrow.instagramclone.Home.HomeActivity;
 import ai.tomorrow.instagramclone.R;
+import ai.tomorrow.instagramclone.Utils.FirebaseMethods;
 import ai.tomorrow.instagramclone.Utils.Helpers;
 
 public class LoginActivity extends AppCompatActivity {
@@ -31,11 +32,12 @@ public class LoginActivity extends AppCompatActivity {
     // Firebase
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
+    private FirebaseMethods mFirebaseMethods;
 
     private Context mContext;
     private ProgressBar mProgressBar;
     private EditText mEmail, mPassword;
-    private TextView mPleaseWait;
+    private TextView mPleaseWait, mSendEmail;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -48,6 +50,8 @@ public class LoginActivity extends AppCompatActivity {
         mEmail = (EditText) findViewById(R.id.input_email);
         mPassword = (EditText) findViewById(R.id.input_password);
         mPleaseWait = (TextView) findViewById(R.id.pleaseWait);
+        mSendEmail = (TextView) findViewById(R.id.link_send_email);
+        mFirebaseMethods = new FirebaseMethods(mContext);
 
         mPleaseWait.setVisibility(View.GONE);
         mProgressBar.setVisibility(View.GONE);
@@ -56,8 +60,8 @@ public class LoginActivity extends AppCompatActivity {
         init();
     }
 
-    private boolean isStringNull(String string){
-        if (string.equals("")){
+    private boolean isStringNull(String string) {
+        if (string.equals("")) {
             return true;
         } else {
             return false;
@@ -69,7 +73,7 @@ public class LoginActivity extends AppCompatActivity {
      * -------------------------------- firebase --------------------------
      */
 
-    private void init(){
+    private void init() {
         // initialize the button to logging in
         Button btnLogin = (Button) findViewById(R.id.btn_login);
         btnLogin.setOnClickListener(new View.OnClickListener() {
@@ -79,7 +83,7 @@ public class LoginActivity extends AppCompatActivity {
                 String email = mEmail.getText().toString();
                 String password = mPassword.getText().toString();
 
-                if (isStringNull(email) || isStringNull(password)){
+                if (isStringNull(email) || isStringNull(password)) {
                     Toast.makeText(mContext, "You must fill out all the fields", Toast.LENGTH_SHORT).show();
                 } else {
                     mProgressBar.setVisibility(View.VISIBLE);
@@ -92,14 +96,14 @@ public class LoginActivity extends AppCompatActivity {
                                     if (task.isSuccessful()) {
                                         try {
                                             FirebaseUser user = mAuth.getCurrentUser();
-                                            if (user.isEmailVerified()){
+                                            if (user.isEmailVerified()) {
                                                 Intent intent = new Intent(mContext, HomeActivity.class);
                                                 startActivity(intent);
                                             } else {
                                                 Toast.makeText(mContext, "Email is not verified \n Please check your email inbox", Toast.LENGTH_SHORT).show();
                                                 mAuth.signOut();
                                             }
-                                        } catch (NullPointerException e){
+                                        } catch (NullPointerException e) {
                                             Log.d(TAG, "onComplete: NullPointerException: " + e.getMessage());
                                         }
 
@@ -132,18 +136,53 @@ public class LoginActivity extends AppCompatActivity {
         /**
          * If the user is logged in then navigate to 'HomeActivity' and call 'finish()'
          */
-        if (mAuth.getCurrentUser() != null){
+        if (mAuth.getCurrentUser() != null) {
             Intent intent = new Intent(mContext, HomeActivity.class);
             startActivity(intent);
             finish();
         }
 
+        mSendEmail.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.d(TAG, "onClick: send email again.");
+                String email = mEmail.getText().toString();
+                String password = mPassword.getText().toString();
+                mAuth.signInWithEmailAndPassword(email, password)
+                        .addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>() {
+                            @Override
+                            public void onComplete(@NonNull Task<AuthResult> task) {
+                                if (task.isSuccessful()) {
+                                    try {
+                                        FirebaseUser user = mAuth.getCurrentUser();
+                                        if (user.isEmailVerified()) {
+                                            Intent intent = new Intent(mContext, HomeActivity.class);
+                                            startActivity(intent);
+                                        } else {
+                                            mFirebaseMethods.sendVerificationEmail();
+                                            mAuth.signOut();
+                                        }
+                                    } catch (NullPointerException e) {
+                                        Log.d(TAG, "onComplete: NullPointerException: " + e.getMessage());
+                                    }
+
+                                } else {
+                                    // If sign in fails, display a message to the user.
+                                    Log.w(TAG, getString(R.string.auth_fail), task.getException());
+                                    Toast.makeText(mContext, "Authentication failed.",
+                                            Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        });
+            }
+
+        });
     }
 
     /**
      * setup the firebase auth object
      */
-    private void setupFirebaseAuth(){
+    private void setupFirebaseAuth() {
         // Initialize Firebase Auth
         mAuth = FirebaseAuth.getInstance();
 
@@ -152,7 +191,7 @@ public class LoginActivity extends AppCompatActivity {
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 FirebaseUser user = mAuth.getCurrentUser();
 
-                if (user != null){
+                if (user != null) {
                     // User is logged in
                     Log.d(TAG, "onAuthStateChanged: signed_in: " + user.getUid());
                 } else {
@@ -172,7 +211,7 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onStop() {
         super.onStop();
-        if (mAuthListener != null){
+        if (mAuthListener != null) {
             mAuth.removeAuthStateListener(mAuthListener);
         }
     }

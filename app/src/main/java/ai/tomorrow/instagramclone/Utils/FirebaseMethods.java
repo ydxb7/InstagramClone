@@ -500,31 +500,32 @@ public class FirebaseMethods {
     public void updateUserAccountSettings(String displayName, String website, String description, long phoneNumber){
 
         Log.d(TAG, "updateUserAccountSettings: updating user account settings");
+        String currentUserID = mAuth.getCurrentUser().getUid();
 
         if (displayName != null){
             myRef.child(mContext.getString(R.string.dbname_user_account_settings))
-                    .child(userID)
+                    .child(currentUserID)
                     .child(mContext.getString(R.string.field_display_name))
                     .setValue(displayName);
         }
 
         if (website != null){
             myRef.child(mContext.getString(R.string.dbname_user_account_settings))
-                    .child(userID)
+                    .child(currentUserID)
                     .child(mContext.getString(R.string.field_website))
                     .setValue(website);
         }
 
         if (description != null){
             myRef.child(mContext.getString(R.string.dbname_user_account_settings))
-                    .child(userID)
+                    .child(currentUserID)
                     .child(mContext.getString(R.string.field_description))
                     .setValue(description);
         }
 
         if (phoneNumber != 0){
             myRef.child(mContext.getString(R.string.dbname_users))
-                    .child(userID)
+                    .child(currentUserID)
                     .child(mContext.getString(R.string.field_phone_number))
                     .setValue(phoneNumber);
         }
@@ -540,14 +541,14 @@ public class FirebaseMethods {
      */
     public void updateUsername(String username){
         Log.d(TAG, "updateUsername: updating username to: " + username);
-
+        String currentUserID = mAuth.getCurrentUser().getUid();
         myRef.child(mContext.getString(R.string.dbname_users))
-                .child(userID)
+                .child(currentUserID)
                 .child(mContext.getString(R.string.field_username))
                 .setValue(username);
 
         myRef.child(mContext.getString(R.string.dbname_user_account_settings))
-                .child(userID)
+                .child(currentUserID)
                 .child(mContext.getString(R.string.field_username))
                 .setValue(username);
     }
@@ -558,9 +559,9 @@ public class FirebaseMethods {
      */
     public void updateEmail(String email){
         Log.d(TAG, "updateUsername: updating emial to: " + email);
-
+        String currentUserID = mAuth.getCurrentUser().getUid();
         myRef.child(mContext.getString(R.string.dbname_users))
-                .child(userID)
+                .child(currentUserID)
                 .child(mContext.getString(R.string.field_email))
                 .setValue(email);
     }
@@ -570,9 +571,8 @@ public class FirebaseMethods {
      * Register a new email and password to Firebase Authentication
      * @param email
      * @param password
-     * @param username
      */
-    public void registerNewEmail(String email, String password, final String username){
+    public void registerNewEmail(String email, String password){
 
         mAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
@@ -600,14 +600,15 @@ public class FirebaseMethods {
 
     public void sendVerificationEmail(){
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-
+        Log.d(TAG, "sendVerificationEmail: user: " + user);
         if (user != null){
             user.sendEmailVerification()
                     .addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
                             if (task.isSuccessful()){
-
+                                Toast.makeText(mContext, "Verification email has been sent to your email, " +
+                                        "please check you email inbox.", Toast.LENGTH_SHORT).show();
                             } else {
                                 Toast.makeText(mContext, "Couldn't send verification email.", Toast.LENGTH_SHORT).show();
                             }
@@ -631,10 +632,10 @@ public class FirebaseMethods {
      * @param profile_photo
      */
     public void addNewUser(String email, String username, String description, String website, String profile_photo){
-
-        User user = new User(userID, email, 1L, username);
+        String currentUserID = mAuth.getCurrentUser().getUid();
+        User user = new User(currentUserID, email, 0L, username);
         myRef.child(mContext.getString(R.string.dbname_users))
-                .child(userID)
+                .child(currentUserID)
                 .setValue(user);
 
         UserAccountSettings settings = new UserAccountSettings(
@@ -643,10 +644,10 @@ public class FirebaseMethods {
                 profile_photo,
                 StringManipulation.condenseUsername(username),
                 website,
-                userID
+                currentUserID
         );
         myRef.child(mContext.getString(R.string.dbname_user_account_settings))
-                .child(userID)
+                .child(currentUserID)
                 .setValue(settings);
 
     }
@@ -661,7 +662,7 @@ public class FirebaseMethods {
     public UserSettings getUserSettings(DataSnapshot dataSnapshot){
         Log.d(TAG, "getUserSettings: retrieving user account settings from firebase.");
 
-
+        String currentUserID = mAuth.getCurrentUser().getUid();
         UserAccountSettings settings  = new UserAccountSettings();
         User user = new User();
 
@@ -674,27 +675,27 @@ public class FirebaseMethods {
                 try {
 
                     settings.setDisplay_name(
-                            ds.child(userID)
+                            ds.child(currentUserID)
                                     .getValue(UserAccountSettings.class)
                                     .getDisplay_name()
                     );
                     settings.setUsername(
-                            ds.child(userID)
+                            ds.child(currentUserID)
                                     .getValue(UserAccountSettings.class)
                                     .getUsername()
                     );
                     settings.setWebsite(
-                            ds.child(userID)
+                            ds.child(currentUserID)
                                     .getValue(UserAccountSettings.class)
                                     .getWebsite()
                     );
                     settings.setDescription(
-                            ds.child(userID)
+                            ds.child(currentUserID)
                                     .getValue(UserAccountSettings.class)
                                     .getDescription()
                     );
                     settings.setProfile_photo(
-                            ds.child(userID)
+                            ds.child(currentUserID)
                                     .getValue(UserAccountSettings.class)
                                     .getProfile_photo()
                     );
@@ -712,22 +713,22 @@ public class FirebaseMethods {
                 Log.d(TAG, "getUserAccountSettings: users node datasnapshot: " + ds);
 
                 user.setUsername(
-                        ds.child(userID)
+                        ds.child(currentUserID)
                                 .getValue(User.class)
                                 .getUsername()
                 );
                 user.setEmail(
-                        ds.child(userID)
+                        ds.child(currentUserID)
                                 .getValue(User.class)
                                 .getEmail()
                 );
                 user.setPhone_number(
-                        ds.child(userID)
+                        ds.child(currentUserID)
                                 .getValue(User.class)
                                 .getPhone_number()
                 );
                 user.setUser_id(
-                        ds.child(userID)
+                        ds.child(currentUserID)
                                 .getValue(User.class)
                                 .getUser_id()
                 );
