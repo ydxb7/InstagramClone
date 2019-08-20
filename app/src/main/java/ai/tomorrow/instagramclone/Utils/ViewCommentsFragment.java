@@ -31,6 +31,7 @@ import com.google.firebase.storage.StorageReference;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -104,9 +105,16 @@ public class ViewCommentsFragment extends Fragment implements CommentListAdapter
         mCheckMark.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!mComment.getText().toString().equals("")) {
+                List<String> commentResults = getCommentString(mComment.getText().toString());
+                Log.d(TAG, "onClick: commentResults: " + commentResults);
+
+                if (commentResults != null) {
                     Log.d(TAG, "onClick: post a comment.");
-                    mFirebaseMethods.addNewComment(mComment.getText().toString(), mPhoto.getPhoto_id(), mPhoto.getUser_id(), "");
+
+                    String replyToUername = commentResults.get(0);
+                    String comment = commentResults.get(1);
+
+                    mFirebaseMethods.addNewComment(comment, mPhoto.getPhoto_id(), mPhoto.getUser_id(), replyToUername);
 
                     mComment.setText("");
                     Helpers.hideSoftKeyboard(getActivity());
@@ -132,6 +140,30 @@ public class ViewCommentsFragment extends Fragment implements CommentListAdapter
         });
 
         return view;
+    }
+
+    private List<String> getCommentString(String string){
+        if (string.trim().equals(""))
+            return null;
+
+        String username = "";
+        String comment = "";
+
+        if (string.trim().startsWith("@")){
+            if (!string.trim().contains(" ")){
+                return null;
+            }
+            int spacdIndex = string.indexOf(" ");
+            username = string.substring(1, spacdIndex);
+            comment = string.substring(spacdIndex + 1);
+
+            if (comment.equals("")){
+                return null;
+            }
+        } else {
+            comment = string;
+        }
+        return Arrays.asList(username, comment);
     }
 
     private void setupListView() {
