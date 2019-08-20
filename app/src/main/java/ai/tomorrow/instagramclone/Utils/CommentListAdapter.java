@@ -49,6 +49,7 @@ import ai.tomorrow.instagramclone.Profile.ProfileActivity;
 import ai.tomorrow.instagramclone.R;
 import ai.tomorrow.instagramclone.models.Comment;
 import ai.tomorrow.instagramclone.models.Like;
+import ai.tomorrow.instagramclone.models.LikeComment;
 import ai.tomorrow.instagramclone.models.User;
 import ai.tomorrow.instagramclone.models.UserAccountSettings;
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -301,7 +302,7 @@ public class CommentListAdapter extends ArrayAdapter<Comment> {
                 .child(photoID)
                 .child(mContext.getString(R.string.field_comments))
                 .child(getItem(position).getComment_id())
-                .child(mContext.getString(R.string.field_likes));
+                .child(mContext.getString(R.string.field_likes_comment));
 
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -311,7 +312,7 @@ public class CommentListAdapter extends ArrayAdapter<Comment> {
                 int likeCount = 0;
                 for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
                     Log.d(TAG, "onDataChange: found comment like: " + singleSnapshot);
-                    if (singleSnapshot.getValue(Like.class).getLiked_by_user_id().equals(FirebaseAuth.getInstance().getCurrentUser().getUid()))
+                    if (singleSnapshot.getValue(LikeComment.class).getLiked_by_user_id().equals(FirebaseAuth.getInstance().getCurrentUser().getUid()))
                         mLikedByCurrentUser = true;
                     likeCount++;
                 }

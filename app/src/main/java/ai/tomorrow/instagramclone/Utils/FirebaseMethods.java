@@ -42,6 +42,8 @@ import ai.tomorrow.instagramclone.Home.HomeActivity;
 import ai.tomorrow.instagramclone.R;
 import ai.tomorrow.instagramclone.models.Comment;
 import ai.tomorrow.instagramclone.models.Like;
+import ai.tomorrow.instagramclone.models.LikeComment;
+import ai.tomorrow.instagramclone.models.LikePhoto;
 import ai.tomorrow.instagramclone.models.Photo;
 import ai.tomorrow.instagramclone.models.User;
 import ai.tomorrow.instagramclone.models.UserAccountSettings;
@@ -88,13 +90,14 @@ public class FirebaseMethods {
         photo.setUser_id(objectMap.get(mContext.getString(R.string.field_user_id)).toString());
         photo.setPhoto_id(objectMap.get(mContext.getString(R.string.field_photo_id)).toString());
 
-        List<Like> likesList = new ArrayList<>();
-        for (DataSnapshot ds : singleSnapshot.child(mContext.getString(R.string.field_likes)).getChildren()) {
-            Like like = new Like();
-            like.setLiked_by_user_id(ds.getValue(Like.class).getLiked_by_user_id());
-            like.setLiked_to_user_id(ds.getValue(Like.class).getLiked_to_user_id());
-            like.setDate_created(ds.getValue(Like.class).getDate_created());
-            likesList.add(like);
+        List<LikePhoto> likesPhotoList = new ArrayList<>();
+        for (DataSnapshot ds : singleSnapshot.child(mContext.getString(R.string.field_likes_photo)).getChildren()) {
+            LikePhoto like = new LikePhoto();
+            like.setLiked_by_user_id(ds.getValue(LikePhoto.class).getLiked_by_user_id());
+            like.setLiked_to_user_id(ds.getValue(LikePhoto.class).getLiked_to_user_id());
+            like.setDate_created(ds.getValue(LikePhoto.class).getDate_created());
+            ((LikePhoto) like).setPhoto_id(ds.getValue(LikePhoto.class).getPhoto_id());
+            likesPhotoList.add(like);
         }
 
         List<Comment> commentList = new ArrayList<>();
@@ -103,7 +106,7 @@ public class FirebaseMethods {
             commentList.add(comment);
         }
 
-        photo.setLikes(likesList);
+        photo.setLikes_photo(likesPhotoList);
         photo.setComments(commentList);
         return photo;
     }
@@ -153,16 +156,17 @@ public class FirebaseMethods {
         comment.setComment(objectMap.get(mContext.getString(R.string.field_comment)).toString());
         comment.setDate_created(objectMap.get(mContext.getString(R.string.field_date_created)).toString());
 
-        List<Like> likesList = new ArrayList<>();
-        for (DataSnapshot likeSnapshot : ds.child(mContext.getString(R.string.field_likes)).getChildren()) {
-            Like like = new Like();
-            like.setLiked_by_user_id(likeSnapshot.getValue(Like.class).getLiked_by_user_id());
-            like.setLiked_to_user_id(likeSnapshot.getValue(Like.class).getLiked_to_user_id());
-            like.setDate_created(likeSnapshot.getValue(Like.class).getDate_created());
+        List<LikeComment> likesList = new ArrayList<>();
+        for (DataSnapshot likeSnapshot : ds.child(mContext.getString(R.string.field_likes_comment)).getChildren()) {
+            LikeComment like = new LikeComment();
+            like.setLiked_by_user_id(likeSnapshot.getValue(LikeComment.class).getLiked_by_user_id());
+            like.setLiked_to_user_id(likeSnapshot.getValue(LikeComment.class).getLiked_to_user_id());
+            like.setDate_created(likeSnapshot.getValue(LikeComment.class).getDate_created());
+            like.setComment_id(likeSnapshot.getValue(LikeComment.class).getComment_id());
             likesList.add(like);
         }
 
-        comment.setLikes(likesList);
+        comment.setLikes_comment(likesList);
         return comment;
     }
 
@@ -174,7 +178,7 @@ public class FirebaseMethods {
                 .child(photoID)
                 .child(mContext.getString(R.string.field_comments))
                 .child(commentID)
-                .child(mContext.getString(R.string.field_likes))
+                .child(mContext.getString(R.string.field_likes_comment))
                 .child(currentUserID)
                 .removeValue();
 
@@ -183,7 +187,7 @@ public class FirebaseMethods {
                 .child(photoID)
                 .child(mContext.getString(R.string.field_comments))
                 .child(commentID)
-                .child(mContext.getString(R.string.field_likes))
+                .child(mContext.getString(R.string.field_likes_comment))
                 .child(currentUserID)
                 .removeValue();
 
@@ -198,17 +202,17 @@ public class FirebaseMethods {
         Log.d(TAG, "addCommentNewLike: adding new like to comment: " + commentID);
 
         String currentUserID = mAuth.getCurrentUser().getUid();
-        Like like = new Like();
+        LikeComment like = new LikeComment();
         like.setLiked_by_user_id(mAuth.getCurrentUser().getUid());
         like.setLiked_to_user_id(commentOwnerID);
-
+        like.setComment_id(commentID);
         like.setDate_created(getTimeStamp());
 
         myRef.child(mContext.getString(R.string.dbname_photos))
                 .child(photoID)
                 .child(mContext.getString(R.string.field_comments))
                 .child(commentID)
-                .child(mContext.getString(R.string.field_likes))
+                .child(mContext.getString(R.string.field_likes_comment))
                 .child(currentUserID)
                 .setValue(like);
 
@@ -217,7 +221,7 @@ public class FirebaseMethods {
                 .child(photoID)
                 .child(mContext.getString(R.string.field_comments))
                 .child(commentID)
-                .child(mContext.getString(R.string.field_likes))
+                .child(mContext.getString(R.string.field_likes_comment))
                 .child(currentUserID)
                 .setValue(like);
 
@@ -234,14 +238,14 @@ public class FirebaseMethods {
 
         myRef.child(mContext.getString(R.string.dbname_photos))
                 .child(photoID)
-                .child(mContext.getString(R.string.field_likes))
+                .child(mContext.getString(R.string.field_likes_photo))
                 .child(mAuth.getCurrentUser().getUid())
                 .removeValue();
 
         myRef.child(mContext.getString(R.string.dbname_user_photos))
                 .child(photoUserID)
                 .child(photoID)
-                .child(mContext.getString(R.string.field_likes))
+                .child(mContext.getString(R.string.field_likes_photo))
                 .child(mAuth.getCurrentUser().getUid())
                 .removeValue();
 
@@ -256,21 +260,22 @@ public class FirebaseMethods {
         Log.d(TAG, "addPhotoNewLike: adding new like to photo: " + photoID);
 
         String currentUserID = mAuth.getCurrentUser().getUid();
-        Like like = new Like();
+        LikePhoto like = new LikePhoto();
         like.setLiked_by_user_id(mAuth.getCurrentUser().getUid());
         like.setLiked_to_user_id(photoUserID);
         like.setDate_created(getTimeStamp());
+        like.setPhoto_id(photoID);
 
         myRef.child(mContext.getString(R.string.dbname_photos))
                 .child(photoID)
-                .child(mContext.getString(R.string.field_likes))
+                .child(mContext.getString(R.string.field_likes_photo))
                 .child(currentUserID)
                 .setValue(like);
 
         myRef.child(mContext.getString(R.string.dbname_user_photos))
                 .child(photoUserID)
                 .child(photoID)
-                .child(mContext.getString(R.string.field_likes))
+                .child(mContext.getString(R.string.field_likes_photo))
                 .child(currentUserID)
                 .setValue(like);
 

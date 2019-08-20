@@ -8,21 +8,24 @@ public class Comment {
     private String user_id;
     private String photo_id;
     private String comment_id;
-    private List<Like> likes;
+    private List<LikeComment> likes_comment;
     private String date_created;
     private String reply_to_username;
 
     public Comment() {
     }
 
-    public Comment(String comment, String user_id, String photo_id, String comment_id, List<Like> likes, String date_created, String reply_to_username) {
-        this.comment = comment;
-        this.user_id = user_id;
-        this.photo_id = photo_id;
-        this.comment_id = comment_id;
-        this.likes = likes;
-        this.date_created = date_created;
-        this.reply_to_username = reply_to_username;
+    @Override
+    public String toString() {
+        return "Comment{" +
+                "comment='" + comment + '\'' +
+                ", user_id='" + user_id + '\'' +
+                ", photo_id='" + photo_id + '\'' +
+                ", comment_id='" + comment_id + '\'' +
+                ", likes_comment=" + likes_comment +
+                ", date_created='" + date_created + '\'' +
+                ", reply_to_username='" + reply_to_username + '\'' +
+                '}';
     }
 
     public String getComment() {
@@ -57,12 +60,12 @@ public class Comment {
         this.comment_id = comment_id;
     }
 
-    public List<Like> getLikes() {
-        return likes;
+    public List<LikeComment> getLikes_comment() {
+        return likes_comment;
     }
 
-    public void setLikes(List<Like> likes) {
-        this.likes = likes;
+    public void setLikes_comment(List<LikeComment> likes_comment) {
+        this.likes_comment = likes_comment;
     }
 
     public String getDate_created() {
@@ -81,16 +84,13 @@ public class Comment {
         this.reply_to_username = reply_to_username;
     }
 
-    @Override
-    public String toString() {
-        return "Comment{" +
-                "comment='" + comment + '\'' +
-                ", user_id='" + user_id + '\'' +
-                ", photo_id='" + photo_id + '\'' +
-                ", comment_id='" + comment_id + '\'' +
-                ", likes=" + likes +
-                ", date_created='" + date_created + '\'' +
-                ", reply_to_username='" + reply_to_username + '\'' +
-                '}';
+    public Comment(String comment, String user_id, String photo_id, String comment_id, List<LikeComment> likes_comment, String date_created, String reply_to_username) {
+        this.comment = comment;
+        this.user_id = user_id;
+        this.photo_id = photo_id;
+        this.comment_id = comment_id;
+        this.likes_comment = likes_comment;
+        this.date_created = date_created;
+        this.reply_to_username = reply_to_username;
     }
 }

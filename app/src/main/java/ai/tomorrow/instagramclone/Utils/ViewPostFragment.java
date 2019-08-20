@@ -40,6 +40,7 @@ import java.util.TimeZone;
 
 import ai.tomorrow.instagramclone.R;
 import ai.tomorrow.instagramclone.models.Like;
+import ai.tomorrow.instagramclone.models.LikePhoto;
 import ai.tomorrow.instagramclone.models.Photo;
 import ai.tomorrow.instagramclone.models.User;
 import ai.tomorrow.instagramclone.models.UserAccountSettings;
@@ -187,7 +188,7 @@ public class ViewPostFragment extends Fragment {
         mLikedByCurrentUser = false;
         Query query = myRef.child(mContext.getString(R.string.dbname_photos))
                 .child(mPhoto.getPhoto_id())
-                .child(mContext.getString(R.string.field_likes));
+                .child(mContext.getString(R.string.field_likes_photo));
 
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -197,12 +198,12 @@ public class ViewPostFragment extends Fragment {
                     mLikesString = "";
                     setupWidgets();
                 } else {
-                    final List<Like> likes = new ArrayList<>();
+                    final List<LikePhoto> likes = new ArrayList<>();
 
                     // get all likes for this photo
                     for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
                         Log.d(TAG, "onDataChange: found Like: " + singleSnapshot);
-                        Like like = singleSnapshot.getValue(Like.class);
+                        LikePhoto like = singleSnapshot.getValue(LikePhoto.class);
                         likes.add(like);
                         Log.d(TAG, "onDataChange: like.getUser_id(): " + like.getLiked_by_user_id());
                         Log.d(TAG, "onDataChange: current user id: " + FirebaseAuth.getInstance().getCurrentUser().getUid());
@@ -213,9 +214,9 @@ public class ViewPostFragment extends Fragment {
                     }
 
                     // sort likes by date created
-                    Collections.sort(likes, new Comparator<Like>() {
+                    Collections.sort(likes, new Comparator<LikePhoto>() {
                         @Override
-                        public int compare(Like o1, Like o2) {
+                        public int compare(LikePhoto o1, LikePhoto o2) {
                             return o2.getDate_created().compareTo(o1.getDate_created());
                         }
                     });
@@ -225,7 +226,7 @@ public class ViewPostFragment extends Fragment {
 
                     for (int i = 0; i < Math.min(likes.size(), 4); i++) {
                         final int count = i;
-                        Like eachLike = likes.get(i);
+                        LikePhoto eachLike = likes.get(i);
                         Query query = myRef.child(mContext.getString(R.string.dbname_users))
                                 .orderByChild(mContext.getString(R.string.field_user_id))
                                 .equalTo(eachLike.getLiked_by_user_id());
@@ -296,7 +297,7 @@ public class ViewPostFragment extends Fragment {
             Query query = reference
                     .child(getString(R.string.dbname_photos))
                     .child(mPhoto.getPhoto_id())
-                    .child(getString(R.string.field_likes));
+                    .child(getString(R.string.field_likes_photo));
             query.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
@@ -306,7 +307,7 @@ public class ViewPostFragment extends Fragment {
 
                         //case1: Then user already liked the photo
                         if (mLikedByCurrentUser &&
-                                singleSnapshot.getValue(Like.class).getLiked_by_user_id()
+                                singleSnapshot.getValue(LikePhoto.class).getLiked_by_user_id()
                                         .equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
 
                             mFirebaseMethods.removePhotoLike(mPhoto.getPhoto_id(), mPhoto.getUser_id());

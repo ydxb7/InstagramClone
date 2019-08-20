@@ -5,16 +5,16 @@ import java.util.List;
 public class UserLikes {
 
     private String user_id;
-    private List<Like> photo_likes;
-    private List<Like> comment_likes;
+    private List<LikePhoto> photo_likes;
+    private List<LikeComment> comment_likes;
 
-    public UserLikes(String user_id, List<Like> photo_likes, List<Like> comment_likes) {
-        this.user_id = user_id;
-        this.photo_likes = photo_likes;
-        this.comment_likes = comment_likes;
-    }
-
-    public UserLikes() {
+    @Override
+    public String toString() {
+        return "UserLikes{" +
+                "user_id='" + user_id + '\'' +
+                ", photo_likes=" + photo_likes +
+                ", comment_likes=" + comment_likes +
+                '}';
     }
 
     public String getUser_id() {
@@ -25,28 +25,28 @@ public class UserLikes {
         this.user_id = user_id;
     }
 
-    public List<Like> getPhoto_likes() {
+    public List<LikePhoto> getPhoto_likes() {
         return photo_likes;
     }
 
-    public void setPhoto_likes(List<Like> photo_likes) {
+    public void setPhoto_likes(List<LikePhoto> photo_likes) {
         this.photo_likes = photo_likes;
     }
 
-    public List<Like> getComment_likes() {
+    public List<LikeComment> getComment_likes() {
         return comment_likes;
     }
 
-    public void setComment_likes(List<Like> comment_likes) {
+    public void setComment_likes(List<LikeComment> comment_likes) {
         this.comment_likes = comment_likes;
     }
 
-    @Override
-    public String toString() {
-        return "UserLikes{" +
-                "user_id='" + user_id + '\'' +
-                ", photo_likes=" + photo_likes +
-                ", comment_likes=" + comment_likes +
-                '}';
+    public UserLikes() {
+    }
+
+    public UserLikes(String user_id, List<LikePhoto> photo_likes, List<LikeComment> comment_likes) {
+        this.user_id = user_id;
+        this.photo_likes = photo_likes;
+        this.comment_likes = comment_likes;
     }
 }

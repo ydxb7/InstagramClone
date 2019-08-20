@@ -13,20 +13,20 @@ public class Photo implements Parcelable {
     private String photo_id;
     private String user_id;
     private String tags;
-    private List<Like> likes;
+    private List<LikePhoto> likes_photo;
     private List<Comment> comments;
 
     public Photo() {
     }
 
-    public Photo(String caption, String date_created, String image_path, String photo_id, String user_id, String tags, List<Like> likes, List<Comment> comments) {
+    public Photo(String caption, String date_created, String image_path, String photo_id, String user_id, String tags, List<LikePhoto> likes_photo, List<Comment> comments) {
         this.caption = caption;
         this.date_created = date_created;
         this.image_path = image_path;
         this.photo_id = photo_id;
         this.user_id = user_id;
         this.tags = tags;
-        this.likes = likes;
+        this.likes_photo = likes_photo;
         this.comments = comments;
     }
 
@@ -50,6 +50,20 @@ public class Photo implements Parcelable {
             return new Photo[size];
         }
     };
+
+    @Override
+    public String toString() {
+        return "Photo{" +
+                "caption='" + caption + '\'' +
+                ", date_created='" + date_created + '\'' +
+                ", image_path='" + image_path + '\'' +
+                ", photo_id='" + photo_id + '\'' +
+                ", user_id='" + user_id + '\'' +
+                ", tags='" + tags + '\'' +
+                ", likes_photo=" + likes_photo +
+                ", comments=" + comments +
+                '}';
+    }
 
     public String getCaption() {
         return caption;
@@ -99,12 +113,12 @@ public class Photo implements Parcelable {
         this.tags = tags;
     }
 
-    public List<Like> getLikes() {
-        return likes;
+    public List<LikePhoto> getLikes_photo() {
+        return likes_photo;
     }
 
-    public void setLikes(List<Like> likes) {
-        this.likes = likes;
+    public void setLikes_photo(List<LikePhoto> likes_photo) {
+        this.likes_photo = likes_photo;
     }
 
     public List<Comment> getComments() {
@@ -116,31 +130,17 @@ public class Photo implements Parcelable {
     }
 
     @Override
-    public String toString() {
-        return "Photo{" +
-                "caption='" + caption + '\'' +
-                ", date_created='" + date_created + '\'' +
-                ", image_path='" + image_path + '\'' +
-                ", photo_id='" + photo_id + '\'' +
-                ", user_id='" + user_id + '\'' +
-                ", tags='" + tags + '\'' +
-                ", likes=" + likes +
-                ", comments=" + comments +
-                '}';
-    }
-
-    @Override
     public int describeContents() {
         return 0;
     }
 
     @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(caption);
-        dest.writeString(date_created);
-        dest.writeString(image_path);
-        dest.writeString(photo_id);
-        dest.writeString(user_id);
-        dest.writeString(tags);
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(caption);
+        parcel.writeString(date_created);
+        parcel.writeString(image_path);
+        parcel.writeString(photo_id);
+        parcel.writeString(user_id);
+        parcel.writeString(tags);
     }
 }
