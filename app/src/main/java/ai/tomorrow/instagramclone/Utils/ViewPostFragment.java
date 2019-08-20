@@ -159,30 +159,6 @@ public class ViewPostFragment extends Fragment {
         }
     }
 
-//    private Photo getPhoto(DataSnapshot singleSnapshot) {
-//        Photo newPhoto = new Photo();
-//        Map<String, Object> objectMap = (HashMap<String, Object>) singleSnapshot.getValue();
-//
-//        newPhoto.setCaption(objectMap.get(getString(R.string.field_caption)).toString());
-//        newPhoto.setTags(objectMap.get(getString(R.string.field_tags)).toString());
-//        newPhoto.setPhoto_id(objectMap.get(getString(R.string.field_photo_id)).toString());
-//        newPhoto.setUser_id(objectMap.get(getString(R.string.field_user_id)).toString());
-//        newPhoto.setDate_created(objectMap.get(getString(R.string.field_date_created)).toString());
-//        newPhoto.setImage_path(objectMap.get(getString(R.string.field_image_path)).toString());
-//
-//        List<Comment> commentsList = new ArrayList<Comment>();
-//        for (DataSnapshot dSnapshot : singleSnapshot
-//                .child(getString(R.string.field_comments)).getChildren()) {
-//            Comment comment = new Comment();
-//            comment.setUser_id(dSnapshot.getValue(Comment.class).getUser_id());
-//            comment.setComment(dSnapshot.getValue(Comment.class).getComment());
-//            comment.setDate_created(dSnapshot.getValue(Comment.class).getDate_created());
-//            commentsList.add(comment);
-//        }
-//        newPhoto.setComments(commentsList);
-//        return newPhoto;
-//    }
-
     /**
      * solve the problem: fragment not attached to activity
      */
@@ -272,7 +248,6 @@ public class ViewPostFragment extends Fragment {
 
                             }
                         });
-
                     }
                 }
             }
@@ -281,98 +256,9 @@ public class ViewPostFragment extends Fragment {
             public void onCancelled(@NonNull DatabaseError databaseError) {
 
             }
-
         });
-
-
     }
 
-
-
-    private void getLikesString1() {
-        Log.d(TAG, "getLikesString: getting likes string");
-
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
-        Query query = reference
-                .child(getString(R.string.dbname_photos))
-                .child(mPhoto.getPhoto_id())
-                .child(getString(R.string.field_likes));
-        query.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                mUsers = new StringBuilder();
-                for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
-
-                    DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
-                    Query query = reference
-                            .child(getString(R.string.dbname_users))
-                            .orderByChild(getString(R.string.field_user_id))
-                            .equalTo(singleSnapshot.getValue(Like.class).getLiked_by_user_id());
-                    query.addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(DataSnapshot dataSnapshot) {
-                            for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
-                                Log.d(TAG, "onDataChange: found like: " +
-                                        singleSnapshot.getValue(User.class).getUsername());
-
-                                mUsers.append(singleSnapshot.getValue(User.class).getUsername());
-                                mUsers.append(",");
-                            }
-
-                            String[] splitUsers = mUsers.toString().split(",");
-
-                            if (mUsers.toString().contains(mCurrentUser.getUsername() + ",")) {//mitch, mitchell.tabian
-                                mLikedByCurrentUser = true;
-                            } else {
-                                mLikedByCurrentUser = false;
-                            }
-
-                            int length = splitUsers.length;
-                            if (length == 1) {
-                                mLikesString = "Liked by " + splitUsers[0];
-                            } else if (length == 2) {
-                                mLikesString = "Liked by " + splitUsers[0]
-                                        + " and " + splitUsers[1];
-                            } else if (length == 3) {
-                                mLikesString = "Liked by " + splitUsers[0]
-                                        + ", " + splitUsers[1]
-                                        + " and " + splitUsers[2];
-
-                            } else if (length == 4) {
-                                mLikesString = "Liked by " + splitUsers[0]
-                                        + ", " + splitUsers[1]
-                                        + ", " + splitUsers[2]
-                                        + " and " + splitUsers[3];
-                            } else if (length > 4) {
-                                mLikesString = "Liked by " + splitUsers[0]
-                                        + ", " + splitUsers[1]
-                                        + ", " + splitUsers[2]
-                                        + " and " + (splitUsers.length - 3) + " others";
-                            }
-                            Log.d(TAG, "onDataChange: likes string: " + mLikesString);
-                            setupWidgets();
-                        }
-
-                        @Override
-                        public void onCancelled(DatabaseError databaseError) {
-
-                        }
-                    });
-                }
-                if (!dataSnapshot.exists()) {
-                    mLikesString = "";
-                    mLikedByCurrentUser = false;
-                    setupWidgets();
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-
-    }
 
     private void getCurrentUser() {
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference();

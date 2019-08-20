@@ -14,6 +14,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -41,20 +42,29 @@ public class CommentListAdapter extends ArrayAdapter<Comment> {
     private LayoutInflater mInflater;
     private int layoutResource;
     private List<Comment> mComments;
+    private boolean mLikedByCurrentUser;
+    private String photoID, photoOwnerID;
+    private FirebaseMethods mFirebaseMethods;
+    private DatabaseReference myRef;
 
-    public CommentListAdapter(@NonNull Context context, int layoutResource, @NonNull List<Comment> objects) {
+    public CommentListAdapter(@NonNull Context context, int layoutResource, @NonNull List<Comment> objects,
+                              String photoID, String photoOwnerID) {
         super(context, layoutResource, objects);
         mContext = context;
         mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         this.layoutResource = layoutResource;
         mComments = objects;
+        this.photoID = photoID;
+        this.photoOwnerID = photoOwnerID;
+        mFirebaseMethods = new FirebaseMethods(context);
+        myRef = FirebaseDatabase.getInstance().getReference();
     }
 
     private static class ViewHolder{
 
         CircleImageView profileImage;
-        TextView username, comment, timePostes, likes, reply;
-        ImageView like;
+        TextView username, comment, timePostes, likes_number, reply;
+        ImageView like, heart_white, heart_red;
 
     }
 
@@ -71,14 +81,82 @@ public class CommentListAdapter extends ArrayAdapter<Comment> {
 //            holder.username = (TextView) convertView.findViewById(R.id.comment_username);
             holder.comment = (TextView) convertView.findViewById(R.id.comment);
             holder.timePostes = (TextView) convertView.findViewById(R.id.comment_time_posted);
-            holder.likes = (TextView) convertView.findViewById(R.id.comment_likes);
+            holder.likes_number = (TextView) convertView.findViewById(R.id.likes_number);
             holder.reply = (TextView) convertView.findViewById(R.id.comment_reply);
-            holder.like = (ImageView) convertView.findViewById(R.id.comment_like);
+            holder.heart_white = (ImageView) convertView.findViewById(R.id.heart_white);
+            holder.heart_red = (ImageView) convertView.findViewById(R.id.heart_red);
 
             convertView.setTag(holder);
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
+
+        setupWidgets(position, holder);
+
+        return convertView;
+    }
+
+    private void setupWidgets(final int position, final ViewHolder holder) {
+        if (position == 0){
+            holder.likes_number.setVisibility(View.GONE);
+            holder.reply.setVisibility(View.GONE);
+            holder.heart_white.setVisibility(View.GONE);
+            holder.heart_red.setVisibility(View.GONE);
+        } else {
+            // set heart init
+            Query query2 = myRef
+                    .child(mContext.getString(R.string.dbname_photos))
+                    .child(photoID)
+                    .child(mContext.getString(R.string.field_comments))
+                    .child(getItem(position).getComment_id())
+                    .child(mContext.getString(R.string.field_likes))
+                    .orderByChild(mContext.getString(R.string.field_user_id))
+                    .equalTo(FirebaseAuth.getInstance().getCurrentUser().getUid());
+
+            query2.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    mLikedByCurrentUser = false;
+                    for (DataSnapshot singleSnapshot: dataSnapshot.getChildren()){
+                        Log.d(TAG, "onDataChange: found comment like: " + singleSnapshot);
+                        mLikedByCurrentUser = true;
+                    }
+
+                    if (mLikedByCurrentUser){
+                        holder.heart_red.setVisibility(View.VISIBLE);
+                        holder.heart_white.setVisibility(View.GONE);
+                    } else {
+                        holder.heart_red.setVisibility(View.GONE);
+                        holder.heart_white.setVisibility(View.VISIBLE);
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
+
+            // set heart onclick
+            holder.heart_white.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Log.d(TAG, "onClick: liking comment.");
+
+                    mFirebaseMethods.addCommentNewLike(photoID, photoOwnerID, getItem(position).getComment_id(), getItem(position).getUser_id());
+                }
+            });
+
+            holder.heart_red.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Log.d(TAG, "onClick: liking comment.");
+
+                    mFirebaseMethods.removeCommentLike(photoID, photoOwnerID, getItem(position).getComment_id());
+                }
+            });
+        }
+
         // set the time difference
         String timestampDifference = getTimeStampDifference(getItem(position));
         if (!timestampDifference.equals("0")){
@@ -87,13 +165,13 @@ public class CommentListAdapter extends ArrayAdapter<Comment> {
             holder.timePostes.setText("today");
         }
 
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
-        Query query = reference
+        // set comment string
+        Query query1 = myRef
                 .child(mContext.getString(R.string.dbname_user_account_settings))
                 .orderByChild(mContext.getString(R.string.field_user_id))
                 .equalTo(getItem(position).getUser_id());
 
-        query.addListenerForSingleValueEvent(new ValueEventListener() {
+        query1.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 Log.d(TAG, "onDataChange: getting user account settings");
@@ -112,15 +190,6 @@ public class CommentListAdapter extends ArrayAdapter<Comment> {
 
             }
         });
-
-        if (position == 0){
-            holder.likes.setVisibility(View.GONE);
-            holder.reply.setVisibility(View.GONE);
-            holder.like.setVisibility(View.GONE);
-        }
-
-        return convertView;
-
 
     }
 

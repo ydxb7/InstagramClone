@@ -205,11 +205,7 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
                         List<Comment> commentList = new ArrayList<>();
                         for (DataSnapshot ds : dataSnapshot.getChildren()) {
                             Log.d(TAG, "onChildAdded: found comment: " + ds);
-                            Comment comment = new Comment();
-                            comment.setUser_id(ds.getValue(Comment.class).getUser_id());
-                            comment.setDate_created(ds.getValue(Comment.class).getDate_created());
-                            comment.setComment(ds.getValue(Comment.class).getComment());
-                            commentList.add(comment);
+                            commentList.add(mFirebaseMethods.getComment(ds));
                         }
                         mPhotos.get(position).setComments(commentList);
                         if (holder.photo.getComments().size() > 0) {

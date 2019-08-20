@@ -91,6 +91,7 @@ public class FirebaseMethods {
             Like like = new Like();
             like.setLiked_by_user_id(ds.getValue(Like.class).getLiked_by_user_id());
             like.setLiked_to_user_id(ds.getValue(Like.class).getLiked_to_user_id());
+            like.setDate_created(ds.getValue(Like.class).getDate_created());
             likesList.add(like);
         }
 
@@ -106,14 +107,19 @@ public class FirebaseMethods {
     }
 
     //add new comment into firebase database
-    public void addNewComment(String newComment, String photoID, String photoOwnerID) {
+    public void addNewComment(String newComment, String photoID, String photoOwnerID, String commentToUserName) {
         Log.d(TAG, "addNewComment: adding new comment: " + newComment);
+
+        String commentID = myRef.push().getKey();
+
         Comment comment = new Comment();
         comment.setComment(newComment);
         comment.setUser_id(FirebaseAuth.getInstance().getCurrentUser().getUid());
+        comment.setPhoto_id(photoID);
+        comment.setReply_to_username(commentToUserName);
         comment.setDate_created(getTimeStamp());
+        comment.setComment_id(commentID);
 
-        String commentID = myRef.push().getKey();
 
         //insert into photos node
         FirebaseDatabase.getInstance().getReference()
@@ -136,20 +142,25 @@ public class FirebaseMethods {
 
     public Comment getComment(DataSnapshot ds) {
         Comment comment = new Comment();
-        comment.setUser_id(ds.getValue(Comment.class).getUser_id());
-        comment.setDate_created(ds.getValue(Comment.class).getDate_created());
-        comment.setComment(ds.getValue(Comment.class).getComment());
-        comment.setReply_to_username(ds.getValue(Comment.class).getReply_to_username());
 
-        List<Like> commentLikesList = new ArrayList<>();
-        for (DataSnapshot dsCommentLikes: ds.child(mContext.getString(R.string.field_likes)).getChildren()){
+        Map<String, Object> objectMap = (HashMap<String, Object>) ds.getValue();
+        comment.setUser_id(objectMap.get(mContext.getString(R.string.field_user_id)).toString());
+        comment.setPhoto_id(objectMap.get(mContext.getString(R.string.field_photo_id)).toString());
+        comment.setComment_id(objectMap.get(mContext.getString(R.string.field_comment_id)).toString());
+        comment.setReply_to_username(objectMap.get(mContext.getString(R.string.field_reply_to_username)).toString());
+        comment.setComment(objectMap.get(mContext.getString(R.string.field_comment)).toString());
+        comment.setDate_created(objectMap.get(mContext.getString(R.string.field_date_created)).toString());
+
+        List<Like> likesList = new ArrayList<>();
+        for (DataSnapshot likeSnapshot : ds.child(mContext.getString(R.string.field_likes)).getChildren()) {
             Like like = new Like();
-            like.setLiked_by_user_id(dsCommentLikes.getValue(Like.class).getLiked_by_user_id());
-            like.setLiked_to_user_id(dsCommentLikes.getValue(Like.class).getLiked_to_user_id());
-            commentLikesList.add(like);
+            like.setLiked_by_user_id(likeSnapshot.getValue(Like.class).getLiked_by_user_id());
+            like.setLiked_to_user_id(likeSnapshot.getValue(Like.class).getLiked_to_user_id());
+            like.setDate_created(likeSnapshot.getValue(Like.class).getDate_created());
+            likesList.add(like);
         }
 
-        comment.setLikes(commentLikesList);
+        comment.setLikes(likesList);
         return comment;
     }
 

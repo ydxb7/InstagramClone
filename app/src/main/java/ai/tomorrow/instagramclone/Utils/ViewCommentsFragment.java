@@ -95,7 +95,7 @@ public class ViewCommentsFragment extends Fragment {
             public void onClick(View v) {
                 if (!mComment.getText().toString().equals("")) {
                     Log.d(TAG, "onClick: post a comment.");
-                    mFirebaseMethods.addNewComment(mComment.getText().toString(), mPhoto.getPhoto_id(), mPhoto.getUser_id());
+                    mFirebaseMethods.addNewComment(mComment.getText().toString(), mPhoto.getPhoto_id(), mPhoto.getUser_id(), "");
 
                     mComment.setText("");
                     Helpers.hideSoftKeyboard(getActivity());
@@ -146,7 +146,8 @@ public class ViewCommentsFragment extends Fragment {
                     mComments.add(mFirebaseMethods.getComment(singleSnapshot));
                 }
 
-                CommentListAdapter adapter = new CommentListAdapter(mContext, R.layout.layout_comment, mComments);
+                CommentListAdapter adapter = new CommentListAdapter(mContext, R.layout.layout_comment,
+                        mComments, mPhoto.getPhoto_id(), mPhoto.getUser_id());
                 mListView.setAdapter(adapter);
 
             }

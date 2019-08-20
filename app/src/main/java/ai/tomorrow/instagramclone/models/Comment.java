@@ -6,6 +6,8 @@ public class Comment {
 
     private String comment;
     private String user_id;
+    private String photo_id;
+    private String comment_id;
     private List<Like> likes;
     private String date_created;
     private String reply_to_username;
@@ -13,9 +15,11 @@ public class Comment {
     public Comment() {
     }
 
-    public Comment(String comment, String user_id, List<Like> likes, String date_created, String reply_to_username) {
+    public Comment(String comment, String user_id, String photo_id, String comment_id, List<Like> likes, String date_created, String reply_to_username) {
         this.comment = comment;
         this.user_id = user_id;
+        this.photo_id = photo_id;
+        this.comment_id = comment_id;
         this.likes = likes;
         this.date_created = date_created;
         this.reply_to_username = reply_to_username;
@@ -35,6 +39,22 @@ public class Comment {
 
     public void setUser_id(String user_id) {
         this.user_id = user_id;
+    }
+
+    public String getPhoto_id() {
+        return photo_id;
+    }
+
+    public void setPhoto_id(String photo_id) {
+        this.photo_id = photo_id;
+    }
+
+    public String getComment_id() {
+        return comment_id;
+    }
+
+    public void setComment_id(String comment_id) {
+        this.comment_id = comment_id;
     }
 
     public List<Like> getLikes() {
@@ -66,6 +86,8 @@ public class Comment {
         return "Comment{" +
                 "comment='" + comment + '\'' +
                 ", user_id='" + user_id + '\'' +
+                ", photo_id='" + photo_id + '\'' +
+                ", comment_id='" + comment_id + '\'' +
                 ", likes=" + likes +
                 ", date_created='" + date_created + '\'' +
                 ", reply_to_username='" + reply_to_username + '\'' +
