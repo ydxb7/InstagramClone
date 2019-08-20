@@ -1,7 +1,19 @@
 package ai.tomorrow.instagramclone.Utils;
 
 import android.content.Context;
+import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.Typeface;
 import android.text.Html;
+import android.text.Spannable;
+import android.text.SpannableStringBuilder;
+import android.text.TextPaint;
+import android.text.method.LinkMovementMethod;
+import android.text.style.BackgroundColorSpan;
+import android.text.style.ClickableSpan;
+import android.text.style.ForegroundColorSpan;
+import android.text.style.ImageSpan;
+import android.text.style.StyleSpan;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,6 +21,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
 import androidx.annotation.NonNull;
@@ -31,16 +44,18 @@ import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
 
+import ai.tomorrow.instagramclone.Profile.ProfileActivity;
 import ai.tomorrow.instagramclone.R;
 import ai.tomorrow.instagramclone.models.Comment;
 import ai.tomorrow.instagramclone.models.Like;
+import ai.tomorrow.instagramclone.models.User;
 import ai.tomorrow.instagramclone.models.UserAccountSettings;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class CommentListAdapter extends ArrayAdapter<Comment> {
     private static final String TAG = "CommentListAdapter";
 
-    public interface OnReplyClickedListener{
+    public interface OnReplyClickedListener {
         void OnReplyClick(String replyToUsername);
     }
 
@@ -68,7 +83,7 @@ public class CommentListAdapter extends ArrayAdapter<Comment> {
         myRef = FirebaseDatabase.getInstance().getReference();
     }
 
-    private static class ViewHolder{
+    private static class ViewHolder {
 
         CircleImageView profileImage;
         TextView username, comment, timePostes, likes_number, reply;
@@ -82,7 +97,7 @@ public class CommentListAdapter extends ArrayAdapter<Comment> {
 
         final ViewHolder holder;
 
-        if (convertView == null){
+        if (convertView == null) {
             convertView = mInflater.inflate(layoutResource, parent, false);
             holder = new ViewHolder();
             holder.profileImage = (CircleImageView) convertView.findViewById(R.id.comment_profile_image);
@@ -105,7 +120,7 @@ public class CommentListAdapter extends ArrayAdapter<Comment> {
     }
 
     private void setupWidgets(final int position, final ViewHolder holder) {
-        if (position == 0){
+        if (position == 0) {
             holder.likes_number.setVisibility(View.GONE);
             holder.reply.setVisibility(View.GONE);
             holder.heart_white.setVisibility(View.GONE);
@@ -138,7 +153,7 @@ public class CommentListAdapter extends ArrayAdapter<Comment> {
 
         // set the time difference
         String timestampDifference = getTimeStampDifference(getItem(position));
-        if (!timestampDifference.equals("0")){
+        if (!timestampDifference.equals("0")) {
             holder.timePostes.setText(timestampDifference + " d");
         } else {
             holder.timePostes.setText("today");
@@ -154,31 +169,8 @@ public class CommentListAdapter extends ArrayAdapter<Comment> {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 Log.d(TAG, "onDataChange: getting user account settings");
-                for (DataSnapshot singleSnapshot: dataSnapshot.getChildren()) {
+                for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
                     final UserAccountSettings userAccountSettings = singleSnapshot.getValue(UserAccountSettings.class);
-
-                    // click reply, set the username in edit textView
-                    holder.reply.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            Log.d(TAG, "onClick: reply comment.");
-                            ((ViewCommentsFragment) mFragment).OnReplyClick(userAccountSettings.getUsername());
-                        }
-                    });
-
-                    // set comment
-                    if (getItem(position).getReply_to_username().equals("")){
-                        String commentString = String.format("<b>%s</b> %s",
-                                userAccountSettings.getUsername(), getItem(position).getComment());
-                        holder.comment.setText(Html.fromHtml(commentString));
-                    }else {
-                        /////////////////////////////////////////////
-
-                        String commentString = String.format("<b>%s</b> <font color=#2e5cb8>@%s</font><font color=#000000/> %s",
-                                userAccountSettings.getUsername(), getItem(position).getReply_to_username(), getItem(position).getComment());
-                        holder.comment.setText(Html.fromHtml(commentString));
-                    }
-
                     UniversalImageLoader.setImage(userAccountSettings.getProfile_photo(), holder.profileImage, null, "");
                 }
             }
@@ -189,8 +181,78 @@ public class CommentListAdapter extends ArrayAdapter<Comment> {
             }
         });
 
+        Query query2 = myRef
+                .child(mContext.getString(R.string.dbname_users))
+                .orderByChild(mContext.getString(R.string.field_user_id))
+                .equalTo(getItem(position).getUser_id());
 
+        query2.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
+                    Log.d(TAG, "onDataChange: found user: " + singleSnapshot);
+                    final User commentUser = singleSnapshot.getValue(User.class);
 
+                    // click reply, set the username in edit textView
+                    holder.reply.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            Log.d(TAG, "onClick: reply comment.");
+                            ((ViewCommentsFragment) mFragment).OnReplyClick(commentUser.getUsername());
+                        }
+                    });
+
+                    // set comment
+                    if (getItem(position).getReply_to_username().equals("")) {
+                        String commentString = String.format("<b>%s</b> %s",
+                                commentUser.getUsername(), getItem(position).getComment());
+                        holder.comment.setText(Html.fromHtml(commentString));
+                    } else {
+                        SpannableStringBuilder spannableString = new SpannableStringBuilder();
+
+                        // Current user's username
+                        spannableString.append(commentUser.getUsername());
+                        StyleSpan boldStyleSpan = new StyleSpan(Typeface.BOLD);//粗体
+                        int s1 = spannableString.length();
+                        spannableString.setSpan(boldStyleSpan, 0, s1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+                        // reply to user's username link
+                        spannableString.append(" @" + getItem(position).getReply_to_username());
+                        int s2 = spannableString.length();
+
+                        ClickableSpan clickSpan = new ClickableSpan() {
+                            @Override
+                            public void onClick(View widget) {
+                                //put whatever you like here, below is an example
+                                Intent intent = new Intent(mContext, ProfileActivity.class);
+                                intent.putExtra(mContext.getString(R.string.calling_activity), mContext.getString(R.string.home_activity));
+                                intent.putExtra(mContext.getString(R.string.selected_user), commentUser);
+                                mContext.startActivity(intent);
+                            }
+
+                            @Override
+                            public void updateDrawState(TextPaint ds) {// override updateDrawState
+                                ds.setColor(mContext.getResources().getColor(R.color.link_blue));
+//                                ds.setARGB(36, 74, 96, 1);
+
+                                ds.setUnderlineText(false); // set to false to remove underline
+                            }
+                        };
+                        spannableString.setSpan(clickSpan, s1 + 1, s2, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+                        // comment body
+                        spannableString.append(" " + getItem(position).getComment());
+                        holder.comment.setText(spannableString);
+                        holder.comment.setMovementMethod(LinkMovementMethod.getInstance());
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
 
     private void setCommentLike(int position, final ViewHolder holder) {
@@ -207,15 +269,15 @@ public class CommentListAdapter extends ArrayAdapter<Comment> {
                 Log.d(TAG, "onDataChange: comment's like state change.");
                 mLikedByCurrentUser = false;
                 int likeCount = 0;
-                for (DataSnapshot singleSnapshot: dataSnapshot.getChildren()){
+                for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
                     Log.d(TAG, "onDataChange: found comment like: " + singleSnapshot);
                     if (singleSnapshot.getValue(Like.class).getLiked_by_user_id().equals(FirebaseAuth.getInstance().getCurrentUser().getUid()))
-                    mLikedByCurrentUser = true;
+                        mLikedByCurrentUser = true;
                     likeCount++;
                 }
                 Log.d(TAG, "onDataChange: comment mLikedByCurrentUser: " + mLikedByCurrentUser);
 
-                if (mLikedByCurrentUser){
+                if (mLikedByCurrentUser) {
                     holder.heart_red.setVisibility(View.VISIBLE);
                     holder.heart_white.setVisibility(View.GONE);
                 } else {
@@ -223,10 +285,10 @@ public class CommentListAdapter extends ArrayAdapter<Comment> {
                     holder.heart_white.setVisibility(View.VISIBLE);
                 }
 
-                if (likeCount != 0){
+                if (likeCount != 0) {
                     holder.likes_number.setVisibility(View.VISIBLE);
                     holder.likes_number.setText(likeCount + " likes");
-                }else {
+                } else {
                     holder.likes_number.setVisibility(View.GONE);
                 }
             }
@@ -241,9 +303,10 @@ public class CommentListAdapter extends ArrayAdapter<Comment> {
 
     /**
      * return a string presenting the number of days ago the post was made.
+     *
      * @return
      */
-    private String getTimeStampDifference(Comment comment){
+    private String getTimeStampDifference(Comment comment) {
         Log.d(TAG, "getTimeStampDifference: getting timestamp difference");
 
         String difference = "";
@@ -256,8 +319,8 @@ public class CommentListAdapter extends ArrayAdapter<Comment> {
         final String photoTimeStamp = comment.getDate_created();
         try {
             timestamp = sdf.parse(photoTimeStamp);
-            difference = String.valueOf(Math.round(((today.getTime() - timestamp.getTime()) / 1000 / 60 / 60/ 24)));
-        }catch (ParseException e){
+            difference = String.valueOf(Math.round(((today.getTime() - timestamp.getTime()) / 1000 / 60 / 60 / 24)));
+        } catch (ParseException e) {
             Log.d(TAG, "getTimeStampDifference: ParseException: " + e.getMessage());
         }
         return difference;
