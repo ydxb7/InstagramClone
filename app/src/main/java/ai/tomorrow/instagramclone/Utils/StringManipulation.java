@@ -2,10 +2,35 @@ package ai.tomorrow.instagramclone.Utils;
 
 import android.util.Log;
 
+import java.util.Arrays;
 import java.util.List;
 
 public class StringManipulation {
     private static final String TAG = "StringManipulation";
+
+    public static List<String> splitCommentString(String string){
+        if (string.trim().equals(""))
+            return null;
+
+        String username = "";
+        String comment = "";
+
+        if (string.trim().startsWith("@")){
+            if (!string.trim().contains(" ")){
+                return null;
+            }
+            int spacdIndex = string.indexOf(" ");
+            username = string.substring(1, spacdIndex);
+            comment = string.substring(spacdIndex + 1);
+
+            if (comment.equals("")){
+                return null;
+            }
+        } else {
+            comment = string;
+        }
+        return Arrays.asList(username, comment);
+    }
 
     public static String expandUsername(String username){
         return username.replace(".", " ");

@@ -167,13 +167,17 @@ public class CommentListAdapter extends ArrayAdapter<Comment> {
                     });
 
                     // set comment
-//                    if (getItem(position).getReply_to_username().equals("")){
+                    if (getItem(position).getReply_to_username().equals("")){
                         String commentString = String.format("<b>%s</b> %s",
                                 userAccountSettings.getUsername(), getItem(position).getComment());
                         holder.comment.setText(Html.fromHtml(commentString));
-//                    }else {
-//                        /////////////////////////////////////////////
-//                    }
+                    }else {
+                        /////////////////////////////////////////////
+
+                        String commentString = String.format("<b>%s</b> <font color=#2e5cb8>@%s</font><font color=#000000/> %s",
+                                userAccountSettings.getUsername(), getItem(position).getReply_to_username(), getItem(position).getComment());
+                        holder.comment.setText(Html.fromHtml(commentString));
+                    }
 
                     UniversalImageLoader.setImage(userAccountSettings.getProfile_photo(), holder.profileImage, null, "");
                 }

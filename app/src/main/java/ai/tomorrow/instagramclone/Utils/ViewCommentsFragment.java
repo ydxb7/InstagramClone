@@ -7,8 +7,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
-import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -27,24 +25,15 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.storage.StorageReference;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.TimeZone;
 
 import ai.tomorrow.instagramclone.Home.HomeActivity;
 import ai.tomorrow.instagramclone.R;
 import ai.tomorrow.instagramclone.models.Comment;
-import ai.tomorrow.instagramclone.models.Like;
 import ai.tomorrow.instagramclone.models.Photo;
-import ai.tomorrow.instagramclone.models.UserAccountSettings;
 
 public class ViewCommentsFragment extends Fragment implements CommentListAdapter.OnReplyClickedListener {
 
@@ -105,7 +94,7 @@ public class ViewCommentsFragment extends Fragment implements CommentListAdapter
         mCheckMark.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                List<String> commentResults = getCommentString(mComment.getText().toString());
+                List<String> commentResults = StringManipulation.splitCommentString(mComment.getText().toString());
                 Log.d(TAG, "onClick: commentResults: " + commentResults);
 
                 if (commentResults != null) {
@@ -142,30 +131,6 @@ public class ViewCommentsFragment extends Fragment implements CommentListAdapter
         return view;
     }
 
-    private List<String> getCommentString(String string){
-        if (string.trim().equals(""))
-            return null;
-
-        String username = "";
-        String comment = "";
-
-        if (string.trim().startsWith("@")){
-            if (!string.trim().contains(" ")){
-                return null;
-            }
-            int spacdIndex = string.indexOf(" ");
-            username = string.substring(1, spacdIndex);
-            comment = string.substring(spacdIndex + 1);
-
-            if (comment.equals("")){
-                return null;
-            }
-        } else {
-            comment = string;
-        }
-        return Arrays.asList(username, comment);
-    }
-
     private void setupListView() {
         Log.d(TAG, "setupListView: setting up comments.");
 
@@ -180,6 +145,7 @@ public class ViewCommentsFragment extends Fragment implements CommentListAdapter
                 mComments.clear();
                 Comment firstComment = new Comment();
                 firstComment.setUser_id(mPhoto.getUser_id());
+                firstComment.setReply_to_username("");
                 firstComment.setComment(mPhoto.getCaption());
                 firstComment.setDate_created(mPhoto.getDate_created());
 
