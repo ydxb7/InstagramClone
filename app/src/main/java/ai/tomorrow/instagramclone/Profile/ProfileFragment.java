@@ -28,26 +28,18 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
 import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
-import ai.tomorrow.instagramclone.Login.LoginActivity;
 import ai.tomorrow.instagramclone.R;
 import ai.tomorrow.instagramclone.Utils.BottomNavigationViewHelper;
 import ai.tomorrow.instagramclone.Utils.FirebaseMethods;
 import ai.tomorrow.instagramclone.Utils.GridImageAdapter;
 import ai.tomorrow.instagramclone.Utils.UniversalImageLoader;
-import ai.tomorrow.instagramclone.models.Like;
 import ai.tomorrow.instagramclone.models.Photo;
-import ai.tomorrow.instagramclone.models.User;
 import ai.tomorrow.instagramclone.models.UserAccountSettings;
 import ai.tomorrow.instagramclone.models.UserSettings;
 import de.hdodenhof.circleimageview.CircleImageView;

@@ -90,7 +90,7 @@ public class SearchActivity extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable s) {
-                String text = mSearch.getText().toString().toLowerCase(Locale.getDefault());
+                String text = mSearch.getText().toString().trim();
                 searchForMatch(text);
             }
         });

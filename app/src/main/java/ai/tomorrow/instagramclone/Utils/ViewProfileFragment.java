@@ -35,12 +35,8 @@ import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import ai.tomorrow.instagramclone.R;
-import ai.tomorrow.instagramclone.models.Like;
 import ai.tomorrow.instagramclone.models.Photo;
 import ai.tomorrow.instagramclone.models.User;
 import ai.tomorrow.instagramclone.models.UserAccountSettings;

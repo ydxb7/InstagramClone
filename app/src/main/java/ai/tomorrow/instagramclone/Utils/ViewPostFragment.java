@@ -27,19 +27,12 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Date;
 import java.util.List;
-import java.util.Locale;
-import java.util.TimeZone;
 
 import ai.tomorrow.instagramclone.R;
-import ai.tomorrow.instagramclone.models.Like;
 import ai.tomorrow.instagramclone.models.LikePhoto;
 import ai.tomorrow.instagramclone.models.Photo;
 import ai.tomorrow.instagramclone.models.User;

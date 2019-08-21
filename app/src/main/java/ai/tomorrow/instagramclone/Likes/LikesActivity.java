@@ -6,8 +6,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -22,15 +20,18 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import ai.tomorrow.instagramclone.R;
 import ai.tomorrow.instagramclone.Utils.BottomNavigationViewHelper;
 import ai.tomorrow.instagramclone.Utils.FirebaseMethods;
 import ai.tomorrow.instagramclone.models.Follow;
-import ai.tomorrow.instagramclone.models.Like;
 import ai.tomorrow.instagramclone.models.LikePhoto;
-import de.hdodenhof.circleimageview.CircleImageView;
 
 public class LikesActivity extends AppCompatActivity {
 
@@ -44,8 +45,9 @@ public class LikesActivity extends AppCompatActivity {
     private FrameLayout mFrameLayout;
 
     //vars
-    private List<LikePhoto> mLikes;
-    private List<String> mFollowingsUserID;
+    private List<LikePhoto> mAllLikes = new ArrayList<>();
+    private List<List<LikePhoto>> mLikes = new ArrayList<>();
+    private List<String> mFollowingsUserID = new ArrayList<>();
 
     //firebase
     private DatabaseReference myRef;
@@ -65,7 +67,7 @@ public class LikesActivity extends AppCompatActivity {
         myRef = FirebaseDatabase.getInstance().getReference();
         mFirebaseMethods = new FirebaseMethods(mContext);
 
-
+        getFollowingsLikedPosts();
     }
 
 
@@ -79,16 +81,19 @@ public class LikesActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 mFollowingsUserID.clear();
-                mLikes.clear();
+                mAllLikes.clear();
                 for (DataSnapshot singleSnapshot: dataSnapshot.getChildren()){
                     Log.d(TAG, "onDataChange: found following:" + singleSnapshot);
 
                     mFollowingsUserID.add(singleSnapshot.getValue(Follow.class).getUser_id());
                 }
+                Log.d(TAG, "onDataChange: mFollowingsUserID: " + mFollowingsUserID);
 
-                for (String userID: mFollowingsUserID){
+                for (int i = 0; i < mFollowingsUserID.size(); i++){
+                    final int count = i;
+
                     Query query = myRef.child(getString(R.string.dbname_user_likes))
-                            .child(userID)
+                            .child(mFollowingsUserID.get(i))
                             .child(getString(R.string.field_photo_likes));
 
                     query.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -96,7 +101,15 @@ public class LikesActivity extends AppCompatActivity {
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                             for (DataSnapshot ds: dataSnapshot.getChildren()){
                                 Log.d(TAG, "onDataChange: found photo likes: " + ds);
-                                String photoID = ds.getKey();
+                                LikePhoto likePhoto = ds.getValue(LikePhoto.class);
+                                mAllLikes.add(likePhoto);
+                            }
+                            if (count == mFollowingsUserID.size() - 1){
+
+                                getLikesForFollowingUsers();
+                                Log.d(TAG, "onDataChange: mLikes: " + mLikes);
+//                                updateListView();
+
 
                             }
                         }
@@ -123,8 +136,29 @@ public class LikesActivity extends AppCompatActivity {
 
     }
 
+    public void getLikesForFollowingUsers() {
+        Log.d(TAG, "getLikesForFollowingUsers: sort likes and seperate them into groups according userID]");
+        // sort likes by date created
+        Collections.sort(mAllLikes, new Comparator<LikePhoto>() {
+            @Override
+            public int compare(LikePhoto o1, LikePhoto o2) {
+                return o2.getDate_created().compareTo(o1.getDate_created());
+            }
+        });
 
-
+        mLikes.clear();
+        for (LikePhoto like: mAllLikes){
+            if (mLikes.size() == 0 ||
+                    !mLikes.get(mLikes.size() - 1).get(0).getLiked_by_user_id().equals(like.getLiked_by_user_id())){
+                List<LikePhoto> likePhotos = new ArrayList<>();
+                likePhotos.add(like);
+                mLikes.add(likePhotos);
+            } else {
+                List<LikePhoto> temp = mLikes.get(mLikes.size() - 1);
+                temp.add(like);
+            }
+        }
+    }
 
 
     /**
