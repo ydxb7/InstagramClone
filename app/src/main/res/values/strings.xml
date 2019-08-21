@@ -69,6 +69,7 @@
     <string name="profile_activity">Profile Activity</string>
     <string name="search_activity">Search Activity</string>
     <string name="home_activity">Home Activity</string>
+    <string name="likes_activity">Likes Activity</string>
 
     <!--strings-->
     <string name="gallery">GALLERY</string>

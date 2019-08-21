@@ -5,7 +5,9 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.RelativeLayout;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -52,6 +54,7 @@ public class LikesActivity extends AppCompatActivity implements FollowingLikesLi
     //widgets
     private TabLayout mTab;
     private FrameLayout mFrameLayout;
+    private RelativeLayout mRelativeLayout;
     private ViewPager mViewPager;
 
 
@@ -63,8 +66,9 @@ public class LikesActivity extends AppCompatActivity implements FollowingLikesLi
         setupBottomNavigationView();
 
         mTab = findViewById(R.id.tabs);
-        mViewPager = (ViewPager) findViewById(R.id.viewpager_container);
+        mViewPager = findViewById(R.id.viewpager_container);
         mFrameLayout = findViewById(R.id.container);
+        mRelativeLayout = findViewById(R.id.relLayoutParent);
 
         setupViewPager();
     }
@@ -91,12 +95,34 @@ public class LikesActivity extends AppCompatActivity implements FollowingLikesLi
         Bundle args = new Bundle();
         args.putInt(getString(R.string.activity_number), activityNumber);
         args.putParcelable(getString(R.string.photo), photo);
+        args.putString(getString(R.string.calling_activity), getString(R.string.likes_activity));
         fragment.setArguments(args);
 
         FragmentTransaction transaction = LikesActivity.this.getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.container, fragment);
         transaction.addToBackStack(getString(R.string.view_post_fragment));
         transaction.commit();
+        hideRelativeLayout();
+    }
+
+    public void hideRelativeLayout() {
+        Log.d(TAG, "hideLayout: hiding relativelayout");
+        mRelativeLayout.setVisibility(View.GONE);
+        mFrameLayout.setVisibility(View.VISIBLE);
+    }
+
+    public void showRelativeLayout() {
+        Log.d(TAG, "hideLayout: showing relativelayout");
+        mRelativeLayout.setVisibility(View.VISIBLE);
+        mFrameLayout.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        if (mFrameLayout.getVisibility() == View.VISIBLE) {
+            showRelativeLayout();
+        }
     }
 
     /**

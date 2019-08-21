@@ -32,6 +32,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import ai.tomorrow.instagramclone.Home.HomeActivity;
+import ai.tomorrow.instagramclone.Likes.LikesActivity;
 import ai.tomorrow.instagramclone.R;
 import ai.tomorrow.instagramclone.models.LikePhoto;
 import ai.tomorrow.instagramclone.models.Photo;
@@ -358,6 +360,14 @@ public class ViewPostFragment extends Fragment {
             public void onClick(View v) {
                 Log.d(TAG, "onClick: navigating back");
                 getActivity().getSupportFragmentManager().popBackStack();
+
+                Bundle bundle = getArguments();
+                if (bundle != null
+                        && bundle.getString(mContext.getString(R.string.calling_activity)) != null
+                        && bundle.getString(mContext.getString(R.string.calling_activity)).equals(mContext.getString(R.string.likes_activity))){
+                    ((LikesActivity)getActivity()).showRelativeLayout();
+                }
+
             }
         });
 

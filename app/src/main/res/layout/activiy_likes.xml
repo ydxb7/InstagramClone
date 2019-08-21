@@ -7,13 +7,14 @@
         android:id="@+id/container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/relLayout1">
+        android:layout_below="@id/container">
 
     </FrameLayout>
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:id="@+id/relLayoutParent">
 
         <RelativeLayout
             android:id="@+id/relLayout1"
