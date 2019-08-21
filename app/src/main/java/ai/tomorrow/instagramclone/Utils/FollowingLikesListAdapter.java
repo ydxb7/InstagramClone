@@ -75,7 +75,7 @@ public class FollowingLikesListAdapter extends ArrayAdapter<List<LikePhoto>> {
 
         CircleImageView profilePhoto;
         TextView tv_liked_post;
-        GridView gridView;
+        ExpandableHeightGridView gridView;
         String userID;
         UserAccountSettings settings;
 
@@ -92,7 +92,7 @@ public class FollowingLikesListAdapter extends ArrayAdapter<List<LikePhoto>> {
             holder = new ViewHolder();
             holder.profilePhoto = (CircleImageView) convertView.findViewById(R.id.profile_photo);
             holder.tv_liked_post = (TextView) convertView.findViewById(R.id.tv_liked_post);
-            holder.gridView = (GridView) convertView.findViewById(R.id.gridView);
+            holder.gridView = (ExpandableHeightGridView) convertView.findViewById(R.id.gridView);
             holder.userID = getItem(position).get(0).getLiked_by_user_id();
 
             convertView.setTag(holder);
@@ -159,7 +159,7 @@ public class FollowingLikesListAdapter extends ArrayAdapter<List<LikePhoto>> {
 
         // set the grid column width
         int gridWidth = mContext.getResources().getDisplayMetrics().widthPixels - 40 - 8 - 16 - 16 - 6 * 2;
-        int imageWidth = gridWidth / NUM_GRID_COLUMNS;
+        int imageWidth = gridWidth / 4;
         holder.gridView.setColumnWidth(imageWidth);
 
         // get imgURLs and setup grid view

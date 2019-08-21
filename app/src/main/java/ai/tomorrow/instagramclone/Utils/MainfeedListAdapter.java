@@ -256,48 +256,13 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
         public boolean onDoubleTap(MotionEvent e) {
             Log.d(TAG, "onDoubleTap: double tap detected.");
 
-            final DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
-            Query query = reference
-                    .child(mContext.getString(R.string.dbname_photos))
-                    .child(mHolder.photo.getPhoto_id())
-                    .child(mContext.getString(R.string.field_likes_photo));
-            query.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
-
-                        //case1: Then user already liked the photo
-                        if (mHolder.likeByCurrentUser &&
-                                singleSnapshot.getValue(LikePhoto.class).getLiked_by_user_id()
-                                        .equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
-
-                            mFirebaseMethods.removePhotoLike(mHolder.photo.getPhoto_id(), mHolder.photo.getUser_id());
-
-                            mHolder.heart.toggleLike();
-                            getLikesString(mHolder);
-                        }
-                        //case2: The user has not liked the photo
-                        else if (!mHolder.likeByCurrentUser) {
-                            //add new like
-                            mFirebaseMethods.addPhotoNewLike(mHolder.photo.getPhoto_id(), mHolder.photo.getUser_id());
-                            mHolder.heart.toggleLike();
-                            getLikesString(mHolder);
-                            break;
-                        }
-                    }
-                    if (!dataSnapshot.exists()) {
-                        //add new like
-                        mFirebaseMethods.addPhotoNewLike(mHolder.photo.getPhoto_id(), mHolder.photo.getUser_id());
-                        mHolder.heart.toggleLike();
-                        getLikesString(mHolder);
-                    }
-                }
-
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-
-                }
-            });
+            mHolder.heart.toggleLike();
+            if (mHolder.likeByCurrentUser){
+                mFirebaseMethods.removePhotoLike(mHolder.photo.getPhoto_id(), mHolder.photo.getUser_id());
+            } else {
+                mFirebaseMethods.addPhotoNewLike(mHolder.photo.getPhoto_id(), mHolder.photo.getUser_id());
+            }
+            getLikesString(mHolder);
 
             return true;
         }
@@ -346,7 +311,7 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
                     final ArrayList<String> likesUsername = new ArrayList<>();
 
                     for (int i = 0; i < Math.min(likes.size(), 4); i++) {
-                        final int count = i;
+                        Log.d(TAG, "onDataChange: i = " + i);
                         LikePhoto eachLike = likes.get(i);
                         Query query = myRef.child(mContext.getString(R.string.dbname_users))
                                 .orderByChild(mContext.getString(R.string.field_user_id))
@@ -356,10 +321,11 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                 for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
-                                    Log.d(TAG, "onDataChange: found user: " + singleSnapshot);
+                                    Log.d(TAG, "onDataChange: likesUsername.add: " + singleSnapshot.getValue(User.class).getUsername());
                                     likesUsername.add(singleSnapshot.getValue(User.class).getUsername());
                                 }
-                                if (count == Math.min(likes.size(), 4) - 1){
+                                if (likesUsername.size() == Math.min(likes.size(), 4)){
+                                    Log.d(TAG, "onDataChange: likes.size() = " + likes.size() + " likesUsername.size: " + likesUsername.size());
                                     holder.mLikesString = StringManipulation.getLikesString(likes.size(), likesUsername);
                                     setupWidgets(holder);
                                 }

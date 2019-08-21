@@ -231,7 +231,7 @@ public class ViewPostFragment extends Fragment {
                                     Log.d(TAG, "onDataChange: found user: " + singleSnapshot);
                                     likesUsername.add(singleSnapshot.getValue(User.class).getUsername());
                                 }
-                                if (count == Math.min(likes.size(), 4) - 1){
+                                if (likesUsername.size() == Math.min(likes.size(), 4)){
                                     mLikesString= StringManipulation.getLikesString(likes.size(), likesUsername);
                                     setupWidgets();
                                 }
@@ -286,50 +286,13 @@ public class ViewPostFragment extends Fragment {
         public boolean onDoubleTap(MotionEvent e) {
             Log.d(TAG, "onDoubleTap: double tap detected.");
 
-            DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
-            Query query = reference
-                    .child(getString(R.string.dbname_photos))
-                    .child(mPhoto.getPhoto_id())
-                    .child(getString(R.string.field_likes_photo));
-            query.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
-
-                        String keyID = singleSnapshot.getKey();
-
-                        //case1: Then user already liked the photo
-                        if (mLikedByCurrentUser &&
-                                singleSnapshot.getValue(LikePhoto.class).getLiked_by_user_id()
-                                        .equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
-
-                            mFirebaseMethods.removePhotoLike(mPhoto.getPhoto_id(), mPhoto.getUser_id());
-
-                            mHeart.toggleLike();
-                            getLikesString();
-                        }
-                        //case2: The user has not liked the photo
-                        else if (!mLikedByCurrentUser) {
-                            //add new like
-                            mFirebaseMethods.addPhotoNewLike(mPhoto.getPhoto_id(), mPhoto.getUser_id());
-                            mHeart.toggleLike();
-                            getLikesString();
-                            break;
-                        }
-                    }
-                    if (!dataSnapshot.exists()) {
-                        //add new like
-                        mFirebaseMethods.addPhotoNewLike(mPhoto.getPhoto_id(), mPhoto.getUser_id());
-                        mHeart.toggleLike();
-                        getLikesString();
-                    }
-                }
-
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-
-                }
-            });
+            mHeart.toggleLike();
+            if (mLikedByCurrentUser){
+                mFirebaseMethods.removePhotoLike(mPhoto.getPhoto_id(), mPhoto.getUser_id());
+            } else {
+                mFirebaseMethods.addPhotoNewLike(mPhoto.getPhoto_id(), mPhoto.getUser_id());
+            }
+            getLikesString();
 
             return true;
         }

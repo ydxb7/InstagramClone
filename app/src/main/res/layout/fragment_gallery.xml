@@ -1,24 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <RelativeLayout
+        android:id="@+id/relLayout1"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/relLayout1">
+        android:layout_height="wrap_content">
 
         <!--gallery toolbar-->
-        <include layout="@layout/snippet_top_gallerytoolbar"/>
+        <include layout="@layout/snippet_top_gallerytoolbar" />
 
     </RelativeLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:weightSum="100"
+        android:layout_below="@id/relLayout1"
         android:orientation="vertical"
-        android:layout_below="@id/relLayout1">
+        android:weightSum="100">
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -26,34 +28,32 @@
             android:layout_weight="60">
 
             <ImageView
+                android:id="@+id/galleryImageView"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:id="@+id/galleryImageView"
-                android:scaleType="centerCrop"/>
+                android:scaleType="centerCrop" />
 
             <ProgressBar
+                android:id="@+id/progressBar"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
-                android:id="@+id/progressBar"
-                android:layout_centerInParent="true"/>
+                android:layout_centerInParent="true" />
 
 
         </RelativeLayout>
 
-        <GridView
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/gridView"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="40"
-            android:id="@+id/gridView"
-            android:numColumns="4"
-            android:verticalSpacing="1dp"
-            android:horizontalSpacing="1dp"
-            android:stretchMode="none"
-            android:gravity="center"
-            android:layout_marginTop="1dp">
+            app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+            app:spanCount="4"
+            tools:itemCount="16"
+            tools:listitem="@layout/layout_grid_imageview">
 
 
-        </GridView>
+        </androidx.recyclerview.widget.RecyclerView>
 
     </LinearLayout>
 

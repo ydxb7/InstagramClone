@@ -115,18 +115,17 @@
                 android:layout_below="@id/linLayout2"
                 android:layout_marginBottom="50dp">
 
-                <GridView
+                <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/gridView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:numColumns="3"
-                    android:horizontalSpacing="1dp"
-                    android:verticalSpacing="1dp"
-                    android:stretchMode="columnWidth">
+                    app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+                    app:spanCount="3"
+                    tools:itemCount="16"
+                    tools:listitem="@layout/layout_grid_imageview">
 
 
-                </GridView>
+                </androidx.recyclerview.widget.RecyclerView>
 
 
             </RelativeLayout>
