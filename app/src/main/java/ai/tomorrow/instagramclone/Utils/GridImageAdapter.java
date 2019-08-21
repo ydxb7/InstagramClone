@@ -2,15 +2,14 @@ package ai.tomorrow.instagramclone.Utils;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.ImageView;
 import android.widget.ProgressBar;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.FailReason;
@@ -20,80 +19,106 @@ import java.util.ArrayList;
 
 import ai.tomorrow.instagramclone.R;
 
-public class GridImageAdapter extends ArrayAdapter<String> {
+public class GridImageAdapter extends RecyclerView.Adapter<GridImageAdapter.ViewHolder> {
+    private static final String TAG = "GridImageAdapter";
 
-    private Context mContext;
-    private LayoutInflater mInflater;
-    private int layoutResource;
-    private String mAppend;
-    private ArrayList<String> imgURLs;
-
-    public GridImageAdapter(Context context, int layoutResource, String append, ArrayList<String> imgURLs) {
-        super(context, layoutResource, imgURLs);
-        this.mContext = context;
-        this.mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        this.layoutResource = layoutResource;
-        this.mAppend = append;
-        this.imgURLs = imgURLs;
+    public interface OnGridItemClickListener{
+        void OnGridItemClick(int clickedItemIndex);
     }
 
-    private static class ViewHolder{
-        SquareImageView image;
-        ProgressBar mProgressBar;
+    private Context mContext;
+    private ArrayList<String> imgURLs;
+    private String mAppend;
+    private int layoutResource;
+    private OnGridItemClickListener mOnGridItemClickListener;
+
+
+    public GridImageAdapter(Context mContext, int layoutResource, String mAppend, ArrayList<String> imgURLs, OnGridItemClickListener listener) {
+        this.mContext = mContext;
+        this.imgURLs = imgURLs;
+        this.mAppend = mAppend;
+        this.layoutResource = layoutResource;
+        this.mOnGridItemClickListener = listener;
     }
 
     @NonNull
     @Override
-    public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        Log.d(TAG, "onCreateViewHolder.");
 
-        /**
-         * Viewholder build pattern (Similar to recyclerView)
-         */
-        final ViewHolder holder;
+        LayoutInflater inflater = LayoutInflater.from(mContext);
+        boolean shouldAttachToParentImmediately = false;
 
-        if (convertView == null){
-            convertView = mInflater.inflate(layoutResource, parent, false);
-            holder = new ViewHolder();
-            holder.mProgressBar = (ProgressBar) convertView.findViewById(R.id.gridImageProgressbar);
-            holder.image = (SquareImageView) convertView.findViewById(R.id.gridImageView);
+        View view = inflater.inflate(layoutResource, parent, shouldAttachToParentImmediately);
+        ViewHolder viewHolder = new ViewHolder(view);
 
-            convertView.setTag(holder);
-        } else {
-            holder = (ViewHolder) convertView.getTag();
+
+        return viewHolder;
+    }
+
+    @Override
+    public void onBindViewHolder(@NonNull GridImageAdapter.ViewHolder holder, int position) {
+        Log.d(TAG, "onBindViewHolder.");
+        holder.bind(imgURLs.get(position), mAppend);
+    }
+
+    @Override
+    public int getItemCount() {
+        return imgURLs.size();
+    }
+
+    class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+
+        SquareImageView image;
+        ProgressBar mProgressBar;
+
+        public ViewHolder(@NonNull View itemView) {
+            super(itemView);
+
+            mProgressBar = (ProgressBar) itemView.findViewById(R.id.gridImageProgressbar);
+            image = (SquareImageView) itemView.findViewById(R.id.gridImageView);
         }
 
-        String imgURL = getItem(position);
-        ImageLoader imageLoader = ImageLoader.getInstance();
-        imageLoader.displayImage(mAppend + imgURL, holder.image, new ImageLoadingListener() {
-            @Override
-            public void onLoadingStarted(String imageUri, View view) {
-                if (holder.mProgressBar != null){
-                    holder.mProgressBar.setVisibility(View.VISIBLE);
+        void bind(String imgURL, String append){
+            ImageLoader imageLoader = ImageLoader.getInstance();
+            imageLoader.displayImage(append + imgURL, image, new ImageLoadingListener() {
+                @Override
+                public void onLoadingStarted(String imageUri, View view) {
+                    if (mProgressBar != null){
+                        mProgressBar.setVisibility(View.VISIBLE);
+                    }
                 }
-            }
 
-            @Override
-            public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
-                if (holder.mProgressBar != null){
-                    holder.mProgressBar.setVisibility(View.GONE);
+                @Override
+                public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
+                    if (mProgressBar != null){
+                        mProgressBar.setVisibility(View.GONE);
+                    }
                 }
-            }
 
-            @Override
-            public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-                if (holder.mProgressBar != null){
-                    holder.mProgressBar.setVisibility(View.GONE);
+                @Override
+                public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+                    if (mProgressBar != null){
+                        mProgressBar.setVisibility(View.GONE);
+                    }
                 }
-            }
 
-            @Override
-            public void onLoadingCancelled(String imageUri, View view) {
-                if (holder.mProgressBar != null){
-                    holder.mProgressBar.setVisibility(View.GONE);
+                @Override
+                public void onLoadingCancelled(String imageUri, View view) {
+                    if (mProgressBar != null){
+                        mProgressBar.setVisibility(View.GONE);
+                    }
                 }
-            }
-        });
+            });
+            itemView.setOnClickListener(this);
+        }
 
-        return convertView;
+        @Override
+        public void onClick(View view) {
+            Log.d(TAG, "onClick: click grid view image index: " + getAdapterPosition());
+            int clickedPosition = getAdapterPosition();
+            mOnGridItemClickListener.OnGridItemClick(clickedPosition);
+        }
     }
+
 }

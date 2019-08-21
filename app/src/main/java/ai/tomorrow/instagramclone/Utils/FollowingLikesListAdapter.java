@@ -1,7 +1,6 @@
 package ai.tomorrow.instagramclone.Utils;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.graphics.Typeface;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
@@ -11,15 +10,12 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.GridView;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -34,7 +30,6 @@ import java.util.List;
 import java.util.Map;
 
 import ai.tomorrow.instagramclone.R;
-import ai.tomorrow.instagramclone.models.Comment;
 import ai.tomorrow.instagramclone.models.LikePhoto;
 import ai.tomorrow.instagramclone.models.UserAccountSettings;
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -75,7 +70,7 @@ public class FollowingLikesListAdapter extends ArrayAdapter<List<LikePhoto>> {
 
         CircleImageView profilePhoto;
         TextView tv_liked_post;
-        ExpandableHeightGridView gridView;
+        RecyclerView gridView;
         String userID;
         UserAccountSettings settings;
 
@@ -92,7 +87,7 @@ public class FollowingLikesListAdapter extends ArrayAdapter<List<LikePhoto>> {
             holder = new ViewHolder();
             holder.profilePhoto = (CircleImageView) convertView.findViewById(R.id.profile_photo);
             holder.tv_liked_post = (TextView) convertView.findViewById(R.id.tv_liked_post);
-            holder.gridView = (ExpandableHeightGridView) convertView.findViewById(R.id.gridView);
+            holder.gridView = (RecyclerView) convertView.findViewById(R.id.gridView);
             holder.userID = getItem(position).get(0).getLiked_by_user_id();
 
             convertView.setTag(holder);
@@ -157,11 +152,6 @@ public class FollowingLikesListAdapter extends ArrayAdapter<List<LikePhoto>> {
     private void setupGridView(final int position, final ViewHolder holder){
         Log.d(TAG, "setupGridView. ");
 
-        // set the grid column width
-        int gridWidth = mContext.getResources().getDisplayMetrics().widthPixels - 40 - 8 - 16 - 16 - 6 * 2;
-        int imageWidth = gridWidth / 4;
-        holder.gridView.setColumnWidth(imageWidth);
-
         // get imgURLs and setup grid view
         final ArrayList<String> imgURLs = new ArrayList<>();
 
@@ -182,7 +172,16 @@ public class FollowingLikesListAdapter extends ArrayAdapter<List<LikePhoto>> {
                     }
                     if (count == getItem(position).size() - 1){
                         // set grid view
-                        GridImageAdapter adapter = new GridImageAdapter(mContext, R.layout.layout_grid_imageview, "", imgURLs);
+                        // user the grid adapter to adapter the images to gridview
+                        GridImageAdapter adapter = new GridImageAdapter(mContext, R.layout.layout_grid_imageview,
+                                "", imgURLs, new GridImageAdapter.OnGridItemClickListener() {
+                            @Override
+                            public void OnGridItemClick(int position) {
+                                Log.d(TAG, "onItemClick: selected an image + " + imgURLs.get(position));
+
+                            }
+                        });
+
                         holder.gridView.setAdapter(adapter);
 
 

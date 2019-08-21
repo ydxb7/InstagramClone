@@ -9,8 +9,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -19,6 +17,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -60,7 +59,7 @@ public class ProfileFragment extends Fragment {
     private TextView mPosts, mFollowers, mFollowing, mDisplayName, mUsername, mWebsite, mDescription;
     private ProgressBar mProgressBar;
     private CircleImageView mProfilePhoto;
-    private GridView gridView;
+    private RecyclerView gridView;
     private Toolbar toolbar;
     private ImageView profileMenu;
     private BottomNavigationViewEx bottomNavigationView;
@@ -91,7 +90,7 @@ public class ProfileFragment extends Fragment {
         mFollowers = (TextView) view.findViewById(R.id.tvFollowers);
         mFollowing = (TextView) view.findViewById(R.id.tvFollowing);
         mProgressBar = (ProgressBar) view.findViewById(R.id.profileProgressBar);
-        gridView = (GridView) view.findViewById(R.id.gridView);
+        gridView = (RecyclerView) view.findViewById(R.id.gridView);
         toolbar = (Toolbar) view.findViewById(R.id.profileToolBar);
         profileMenu = (ImageView) view.findViewById(R.id.profileMenu);
         bottomNavigationView = (BottomNavigationViewEx) view.findViewById(R.id.bottomNavViewBar);
@@ -233,23 +232,26 @@ public class ProfileFragment extends Fragment {
                     });
                 }
 
-                int gridWidth = mContext.getResources().getDisplayMetrics().widthPixels;
-                int imageWidth = gridWidth / NUM_GRID_COLUMNS;
-                gridView.setColumnWidth(imageWidth);
-
                 ArrayList<String> imgURLs = new ArrayList<>();
                 for (int i = 0; i < photos.size(); i++){
                     imgURLs.add(photos.get(i).getImage_path());
                 }
-                GridImageAdapter adapter = new GridImageAdapter(mContext, R.layout.layout_grid_imageview, "", imgURLs);
-                gridView.setAdapter(adapter);
-
-                gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                GridImageAdapter adapter = new GridImageAdapter(mContext, R.layout.layout_grid_imageview,
+                        "", imgURLs, new GridImageAdapter.OnGridItemClickListener() {
                     @Override
-                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                        mOnGridImageSelectedListener.onGridImageSelected(photos.get(position), ACTIVITY_NUM);
+                    public void OnGridItemClick(int clickedItemIndex) {
+                        mOnGridImageSelectedListener.onGridImageSelected(photos.get(clickedItemIndex), ACTIVITY_NUM);
                     }
                 });
+//                GridImageAdapter adapter = new GridImageAdapter(mContext, R.layout.layout_grid_imageview,
+//                        "", imgURLs, new GridImageAdapter.OnGridItemClickListener() {
+//                    @Override
+//                    public void OnGridItemClick(int clickedItemIndex) {
+//                        mOnGridImageSelectedListener.onGridImageSelected(photos.get(clickedItemIndex), ACTIVITY_NUM);
+//                    }
+//                });
+                gridView.setAdapter(adapter);
+
             }
 
             @Override

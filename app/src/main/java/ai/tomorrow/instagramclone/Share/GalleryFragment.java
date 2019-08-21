@@ -9,7 +9,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
@@ -18,6 +17,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.FailReason;
@@ -26,7 +26,6 @@ import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 import java.util.ArrayList;
 
 import ai.tomorrow.instagramclone.Profile.AccountSettingsActivity;
-import ai.tomorrow.instagramclone.Profile.ProfileActivity;
 import ai.tomorrow.instagramclone.R;
 import ai.tomorrow.instagramclone.Utils.FilePaths;
 import ai.tomorrow.instagramclone.Utils.FileSearch;
@@ -41,7 +40,7 @@ public class GalleryFragment extends Fragment {
 
     
     //widgets
-    private GridView gridView;
+    private RecyclerView gridView;
     private ImageView galleryImage;
     private ProgressBar progressBar;
     private Spinner directorySpinner;
@@ -58,7 +57,7 @@ public class GalleryFragment extends Fragment {
         Log.d(TAG, "onCreateView: stated.");
 
         galleryImage = (ImageView) view.findViewById(R.id.galleryImageView);
-        gridView = (GridView) view.findViewById(R.id.gridView);
+        gridView = (RecyclerView) view.findViewById(R.id.gridView);
         directorySpinner = (Spinner) view.findViewById(R.id.spinnerDirectory);
         progressBar = (ProgressBar) view.findViewById(R.id.progressBar);
         progressBar.setVisibility(View.GONE);
@@ -152,13 +151,19 @@ public class GalleryFragment extends Fragment {
         Log.d(TAG, "setupGridView: directory chosen: " + selectedDirectory);
         final ArrayList<String> imgURLs = FileSearch.getFilePaths(selectedDirectory);
 
-        // set the grid column width
-        int gridWidth = getResources().getDisplayMetrics().widthPixels;
-        int imageWidth = gridWidth / NUM_GRID_COLUMNS;
-        gridView.setColumnWidth(imageWidth);
-
         // user the grid adapter to adapter the images to gridview
-        GridImageAdapter adapter = new GridImageAdapter(getActivity(), R.layout.layout_grid_imageview, mAppend, imgURLs);
+        GridImageAdapter adapter = new GridImageAdapter(getActivity(), R.layout.layout_grid_imageview,
+                mAppend, imgURLs, new GridImageAdapter.OnGridItemClickListener() {
+            @Override
+            public void OnGridItemClick(int position) {
+                Log.d(TAG, "OnGridItemClick: selected an image + " + imgURLs.get(position));
+                if (imgURLs != null && imgURLs.size() > 0){
+                    setImage(imgURLs.get(position), galleryImage, mAppend);
+                    mSelectedImage = imgURLs.get(position);
+                }
+            }
+        });
+
         gridView.setAdapter(adapter);
 
         // set the first image to be displayed when the activity fragment is inflated.
@@ -171,17 +176,6 @@ public class GalleryFragment extends Fragment {
             Log.d(TAG, "setupGridView: ArrayIndexOutOfBoundsException: " + e.getMessage());
         }
 
-        
-        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Log.d(TAG, "onItemClick: selected an image + " + imgURLs.get(position));
-                if (imgURLs != null && imgURLs.size() > 0){
-                    setImage(imgURLs.get(position), galleryImage, mAppend);
-                    mSelectedImage = imgURLs.get(position);
-                }
-            }
-        });
         
     }
 
