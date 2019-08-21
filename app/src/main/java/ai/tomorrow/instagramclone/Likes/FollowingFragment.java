@@ -26,8 +26,11 @@ import java.util.Comparator;
 import java.util.List;
 
 import ai.tomorrow.instagramclone.R;
+import ai.tomorrow.instagramclone.Utils.CommentListAdapter;
 import ai.tomorrow.instagramclone.Utils.FirebaseMethods;
+import ai.tomorrow.instagramclone.Utils.FollowingLikesListAdapter;
 import ai.tomorrow.instagramclone.Utils.MainfeedListAdapter;
+import ai.tomorrow.instagramclone.Utils.ViewCommentsFragment;
 import ai.tomorrow.instagramclone.models.Follow;
 import ai.tomorrow.instagramclone.models.LikePhoto;
 import ai.tomorrow.instagramclone.models.Photo;
@@ -43,6 +46,8 @@ public class FollowingFragment extends Fragment {
     private List<LikePhoto> mAllLikes = new ArrayList<>();
     private List<List<LikePhoto>> mLikes = new ArrayList<>();
     private List<String> mFollowingsUserID = new ArrayList<>();
+    private FollowingLikesListAdapter mAdapter;
+
 
     //firebase
     private DatabaseReference myRef;
@@ -55,11 +60,14 @@ public class FollowingFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_following, container, false);
 
         mContext = getActivity();
-//        mListView = (ListView) view.findViewById(R.id.listView);
+        mListView = (ListView) view.findViewById(R.id.listView);
         myRef = FirebaseDatabase.getInstance().getReference();
         mFirebaseMethods = new FirebaseMethods(mContext);
 
         getFollowingsLikedPosts();
+
+        mAdapter = new FollowingLikesListAdapter(mContext, R.layout.layout_likes_post_listitem, mLikes);
+        mListView.setAdapter(mAdapter);
 
         return view;
     }
@@ -102,6 +110,7 @@ public class FollowingFragment extends Fragment {
                                 getLikesForFollowingUsers();
                                 Log.d(TAG, "onDataChange: mLikes: " + mLikes);
 //                                updateListView();
+                                mAdapter.setNewData(mLikes);
 
 
                             }
