@@ -243,13 +243,6 @@ public class ProfileFragment extends Fragment {
                         mOnGridImageSelectedListener.onGridImageSelected(photos.get(clickedItemIndex), ACTIVITY_NUM);
                     }
                 });
-//                GridImageAdapter adapter = new GridImageAdapter(mContext, R.layout.layout_grid_imageview,
-//                        "", imgURLs, new GridImageAdapter.OnGridItemClickListener() {
-//                    @Override
-//                    public void OnGridItemClick(int clickedItemIndex) {
-//                        mOnGridImageSelectedListener.onGridImageSelected(photos.get(clickedItemIndex), ACTIVITY_NUM);
-//                    }
-//                });
                 gridView.setAdapter(adapter);
 
             }

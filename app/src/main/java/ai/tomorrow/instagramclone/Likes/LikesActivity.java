@@ -9,6 +9,7 @@ import android.widget.FrameLayout;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.tabs.TabLayout;
@@ -30,14 +31,18 @@ import java.util.List;
 
 import ai.tomorrow.instagramclone.Home.HomeFragment;
 import ai.tomorrow.instagramclone.Home.MessagesFragment;
+import ai.tomorrow.instagramclone.Profile.ProfileActivity;
 import ai.tomorrow.instagramclone.R;
 import ai.tomorrow.instagramclone.Utils.BottomNavigationViewHelper;
 import ai.tomorrow.instagramclone.Utils.FirebaseMethods;
+import ai.tomorrow.instagramclone.Utils.FollowingLikesListAdapter;
 import ai.tomorrow.instagramclone.Utils.SectionsPagerAdapter;
+import ai.tomorrow.instagramclone.Utils.ViewPostFragment;
 import ai.tomorrow.instagramclone.models.Follow;
 import ai.tomorrow.instagramclone.models.LikePhoto;
+import ai.tomorrow.instagramclone.models.Photo;
 
-public class LikesActivity extends AppCompatActivity {
+public class LikesActivity extends AppCompatActivity implements FollowingLikesListAdapter.OnGridImageSelectedListener {
 
     private static final String TAG = "LikesActivity";
     private static final int ACTIVITY_NUM = 3;
@@ -79,7 +84,20 @@ public class LikesActivity extends AppCompatActivity {
         mTab.getTabAt(1).setText(getString(R.string.you));
     }
 
+    @Override
+    public void onGridImageSelected(Photo photo, int activityNumber) {
+        Log.d(TAG, "onGridImageSelected: selected an image gridview: " + photo.toString());
+        ViewPostFragment fragment = new ViewPostFragment();
+        Bundle args = new Bundle();
+        args.putInt(getString(R.string.activity_number), activityNumber);
+        args.putParcelable(getString(R.string.photo), photo);
+        fragment.setArguments(args);
 
+        FragmentTransaction transaction = LikesActivity.this.getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.container, fragment);
+        transaction.addToBackStack(getString(R.string.view_post_fragment));
+        transaction.commit();
+    }
 
     /**
      * BottomNavigationView setup

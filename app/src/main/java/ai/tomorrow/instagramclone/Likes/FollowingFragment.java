@@ -25,6 +25,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import ai.tomorrow.instagramclone.Profile.ProfileFragment;
 import ai.tomorrow.instagramclone.R;
 import ai.tomorrow.instagramclone.Utils.CommentListAdapter;
 import ai.tomorrow.instagramclone.Utils.FirebaseMethods;
@@ -37,6 +38,11 @@ import ai.tomorrow.instagramclone.models.Photo;
 
 public class FollowingFragment extends Fragment {
     private static final String TAG = "FollowingFragment";
+
+//    public interface OnGridImageSelectedListener{
+//        void onGridImageSelected(Photo photo, int activityNumber);
+//    }
+//    OnGridImageSelectedListener mOnGridImageSelectedListener;
 
     //widgets
     private ListView mListView;
@@ -161,5 +167,16 @@ public class FollowingFragment extends Fragment {
             }
         }
     }
+//
+//    @Override
+//    public void onAttach(Context context) {
+//        try {
+//            mOnGridImageSelectedListener = (OnGridImageSelectedListener) getActivity();
+//        }catch (ClassCastException e){
+//            Log.d(TAG, "onAttach: ClassCastException: " + e.getMessage());
+//        }
+//
+//        super.onAttach(context);
+//    }
 
 }

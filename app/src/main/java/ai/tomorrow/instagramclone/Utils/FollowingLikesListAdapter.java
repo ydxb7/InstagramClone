@@ -31,14 +31,21 @@ import java.util.Map;
 
 import ai.tomorrow.instagramclone.R;
 import ai.tomorrow.instagramclone.models.LikePhoto;
+import ai.tomorrow.instagramclone.models.Photo;
 import ai.tomorrow.instagramclone.models.UserAccountSettings;
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class FollowingLikesListAdapter extends ArrayAdapter<List<LikePhoto>> {
+public class FollowingLikesListAdapter extends ArrayAdapter<List<LikePhoto>>  {
     private static final String TAG = "FollowingLikesListAdapt";
+
+    public interface OnGridImageSelectedListener{
+        void onGridImageSelected(Photo photo, int activityNumber);
+    }
+    OnGridImageSelectedListener mOnGridImageSelectedListener;
 
     //constance
     private final int NUM_GRID_COLUMNS = 7;
+    private static final int ACTIVITY_NUM = 3;
 
     //vars
     private Context mContext;
@@ -59,6 +66,7 @@ public class FollowingLikesListAdapter extends ArrayAdapter<List<LikePhoto>> {
         layoutResource = resource;
         mFirebaseMethods = new FirebaseMethods(context);
         myRef = FirebaseDatabase.getInstance().getReference();
+        mOnGridImageSelectedListener = (OnGridImageSelectedListener) mContext;
     }
 
     public void setNewData(List<List<LikePhoto>> objects){
@@ -73,6 +81,7 @@ public class FollowingLikesListAdapter extends ArrayAdapter<List<LikePhoto>> {
         RecyclerView gridView;
         String userID;
         UserAccountSettings settings;
+        private List<Photo> mPhotos = new ArrayList<>();
 
     }
 
@@ -153,12 +162,11 @@ public class FollowingLikesListAdapter extends ArrayAdapter<List<LikePhoto>> {
         Log.d(TAG, "setupGridView. ");
 
         // get imgURLs and setup grid view
-        final ArrayList<String> imgURLs = new ArrayList<>();
+        holder.mPhotos.clear();
 
         for (int i = 0; i < getItem(position).size(); i++){
-            final int count = i;
 
-            String photoID = getItem(position).get(i).getPhoto_id();
+            final String photoID = getItem(position).get(i).getPhoto_id();
             Query query = myRef.child(mContext.getString(R.string.dbname_photos))
                     .orderByChild(mContext.getString(R.string.field_photo_id))
                     .equalTo(photoID);
@@ -167,10 +175,14 @@ public class FollowingLikesListAdapter extends ArrayAdapter<List<LikePhoto>> {
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     for (DataSnapshot singleSnapshot: dataSnapshot.getChildren()){
                         Log.d(TAG, "onDataChange: found photo: " + singleSnapshot);
-                        Map<String, Object> objectMap = (HashMap<String, Object>) singleSnapshot.getValue();
-                        imgURLs.add(objectMap.get(mContext.getString(R.string.field_image_path)).toString());
+                        holder.mPhotos.add(mFirebaseMethods.getPhoto(singleSnapshot));
+                        Log.d(TAG, "onDataChange: mPhotos.size() = " + holder.mPhotos.size() + " getItem(position).size() = " + getItem(position).size());
                     }
-                    if (count == getItem(position).size() - 1){
+                    if (holder.mPhotos.size() == getItem(position).size()){
+                        final ArrayList<String> imgURLs = new ArrayList<>();
+                        for (Photo photo: holder.mPhotos){
+                            imgURLs.add(photo.getImage_path());
+                        }
                         // set grid view
                         // user the grid adapter to adapter the images to gridview
                         GridImageAdapter adapter = new GridImageAdapter(mContext, R.layout.layout_grid_imageview,
@@ -178,12 +190,11 @@ public class FollowingLikesListAdapter extends ArrayAdapter<List<LikePhoto>> {
                             @Override
                             public void OnGridItemClick(int position) {
                                 Log.d(TAG, "onItemClick: selected an image + " + imgURLs.get(position));
-
+                                mOnGridImageSelectedListener.onGridImageSelected(holder.mPhotos.get(position), ACTIVITY_NUM);
                             }
                         });
 
                         holder.gridView.setAdapter(adapter);
-
 
                     }
                 }
