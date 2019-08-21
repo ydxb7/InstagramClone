@@ -266,8 +266,6 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
 
-                        String keyID = singleSnapshot.getKey();
-
                         //case1: Then user already liked the photo
                         if (mHolder.likeByCurrentUser &&
                                 singleSnapshot.getValue(LikePhoto.class).getLiked_by_user_id()

@@ -158,7 +158,7 @@ public class FollowingLikesListAdapter extends ArrayAdapter<List<LikePhoto>> {
         Log.d(TAG, "setupGridView. ");
 
         // set the grid column width
-        int gridWidth = mContext.getResources().getDisplayMetrics().widthPixels;
+        int gridWidth = mContext.getResources().getDisplayMetrics().widthPixels - 40 - 8 - 16 - 16 - 6 * 2;
         int imageWidth = gridWidth / NUM_GRID_COLUMNS;
         holder.gridView.setColumnWidth(imageWidth);
 
