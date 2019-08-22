@@ -1,9 +1,13 @@
 package ai.tomorrow.instagramclone.Utils;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Typeface;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
+import android.text.TextPaint;
+import android.text.method.LinkMovementMethod;
+import android.text.style.ClickableSpan;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
 import android.util.Log;
@@ -29,9 +33,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import ai.tomorrow.instagramclone.Profile.ProfileActivity;
 import ai.tomorrow.instagramclone.R;
 import ai.tomorrow.instagramclone.models.LikePhoto;
 import ai.tomorrow.instagramclone.models.Photo;
+import ai.tomorrow.instagramclone.models.User;
 import ai.tomorrow.instagramclone.models.UserAccountSettings;
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -82,7 +88,8 @@ public class FollowingLikesListAdapter extends ArrayAdapter<List<LikePhoto>>  {
         RecyclerView gridView;
         String userID;
         UserAccountSettings settings;
-        private List<Photo> mPhotos = new ArrayList<>();
+        List<Photo> mPhotos = new ArrayList<>();
+        User mUser;
 
     }
 
@@ -128,14 +135,54 @@ public class FollowingLikesListAdapter extends ArrayAdapter<List<LikePhoto>>  {
                     // set profile photo
                     UniversalImageLoader.setImage(holder.settings.getProfile_photo(), holder.profilePhoto, null, "");
 
+                    Query query = myRef.child(mContext.getString(R.string.dbname_users))
+                            .orderByChild(mContext.getString(R.string.field_user_id))
+                            .equalTo(holder.userID);
+
+                    query.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            for (DataSnapshot singleSnapshot: dataSnapshot.getChildren()){
+                                holder.mUser = singleSnapshot.getValue(User.class);
+
+                                holder.profilePhoto.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                        Log.d(TAG, "onClick: navigate to viewProfile.");
+                                        navigateToProfileActivity(holder.mUser);
+                                    }
+                                });
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                        }
+                    });
+
                     // like string
                     SpannableStringBuilder spannableString = new SpannableStringBuilder();
 
                     // user's username
+                    ClickableSpan clickSpan = new ClickableSpan() {
+                        @Override
+                        public void onClick(View widget) {
+                            Log.d(TAG, "onClick: navigate to view profile.");
+                            navigateToProfileActivity(holder.mUser);
+                        }
+
+                        @Override
+                        public void updateDrawState(TextPaint ds) {// override updateDrawState
+                            ds.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.BOLD));
+                            ds.setUnderlineText(false); // set to false to remove underline
+                        }
+                    };
+
                     spannableString.append(holder.settings.getUsername());
-                    StyleSpan boldStyleSpan = new StyleSpan(Typeface.BOLD);//粗体
+//                    StyleSpan boldStyleSpan = new StyleSpan(Typeface.BOLD);//粗体
                     int s1 = spannableString.length();
-                    spannableString.setSpan(boldStyleSpan, 0, s1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    spannableString.setSpan(clickSpan, 0, s1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 
                     // liked 3 posts
                     spannableString.append(" liked " + getItem(position).size() + " posts. " );
@@ -145,7 +192,7 @@ public class FollowingLikesListAdapter extends ArrayAdapter<List<LikePhoto>>  {
                     spannableString.append(StringManipulation.getTimeStampDifference(getItem(position).get(0).getDate_created()));
                     ForegroundColorSpan colorSpan = new ForegroundColorSpan(mContext.getResources().getColor(R.color.dark_grey));
                     spannableString.setSpan(colorSpan, s2, spannableString.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-
+                    holder.tv_liked_post.setMovementMethod(LinkMovementMethod.getInstance());
                     holder.tv_liked_post.setText(spannableString);
 
 
@@ -157,6 +204,16 @@ public class FollowingLikesListAdapter extends ArrayAdapter<List<LikePhoto>>  {
 
             }
         });
+    }
+
+    private void navigateToProfileActivity(User user) {
+        Log.d(TAG, "navigateToProfileActivity: navigating.");
+        // navigate to profile activity
+        Intent intent = new Intent(mContext, ProfileActivity.class);
+//        intent.putExtra(mContext.getString(R.string.calling_activity), mContext.getString(R.string.home_activity));
+        intent.putExtra(mContext.getString(R.string.calling_activity_number), mContext.getResources().getInteger(R.integer.likes_activity_number));
+        intent.putExtra(mContext.getString(R.string.selected_user), user);
+        mContext.startActivity(intent);
     }
 
     private void setupGridView(final int position, final ViewHolder holder){

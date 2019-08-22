@@ -261,29 +261,6 @@ public class ViewPostFragment extends Fragment {
         });
     }
 
-//
-//    private void getCurrentUser() {
-//        DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
-//        Query query = reference
-//                .child(getString(R.string.dbname_users))
-//                .orderByChild(getString(R.string.field_user_id))
-//                .equalTo(FirebaseAuth.getInstance().getCurrentUser().getUid());
-//        query.addListenerForSingleValueEvent(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(DataSnapshot dataSnapshot) {
-//                for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
-//                    mCurrentUser = singleSnapshot.getValue(User.class);
-//                }
-//                getLikesString();
-//            }
-//
-//            @Override
-//            public void onCancelled(DatabaseError databaseError) {
-//                Log.d(TAG, "onCancelled: query cancelled.");
-//            }
-//        });
-//    }
-
     public class GestureListener extends GestureDetector.SimpleOnGestureListener {
         @Override
         public boolean onDown(MotionEvent e) {
@@ -396,11 +373,6 @@ public class ViewPostFragment extends Fragment {
                         mContext.getResources().getInteger(R.integer.likes_activity_number)) {
                     ((LikesActivity) mContext).showRelativeLayout();
                 }
-//                if (bundle != null
-//                        && bundle.getString(mContext.getString(R.string.calling_activity)) != null
-//                        && bundle.getString(mContext.getString(R.string.calling_activity)).equals(mContext.getString(R.string.likes_activity))) {
-//                    ((LikesActivity) getActivity()).showRelativeLayout();
-//                }
 
             }
         });
