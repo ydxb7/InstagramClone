@@ -52,9 +52,6 @@ public class ProfileFragment extends Fragment {
     }
     OnGridImageSelectedListener mOnGridImageSelectedListener;
 
-    private static final int ACTIVITY_NUM = 4;
-    private static final int NUM_GRID_COLUMNS = 3;
-
     //widgets
     private TextView mPosts, mFollowers, mFollowing, mDisplayName, mUsername, mWebsite, mDescription;
     private ProgressBar mProgressBar;
@@ -76,11 +73,14 @@ public class ProfileFragment extends Fragment {
     private int mFollowingCount = 0;
     private int mFollowersCount = 0;
     private int mPostsCount = 0;
+    private int mActivityNumber;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull final LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_profile, container, false);
+        Log.d(TAG, "onCreateView: started");
+
         mDisplayName = (TextView) view.findViewById(R.id.display_name);
         mUsername = (TextView) view.findViewById(R.id.username);
         mWebsite = (TextView) view.findViewById(R.id.website);
@@ -97,9 +97,8 @@ public class ProfileFragment extends Fragment {
         mContext = getActivity();
         mFirebaseMethods = new FirebaseMethods(getActivity());
         UniversalImageLoader.initImageLoader(mContext);
-
-        Log.d(TAG, "onCreateView: started");
-
+        mActivityNumber = this.getArguments().getInt(mContext.getString(R.string.calling_activity_number),
+                mContext.getResources().getInteger(R.integer.profile_activity_number));
 
         setupBottomNavigationView();
         setupToolbar();
@@ -242,7 +241,7 @@ public class ProfileFragment extends Fragment {
                         "", imgURLs, new GridImageAdapter.OnGridItemClickListener() {
                     @Override
                     public void OnGridItemClick(int clickedItemIndex) {
-                        mOnGridImageSelectedListener.onGridImageSelected(photos.get(clickedItemIndex), ACTIVITY_NUM);
+                        mOnGridImageSelectedListener.onGridImageSelected(photos.get(clickedItemIndex), mActivityNumber);
                     }
                 });
                 gridView.setAdapter(adapter);
@@ -304,7 +303,7 @@ public class ProfileFragment extends Fragment {
         BottomNavigationViewHelper.setupBottomNavigationView(bottomNavigationView);
         BottomNavigationViewHelper.enableNavigation(mContext, getActivity(), bottomNavigationView);
         Menu menu = bottomNavigationView.getMenu();
-        MenuItem menuItem = menu.getItem(ACTIVITY_NUM);
+        MenuItem menuItem = menu.getItem(mActivityNumber);
         menuItem.setChecked(true);
     }
 

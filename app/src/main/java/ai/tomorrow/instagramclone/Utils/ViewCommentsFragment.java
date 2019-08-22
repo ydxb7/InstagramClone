@@ -133,10 +133,11 @@ public class ViewCommentsFragment extends Fragment implements CommentListAdapter
 //                        && bundle.getString(mContext.getString(R.string.calling_activity)).equals(mContext.getString(R.string.home_activity))){
 //                    ((HomeActivity)getActivity()).showRelativeLayout();
 //                }
-                if (bundle != null
+                if (mContext instanceof HomeActivity
+                        && bundle != null
                         && bundle.getInt(mContext.getString(R.string.calling_activity_number), -1) ==
                         mContext.getResources().getInteger(R.integer.home_activity_number)){
-                    ((HomeActivity)getActivity()).showRelativeLayout();
+                    ((HomeActivity)mContext).showRelativeLayout();
                 }
             }
         });

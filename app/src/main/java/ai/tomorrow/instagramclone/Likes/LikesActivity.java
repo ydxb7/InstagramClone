@@ -47,8 +47,9 @@ import ai.tomorrow.instagramclone.models.Photo;
 public class LikesActivity extends AppCompatActivity implements FollowingLikesListAdapter.OnGridImageSelectedListener {
 
     private static final String TAG = "LikesActivity";
-    private static final int ACTIVITY_NUM = 3;
 
+    //vars
+    private int mActivityNumber;
     private Context mContext = LikesActivity.this;
 
     //widgets
@@ -94,7 +95,9 @@ public class LikesActivity extends AppCompatActivity implements FollowingLikesLi
         ViewPostFragment fragment = new ViewPostFragment();
         Bundle args = new Bundle();
         args.putParcelable(getString(R.string.photo), photo);
-        args.putInt(getString(R.string.calling_activity_number), getResources().getInteger(R.integer.likes_activity_number));
+        Log.d(TAG, "onGridImageSelected: put R.integer.likes_activity_number.");
+        args.putInt(getString(R.string.calling_activity_number),
+                getIntent().getIntExtra(getString(R.string.calling_activity_number), getResources().getInteger(R.integer.likes_activity_number)));
         fragment.setArguments(args);
 
         FragmentTransaction transaction = LikesActivity.this.getSupportFragmentManager().beginTransaction();
@@ -132,7 +135,11 @@ public class LikesActivity extends AppCompatActivity implements FollowingLikesLi
         BottomNavigationViewHelper.setupBottomNavigationView(bottomNavigationViewEx);
         BottomNavigationViewHelper.enableNavigation(mContext, this, bottomNavigationViewEx);
         Menu menu = bottomNavigationViewEx.getMenu();
-        MenuItem menuItem = menu.getItem(ACTIVITY_NUM);
+
+        mActivityNumber = getIntent().getIntExtra(getString(R.string.calling_activity_number),
+                getResources().getInteger(R.integer.likes_activity_number));
+
+        MenuItem menuItem = menu.getItem(mActivityNumber);
         menuItem.setChecked(true);
     }
 }

@@ -43,7 +43,6 @@ import static ai.tomorrow.instagramclone.Utils.Helpers.hideSoftKeyboard;
 public class SearchActivity extends AppCompatActivity {
 
     private static final String TAG = "SearchActivity";
-    private static final int ACTIVITY_NUM = 1;
 
     private Context mContext = SearchActivity.this;
 
@@ -54,6 +53,7 @@ public class SearchActivity extends AppCompatActivity {
     //vars
     private List<User> mUserList;
     private UserListAdapter adapter;
+    private int mActivityNumber;
 
 
     @Override
@@ -163,7 +163,9 @@ public class SearchActivity extends AppCompatActivity {
         BottomNavigationViewHelper.setupBottomNavigationView(bottomNavigationViewEx);
         BottomNavigationViewHelper.enableNavigation(mContext, this, bottomNavigationViewEx);
         Menu menu = bottomNavigationViewEx.getMenu();
-        MenuItem menuItem = menu.getItem(ACTIVITY_NUM);
+        mActivityNumber = getIntent().getIntExtra(getString(R.string.calling_activity_number),
+                getResources().getInteger(R.integer.search_activity_number));
+        MenuItem menuItem = menu.getItem(mActivityNumber);
         menuItem.setChecked(true);
     }
 }

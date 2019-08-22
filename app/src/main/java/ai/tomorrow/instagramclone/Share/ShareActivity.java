@@ -25,11 +25,12 @@ public class ShareActivity extends AppCompatActivity {
     private static final String TAG = "ShareActivity";
 
     // constants
-    private static final int ACTIVITY_NUM = 2;
     private static final int VERIFY_PERMISSION_REQUEST = 1;
 
     private ViewPager mViewPager;
 
+    //vars
+    private int mActivityNumber;
     private Context mContext = ShareActivity.this;
 
     @Override
@@ -128,7 +129,11 @@ public class ShareActivity extends AppCompatActivity {
         BottomNavigationViewHelper.setupBottomNavigationView(bottomNavigationViewEx);
         BottomNavigationViewHelper.enableNavigation(mContext, this, bottomNavigationViewEx);
         Menu menu = bottomNavigationViewEx.getMenu();
-        MenuItem menuItem = menu.getItem(ACTIVITY_NUM);
+
+        mActivityNumber = getIntent().getIntExtra(getString(R.string.calling_activity_number),
+                getResources().getInteger(R.integer.share_activity_number));
+
+        MenuItem menuItem = menu.getItem(mActivityNumber);
         menuItem.setChecked(true);
     }
 }

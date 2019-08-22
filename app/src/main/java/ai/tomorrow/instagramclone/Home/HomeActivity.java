@@ -48,7 +48,6 @@ public class HomeActivity extends AppCompatActivity implements
 
     //constants
     private static final String TAG = "HomeActivity";
-    private static final int ACTIVITY_NUM = 0;
     private static final int CAMERA_REQUEST_CODE = 5;
     private static final int VERIFY_PERMISSION_REQUEST = 1;
 
@@ -65,6 +64,7 @@ public class HomeActivity extends AppCompatActivity implements
 
     //vars
     private SectionsStatePagerAdapter pagerAdapter;
+    private int mActivityNumber = 0;
 
     @Override
     public void onCommentThreadSelectedListener(Photo photo) {
@@ -72,7 +72,8 @@ public class HomeActivity extends AppCompatActivity implements
         ViewCommentsFragment fragment = new ViewCommentsFragment();
         Bundle args = new Bundle();
         args.putParcelable(getString(R.string.photo), photo);
-        args.putInt(getString(R.string.calling_activity_number), getResources().getInteger(R.integer.home_activity_number));
+        args.putInt(getString(R.string.calling_activity_number),
+                getIntent().getIntExtra(getString(R.string.calling_activity_number), getResources().getInteger(R.integer.home_activity_number)));
         fragment.setArguments(args);
 
         FragmentTransaction transaction = HomeActivity.this.getSupportFragmentManager().beginTransaction();
@@ -210,7 +211,11 @@ public class HomeActivity extends AppCompatActivity implements
         BottomNavigationViewHelper.setupBottomNavigationView(bottomNavigationViewEx);
         BottomNavigationViewHelper.enableNavigation(mContext, this, bottomNavigationViewEx);
         Menu menu = bottomNavigationViewEx.getMenu();
-        MenuItem menuItem = menu.getItem(ACTIVITY_NUM);
+
+        mActivityNumber = getIntent().getIntExtra(getString(R.string.calling_activity_number),
+                getResources().getInteger(R.integer.home_activity_number));
+
+        MenuItem menuItem = menu.getItem(mActivityNumber);
         menuItem.setChecked(true);
     }
 

@@ -31,9 +31,12 @@ import ai.tomorrow.instagramclone.Utils.SectionsStatePagerAdapter;
 public class AccountSettingsActivity extends AppCompatActivity {
 
     private static final String TAG = "AccountSettingsActivity";
-    private static final int ACTIVITY_NUM = 4;
+
+    //vars
+    private int mActivityNumber;
     private Context mContext;
 
+    //widgets
     private SectionsStatePagerAdapter pagerAdapter;
     private ViewPager mViewPager;
     private RelativeLayout mRelativeLayout;
@@ -140,7 +143,11 @@ public class AccountSettingsActivity extends AppCompatActivity {
         BottomNavigationViewHelper.setupBottomNavigationView(bottomNavigationViewEx);
         BottomNavigationViewHelper.enableNavigation(mContext, this, bottomNavigationViewEx);
         Menu menu = bottomNavigationViewEx.getMenu();
-        MenuItem menuItem = menu.getItem(ACTIVITY_NUM);
+
+        mActivityNumber = getIntent().getIntExtra(getString(R.string.calling_activity_number),
+                getResources().getInteger(R.integer.profile_activity_number));
+
+        MenuItem menuItem = menu.getItem(mActivityNumber);
         menuItem.setChecked(true);
     }
 }

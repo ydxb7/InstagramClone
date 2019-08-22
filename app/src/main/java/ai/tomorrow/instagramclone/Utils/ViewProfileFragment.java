@@ -392,6 +392,7 @@ public class ViewProfileFragment extends Fragment {
                         "", imgURLs, new GridImageAdapter.OnGridItemClickListener() {
                     @Override
                     public void OnGridItemClick(int clickedItemIndex) {
+                        Log.d(TAG, "OnGridItemClick: mActivityNumber = " + mActivityNumber);
                         mOnGridImageSelectedListener.onGridImageSelected(photos.get(clickedItemIndex), mActivityNumber);
                     }
                 });
@@ -441,19 +442,10 @@ public class ViewProfileFragment extends Fragment {
         BottomNavigationViewHelper.setupBottomNavigationView(bottomNavigationView);
         BottomNavigationViewHelper.enableNavigation(getActivity(), getActivity(), bottomNavigationView);
         Menu menu = bottomNavigationView.getMenu();
-        try {
-            mActivityNumber = bundle.getInt(mContext.getString(R.string.calling_activity_number));
-//            String callingActivity = bundle.getString(mContext.getString(R.string.calling_activity));
-//
-//            if (callingActivity.equals(mContext.getString(R.string.home_activity))) {
-//                mActivityNumber = mContext.getResources().getInteger(R.integer.home_activity_number);
-//            } else if (callingActivity.equals(mContext.getString(R.string.likes_activity))) {
-//                mActivityNumber = mContext.getResources().getInteger(R.integer.likes_activity_number);
-//            }
 
-        } catch (NullPointerException e) {
-            Log.d(TAG, "setupBottomNavigationView: NullPointerException" + e.getMessage());
-        }
+        mActivityNumber = this.getArguments().getInt(mContext.getString(R.string.calling_activity_number),
+                mContext.getResources().getInteger(R.integer.profile_activity_number));
+
         MenuItem menuItem = menu.getItem(mActivityNumber);
         menuItem.setChecked(true);
     }

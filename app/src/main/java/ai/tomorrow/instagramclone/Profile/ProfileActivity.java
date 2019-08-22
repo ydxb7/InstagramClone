@@ -27,18 +27,19 @@ public class ProfileActivity extends AppCompatActivity implements
         ViewPostFragment.OnCommentThreadSelectedListener {
 
     private static final String TAG = "ProfileActivity";
-    private static final int ACTIVITY_NUM = 4;
-    private static final int NUM_GRID_COLUMNS = 3;
 
     private Context mContext = ProfileActivity.this;
     private ProgressBar mProgressBar;
     private ImageView profilePhoto;
+    private int mActivityNumber;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
         Log.d(TAG, "onCreate: starting");
+        mActivityNumber = getIntent().getIntExtra(getString(R.string.calling_activity_number),
+                getResources().getInteger(R.integer.profile_activity_number));
 
         init();
 
@@ -50,6 +51,8 @@ public class ProfileActivity extends AppCompatActivity implements
         ViewCommentsFragment fragment = new ViewCommentsFragment();
         Bundle args = new Bundle();
         args.putParcelable(getString(R.string.photo), photo);
+        args.putInt(getString(R.string.calling_activity_number),
+                getIntent().getIntExtra(getString(R.string.calling_activity_number), getResources().getInteger(R.integer.profile_activity_number)));
         fragment.setArguments(args);
 
         FragmentTransaction transaction = ProfileActivity.this.getSupportFragmentManager().beginTransaction();
@@ -63,12 +66,9 @@ public class ProfileActivity extends AppCompatActivity implements
         Log.d(TAG, "onGridImageSelected: selected an image gridview: " + photo.toString());
         ViewPostFragment fragment = new ViewPostFragment();
         Bundle args = new Bundle();
-        args.putInt(getString(R.string.calling_activity_number), getIntent().getIntExtra(getString(R.string.calling_activity_number), 4));
-//        if (getIntent().hasExtra(getString(R.string.calling_activity))){
-//            args.putString(getString(R.string.calling_activity), getIntent().getStringExtra(getString(R.string.calling_activity)));
-//        } else {
-//            args.putString(getString(R.string.calling_activity), getString(R.string.profile_activity));
-//        }
+        args.putInt(getString(R.string.calling_activity_number), getIntent().getIntExtra(getString(R.string.calling_activity_number),
+                getResources().getInteger(R.integer.profile_activity_number)));
+
         args.putParcelable(getString(R.string.photo), photo);
         fragment.setArguments(args);
 
@@ -91,6 +91,13 @@ public class ProfileActivity extends AppCompatActivity implements
                     Log.d(TAG, "init: inflating Profile");
 
                     ProfileFragment fragment = new ProfileFragment();
+
+                    Bundle args = new Bundle();
+                    args.putInt(getString(R.string.calling_activity_number),
+                            getIntent().getIntExtra(getString(R.string.calling_activity_number),
+                                    getResources().getInteger(R.integer.profile_activity_number)));
+                    fragment.setArguments(args);
+
                     FragmentTransaction transaction = ProfileActivity.this.getSupportFragmentManager().beginTransaction();
                     transaction.replace(R.id.container, fragment);
                     transaction.addToBackStack(getString(R.string.profile_fragment)); // add fragment into backstack
@@ -101,7 +108,9 @@ public class ProfileActivity extends AppCompatActivity implements
                     Bundle args = new Bundle();
                     args.putParcelable(mContext.getString(R.string.selected_user),
                             intent.getParcelableExtra(mContext.getString(R.string.selected_user)));
-                    args.putInt(getString(R.string.calling_activity_number), intent.getIntExtra(getString(R.string.calling_activity_number), 4));
+                    args.putInt(getString(R.string.calling_activity_number),
+                            intent.getIntExtra(getString(R.string.calling_activity_number),
+                            getResources().getInteger(R.integer.profile_activity_number)));
 //                    args.putString(mContext.getString(R.string.calling_activity), intent.getStringExtra(mContext.getString(R.string.calling_activity)));
                     fragment.setArguments(args);
 

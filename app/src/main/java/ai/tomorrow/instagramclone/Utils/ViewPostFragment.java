@@ -353,7 +353,9 @@ public class ViewPostFragment extends Fragment {
                         Log.d(TAG, "onClick: navigate to view profile.");
                         Intent intent = new Intent(mContext, ProfileActivity.class);
 //                        intent.putExtra(mContext.getString(R.string.calling_activity), mContext.getString(R.string.likes_activity));
-                        intent.putExtra(mContext.getString(R.string.calling_activity_number), mContext.getResources().getInteger(R.integer.likes_activity_number));
+                        intent.putExtra(mContext.getString(R.string.calling_activity_number),
+                                getArguments().getInt(mContext.getString(R.string.calling_activity_number),
+                                        getResources().getInteger(R.integer.home_activity_number)));
                         intent.putExtra(mContext.getString(R.string.selected_user), mUser);
                         mContext.startActivity(intent);
 
@@ -388,10 +390,11 @@ public class ViewPostFragment extends Fragment {
                 getActivity().getSupportFragmentManager().popBackStack();
 
                 Bundle bundle = getArguments();
-                if (bundle != null
+                if (mContext instanceof LikesActivity
+                        && bundle != null
                         && bundle.getInt(mContext.getString(R.string.calling_activity_number), -1) ==
                         mContext.getResources().getInteger(R.integer.likes_activity_number)) {
-                    ((LikesActivity) getActivity()).showRelativeLayout();
+                    ((LikesActivity) mContext).showRelativeLayout();
                 }
 //                if (bundle != null
 //                        && bundle.getString(mContext.getString(R.string.calling_activity)) != null
@@ -515,17 +518,7 @@ public class ViewPostFragment extends Fragment {
         BottomNavigationViewHelper.enableNavigation(getActivity(), getActivity(), bottomNavigationView);
         Menu menu = bottomNavigationView.getMenu();
         try {
-            mActivityNumber = bundle.getInt(mContext.getString(R.string.calling_activity_number), 4);
-
-//            String callingActivity = bundle.getString(mContext.getString(R.string.calling_activity));
-//            Log.d(TAG, "setupBottomNavigationView: callingActivity: " + callingActivity);
-//
-//            if (callingActivity.equals(mContext.getString(R.string.home_activity))) {
-//                mActivityNumber = mContext.getResources().getInteger(R.integer.home_activity_number);
-//            } else if (callingActivity.equals(mContext.getString(R.string.likes_activity))) {
-//                mActivityNumber = mContext.getResources().getInteger(R.integer.likes_activity_number);
-//            }
-
+            mActivityNumber = bundle.getInt(mContext.getString(R.string.calling_activity_number), mContext.getResources().getInteger(R.integer.profile_activity_number));
         } catch (NullPointerException e) {
             Log.d(TAG, "setupBottomNavigationView: NullPointerException" + e.getMessage());
         }
