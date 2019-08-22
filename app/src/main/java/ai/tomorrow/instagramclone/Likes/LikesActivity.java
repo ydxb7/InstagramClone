@@ -31,6 +31,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import ai.tomorrow.instagramclone.Home.HomeActivity;
 import ai.tomorrow.instagramclone.Home.HomeFragment;
 import ai.tomorrow.instagramclone.Home.MessagesFragment;
 import ai.tomorrow.instagramclone.Profile.ProfileActivity;
@@ -39,6 +40,7 @@ import ai.tomorrow.instagramclone.Utils.BottomNavigationViewHelper;
 import ai.tomorrow.instagramclone.Utils.FirebaseMethods;
 import ai.tomorrow.instagramclone.Utils.FollowingLikesListAdapter;
 import ai.tomorrow.instagramclone.Utils.SectionsPagerAdapter;
+import ai.tomorrow.instagramclone.Utils.ViewCommentsFragment;
 import ai.tomorrow.instagramclone.Utils.ViewPostFragment;
 import ai.tomorrow.instagramclone.Utils.YouLikesListAdapter;
 import ai.tomorrow.instagramclone.models.Follow;
@@ -47,7 +49,7 @@ import ai.tomorrow.instagramclone.models.Photo;
 
 public class LikesActivity extends AppCompatActivity implements
         FollowingLikesListAdapter.OnGridImageSelectedListener,
-        YouLikesListAdapter.OnPostImageSelectedListener {
+        YouLikesListAdapter.OnPostImageSelectedListener, ViewPostFragment.OnCommentThreadSelectedListener {
 
     private static final String TAG = "LikesActivity";
 
@@ -90,6 +92,24 @@ public class LikesActivity extends AppCompatActivity implements
 
         mTab.getTabAt(0).setText(getString(R.string.following));
         mTab.getTabAt(1).setText(getString(R.string.you));
+    }
+
+
+    @Override
+    public void onCommentThreadSelectedListener(Photo photo) {
+        Log.d(TAG, "onCommentThreadSelectedListener");
+        ViewCommentsFragment fragment = new ViewCommentsFragment();
+        Bundle args = new Bundle();
+        args.putParcelable(getString(R.string.photo), photo);
+        args.putInt(getString(R.string.calling_activity_number),
+                getIntent().getIntExtra(getString(R.string.calling_activity_number), getResources().getInteger(R.integer.likes_activity_number)));
+        fragment.setArguments(args);
+
+        FragmentTransaction transaction = LikesActivity.this.getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.container, fragment);
+        transaction.addToBackStack(getString(R.string.view_comments_fragment));
+        transaction.commit();
+        hideRelativeLayout();
     }
 
     @Override
@@ -163,4 +183,5 @@ public class LikesActivity extends AppCompatActivity implements
         MenuItem menuItem = menu.getItem(mActivityNumber);
         menuItem.setChecked(true);
     }
+
 }

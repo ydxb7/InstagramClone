@@ -320,6 +320,7 @@ public class ProfileFragment extends Fragment {
      * setup the firebase auth object
      */
     private void setupFirebaseAuth() {
+        Log.d(TAG, "setupFirebaseAuth.");
         // Initialize Firebase Auth
         mAuth = FirebaseAuth.getInstance();
         mFirebaseDatabase = FirebaseDatabase.getInstance();
@@ -343,6 +344,7 @@ public class ProfileFragment extends Fragment {
         myRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                Log.d(TAG, "onDataChange: user change.");
 
                 //retrieve user information from the database
                 setProfileWidgets(mFirebaseMethods.getUserSettings(dataSnapshot));
