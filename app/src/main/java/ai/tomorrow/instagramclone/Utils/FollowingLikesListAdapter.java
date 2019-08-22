@@ -195,7 +195,6 @@ public class FollowingLikesListAdapter extends ArrayAdapter<List<LikePhoto>>  {
                     holder.tv_liked_post.setMovementMethod(LinkMovementMethod.getInstance());
                     holder.tv_liked_post.setText(spannableString);
 
-
                 }
             }
 
@@ -210,7 +209,6 @@ public class FollowingLikesListAdapter extends ArrayAdapter<List<LikePhoto>>  {
         Log.d(TAG, "navigateToProfileActivity: navigating.");
         // navigate to profile activity
         Intent intent = new Intent(mContext, ProfileActivity.class);
-//        intent.putExtra(mContext.getString(R.string.calling_activity), mContext.getString(R.string.home_activity));
         intent.putExtra(mContext.getString(R.string.calling_activity_number), mContext.getResources().getInteger(R.integer.likes_activity_number));
         intent.putExtra(mContext.getString(R.string.selected_user), user);
         mContext.startActivity(intent);

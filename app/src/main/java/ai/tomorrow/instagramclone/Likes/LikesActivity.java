@@ -44,7 +44,8 @@ import ai.tomorrow.instagramclone.models.Follow;
 import ai.tomorrow.instagramclone.models.LikePhoto;
 import ai.tomorrow.instagramclone.models.Photo;
 
-public class LikesActivity extends AppCompatActivity implements FollowingLikesListAdapter.OnGridImageSelectedListener {
+public class LikesActivity extends AppCompatActivity implements
+        FollowingLikesListAdapter.OnGridImageSelectedListener {
 
     private static final String TAG = "LikesActivity";
 

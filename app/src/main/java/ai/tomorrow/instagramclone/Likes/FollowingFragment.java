@@ -25,16 +25,11 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import ai.tomorrow.instagramclone.Profile.ProfileFragment;
 import ai.tomorrow.instagramclone.R;
-import ai.tomorrow.instagramclone.Utils.CommentListAdapter;
 import ai.tomorrow.instagramclone.Utils.FirebaseMethods;
 import ai.tomorrow.instagramclone.Utils.FollowingLikesListAdapter;
-import ai.tomorrow.instagramclone.Utils.MainfeedListAdapter;
-import ai.tomorrow.instagramclone.Utils.ViewCommentsFragment;
 import ai.tomorrow.instagramclone.models.Follow;
 import ai.tomorrow.instagramclone.models.LikePhoto;
-import ai.tomorrow.instagramclone.models.Photo;
 
 public class FollowingFragment extends Fragment {
     private static final String TAG = "FollowingFragment";
@@ -66,13 +61,13 @@ public class FollowingFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_following, container, false);
 
         mContext = getActivity();
-        mListView = (ListView) view.findViewById(R.id.listView);
+        mListView = view.findViewById(R.id.listView);
         myRef = FirebaseDatabase.getInstance().getReference();
         mFirebaseMethods = new FirebaseMethods(mContext);
 
         getFollowingsLikedPosts();
 
-        mAdapter = new FollowingLikesListAdapter(mContext, R.layout.layout_likes_post_listitem, mLikes);
+        mAdapter = new FollowingLikesListAdapter(mContext, R.layout.layout_following_likes_post_listitem, mLikes);
         mListView.setAdapter(mAdapter);
 
         return view;
@@ -167,16 +162,5 @@ public class FollowingFragment extends Fragment {
             }
         }
     }
-//
-//    @Override
-//    public void onAttach(Context context) {
-//        try {
-//            mOnGridImageSelectedListener = (OnGridImageSelectedListener) getActivity();
-//        }catch (ClassCastException e){
-//            Log.d(TAG, "onAttach: ClassCastException: " + e.getMessage());
-//        }
-//
-//        super.onAttach(context);
-//    }
 
 }
