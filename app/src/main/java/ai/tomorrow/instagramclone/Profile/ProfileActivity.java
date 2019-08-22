@@ -63,7 +63,11 @@ public class ProfileActivity extends AppCompatActivity implements
         Log.d(TAG, "onGridImageSelected: selected an image gridview: " + photo.toString());
         ViewPostFragment fragment = new ViewPostFragment();
         Bundle args = new Bundle();
-        args.putInt(getString(R.string.activity_number), activityNumber);
+        if (getIntent().hasExtra(getString(R.string.calling_activity))){
+            args.putString(getString(R.string.calling_activity), getIntent().getStringExtra(getString(R.string.calling_activity)));
+        } else {
+            args.putString(getString(R.string.calling_activity), getString(R.string.profile_activity));
+        }
         args.putParcelable(getString(R.string.photo), photo);
         fragment.setArguments(args);
 
@@ -96,7 +100,7 @@ public class ProfileActivity extends AppCompatActivity implements
                     Bundle args = new Bundle();
                     args.putParcelable(mContext.getString(R.string.selected_user),
                             intent.getParcelableExtra(mContext.getString(R.string.selected_user)));
-                    args.putInt(mContext.getString(R.string.activity_number), mContext.getResources().getInteger(R.integer.home_activity_number));
+                    args.putString(mContext.getString(R.string.calling_activity), intent.getStringExtra(mContext.getString(R.string.calling_activity)));
                     fragment.setArguments(args);
 
                     FragmentTransaction transaction = ProfileActivity.this.getSupportFragmentManager().beginTransaction();

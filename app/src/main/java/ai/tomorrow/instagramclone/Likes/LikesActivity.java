@@ -93,7 +93,6 @@ public class LikesActivity extends AppCompatActivity implements FollowingLikesLi
         Log.d(TAG, "onGridImageSelected: selected an image gridview: " + photo.toString());
         ViewPostFragment fragment = new ViewPostFragment();
         Bundle args = new Bundle();
-        args.putInt(getString(R.string.activity_number), activityNumber);
         args.putParcelable(getString(R.string.photo), photo);
         args.putString(getString(R.string.calling_activity), getString(R.string.likes_activity));
         fragment.setArguments(args);

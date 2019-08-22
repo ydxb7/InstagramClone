@@ -51,9 +51,6 @@ public class ViewProfileFragment extends Fragment {
     }
     OnGridImageSelectedListener mOnGridImageSelectedListener;
 
-    private static final int ACTIVITY_NUM = 0;
-    private static final int NUM_GRID_COLUMNS = 3;
-
     //widgets
     private TextView mPosts, mFollowers, mFollowing, mDisplayName, mUsername, mWebsite, mDescription,
             mFollow, mUnfollow, mSendEmail;
@@ -77,6 +74,7 @@ public class ViewProfileFragment extends Fragment {
     private int mFollowingCount = 0;
     private int mFollowersCount = 0;
     private int mPostsCount = 0;
+    private int mActivityNumber = 0;
 
 
     @Nullable
@@ -393,7 +391,7 @@ public class ViewProfileFragment extends Fragment {
                         "", imgURLs, new GridImageAdapter.OnGridItemClickListener() {
                     @Override
                     public void OnGridItemClick(int clickedItemIndex) {
-                        mOnGridImageSelectedListener.onGridImageSelected(photos.get(clickedItemIndex), ACTIVITY_NUM);
+                        mOnGridImageSelectedListener.onGridImageSelected(photos.get(clickedItemIndex), mActivityNumber);
                     }
                 });
                 gridView.setAdapter(adapter);
@@ -437,10 +435,24 @@ public class ViewProfileFragment extends Fragment {
      * BottomNavigationView setup
      */
     private void setupBottomNavigationView() {
+        Bundle bundle = this.getArguments();
+
         BottomNavigationViewHelper.setupBottomNavigationView(bottomNavigationView);
-        BottomNavigationViewHelper.enableNavigation(mContext, getActivity(), bottomNavigationView);
+        BottomNavigationViewHelper.enableNavigation(getActivity(), getActivity(), bottomNavigationView);
         Menu menu = bottomNavigationView.getMenu();
-        MenuItem menuItem = menu.getItem(ACTIVITY_NUM);
+        try {
+            String callingActivity = bundle.getString(mContext.getString(R.string.calling_activity));
+
+            if (callingActivity.equals(mContext.getString(R.string.home_activity))) {
+                mActivityNumber = mContext.getResources().getInteger(R.integer.home_activity_number);
+            } else if (callingActivity.equals(mContext.getString(R.string.likes_activity))) {
+                mActivityNumber = mContext.getResources().getInteger(R.integer.likes_activity_number);
+            }
+
+        } catch (NullPointerException e) {
+            Log.d(TAG, "setupBottomNavigationView: NullPointerException" + e.getMessage());
+        }
+        MenuItem menuItem = menu.getItem(mActivityNumber);
         menuItem.setChecked(true);
     }
 

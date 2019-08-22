@@ -64,6 +64,7 @@
     <string name="activity_number">activity_number</string>
     <integer name="home_activity_number">0</integer>
     <integer name="profile_activity_number">4</integer>
+    <integer name="likes_activity_number">3</integer>
 
     <!--activity names-->
     <string name="profile_activity">Profile Activity</string>
