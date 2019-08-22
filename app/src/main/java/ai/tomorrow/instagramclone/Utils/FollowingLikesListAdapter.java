@@ -49,10 +49,6 @@ public class FollowingLikesListAdapter extends ArrayAdapter<List<LikePhoto>>  {
     }
     OnGridImageSelectedListener mOnGridImageSelectedListener;
 
-    //constance
-    private final int NUM_GRID_COLUMNS = 7;
-    private static final int ACTIVITY_NUM = 3;
-
     //vars
     private Context mContext;
     private LayoutInflater mInflater;
@@ -246,7 +242,8 @@ public class FollowingLikesListAdapter extends ArrayAdapter<List<LikePhoto>>  {
                             @Override
                             public void OnGridItemClick(int position) {
                                 Log.d(TAG, "onItemClick: selected an image + " + imgURLs.get(position));
-                                mOnGridImageSelectedListener.onGridImageSelected(holder.mPhotos.get(position), ACTIVITY_NUM);
+                                mOnGridImageSelectedListener.onGridImageSelected(holder.mPhotos.get(position),
+                                        mContext.getResources().getInteger(R.integer.likes_activity_number));
                             }
                         });
 

@@ -40,12 +40,14 @@ import ai.tomorrow.instagramclone.Utils.FirebaseMethods;
 import ai.tomorrow.instagramclone.Utils.FollowingLikesListAdapter;
 import ai.tomorrow.instagramclone.Utils.SectionsPagerAdapter;
 import ai.tomorrow.instagramclone.Utils.ViewPostFragment;
+import ai.tomorrow.instagramclone.Utils.YouLikesListAdapter;
 import ai.tomorrow.instagramclone.models.Follow;
 import ai.tomorrow.instagramclone.models.LikePhoto;
 import ai.tomorrow.instagramclone.models.Photo;
 
 public class LikesActivity extends AppCompatActivity implements
-        FollowingLikesListAdapter.OnGridImageSelectedListener {
+        FollowingLikesListAdapter.OnGridImageSelectedListener,
+        YouLikesListAdapter.OnPostImageSelectedListener {
 
     private static final String TAG = "LikesActivity";
 
@@ -97,6 +99,24 @@ public class LikesActivity extends AppCompatActivity implements
         Bundle args = new Bundle();
         args.putParcelable(getString(R.string.photo), photo);
         Log.d(TAG, "onGridImageSelected: put R.integer.likes_activity_number.");
+        args.putInt(getString(R.string.calling_activity_number),
+                getIntent().getIntExtra(getString(R.string.calling_activity_number), getResources().getInteger(R.integer.likes_activity_number)));
+        fragment.setArguments(args);
+
+        FragmentTransaction transaction = LikesActivity.this.getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.container, fragment);
+        transaction.addToBackStack(getString(R.string.view_post_fragment));
+        transaction.commit();
+        hideRelativeLayout();
+    }
+
+
+    @Override
+    public void onPostImageSelected(Photo photo, int activityNumber) {
+        Log.d(TAG, "onPostImageSelected.");
+        ViewPostFragment fragment = new ViewPostFragment();
+        Bundle args = new Bundle();
+        args.putParcelable(getString(R.string.photo), photo);
         args.putInt(getString(R.string.calling_activity_number),
                 getIntent().getIntExtra(getString(R.string.calling_activity_number), getResources().getInteger(R.integer.likes_activity_number)));
         fragment.setArguments(args);

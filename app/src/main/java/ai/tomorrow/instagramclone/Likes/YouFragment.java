@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
 import androidx.annotation.NonNull;
@@ -68,6 +69,7 @@ public class YouFragment extends Fragment {
     }
 
     private void getLikes(){
+        Log.d(TAG, "getLikes: get likes.");
         mLikeYous.clear();
 
         Query query = myRef.child(mContext.getString(R.string.dbname_user_photos))

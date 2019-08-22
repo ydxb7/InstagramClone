@@ -43,6 +43,11 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class YouLikesListAdapter extends ArrayAdapter<LikeYou>  {
     private static final String TAG = "YouLikesListAdapter";
 
+    public interface OnPostImageSelectedListener{
+        void onPostImageSelected(Photo photo, int activityNumber);
+    }
+    OnPostImageSelectedListener mOnPostImageSelectedListener;
+
     //constance
 //    private static final int ACTIVITY_NUM = 3;
 
@@ -68,6 +73,7 @@ public class YouLikesListAdapter extends ArrayAdapter<LikeYou>  {
         myRef = FirebaseDatabase.getInstance().getReference();
         UniversalImageLoader.initImageLoader(mContext);
         mImageLoader = ImageLoader.getInstance();
+        mOnPostImageSelectedListener = (OnPostImageSelectedListener) mContext;
     }
 
     public void setNewData(List<LikeYou> objects){
@@ -221,6 +227,14 @@ public class YouLikesListAdapter extends ArrayAdapter<LikeYou>  {
         holder.tv_liked_post.setText(spannableString);
 
         mImageLoader.displayImage(holder.mPhoto.getImage_path(), holder.postImage);
+
+        holder.postImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mOnPostImageSelectedListener.onPostImageSelected(holder.mPhoto,
+                        mContext.getResources().getInteger(R.integer.likes_activity_number));
+            }
+        });
 
     }
 
