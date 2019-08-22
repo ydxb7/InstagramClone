@@ -1,5 +1,6 @@
 package ai.tomorrow.instagramclone.Utils;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -335,6 +336,7 @@ public class ViewPostFragment extends Fragment {
                                         getResources().getInteger(R.integer.home_activity_number)));
                         intent.putExtra(mContext.getString(R.string.selected_user), mUser);
                         mContext.startActivity(intent);
+                        ((Activity)mContext).overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
 
                     }
                 });

@@ -1,5 +1,6 @@
 package ai.tomorrow.instagramclone.Utils;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -353,6 +354,7 @@ public class FirebaseMethods {
                         // navigate to the main feed so the user can see their photo.
                         Intent intent = new Intent(mContext, HomeActivity.class);
                         mContext.startActivity(intent);
+                        ((Activity)mContext).overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
 
                     } else {
                         // Handle failures

@@ -1,5 +1,6 @@
 package ai.tomorrow.instagramclone.Utils;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
@@ -208,6 +209,7 @@ public class FollowingLikesListAdapter extends ArrayAdapter<List<LikePhoto>>  {
         intent.putExtra(mContext.getString(R.string.calling_activity_number), mContext.getResources().getInteger(R.integer.likes_activity_number));
         intent.putExtra(mContext.getString(R.string.selected_user), user);
         mContext.startActivity(intent);
+        ((Activity)mContext).overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
     }
 
     private void setupGridView(final int position, final ViewHolder holder){

@@ -24,6 +24,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
+import ai.tomorrow.instagramclone.Login.LoginActivity;
 import ai.tomorrow.instagramclone.R;
 import ai.tomorrow.instagramclone.Utils.FirebaseMethods;
 import ai.tomorrow.instagramclone.Utils.UniversalImageLoader;
@@ -67,6 +68,7 @@ public class NextActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Log.d(TAG, "onClick: closing the Next Activity");
                 finish();
+                NextActivity.this.overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
             }
         });
 

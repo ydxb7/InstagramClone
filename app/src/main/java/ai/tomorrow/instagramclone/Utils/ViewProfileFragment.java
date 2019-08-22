@@ -35,6 +35,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 
+import ai.tomorrow.instagramclone.Login.LoginActivity;
 import ai.tomorrow.instagramclone.R;
 import ai.tomorrow.instagramclone.models.Photo;
 import ai.tomorrow.instagramclone.models.User;
@@ -429,6 +430,7 @@ public class ViewProfileFragment extends Fragment {
             public void onClick(View v) {
                 getActivity().getSupportFragmentManager().popBackStack();
                 getActivity().finish();
+                getActivity().overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
             }
         });
     }

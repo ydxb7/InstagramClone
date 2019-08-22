@@ -116,6 +116,7 @@ public class HomeActivity extends AppCompatActivity implements
             Log.d(TAG, "onCreate: user signed out.");
             Intent intent = new Intent(mContext, LoginActivity.class);
             startActivity(intent);
+            this.overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
         }
     }
 
@@ -257,6 +258,7 @@ public class HomeActivity extends AppCompatActivity implements
         if (user == null) {
             Intent intent = new Intent(mContext, LoginActivity.class);
             startActivity(intent);
+            this.overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
         }
     }
 

@@ -23,6 +23,7 @@ import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
 
 import java.util.ArrayList;
 
+import ai.tomorrow.instagramclone.Login.LoginActivity;
 import ai.tomorrow.instagramclone.R;
 import ai.tomorrow.instagramclone.Utils.BottomNavigationViewHelper;
 import ai.tomorrow.instagramclone.Utils.FirebaseMethods;
@@ -63,6 +64,7 @@ public class AccountSettingsActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Log.d(TAG, "onClick: navigating back to 'ProfileActivity'. ");
                 finish();
+                AccountSettingsActivity.this.overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
             }
         });
     }

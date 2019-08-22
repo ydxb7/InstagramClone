@@ -14,6 +14,7 @@ import androidx.viewpager.widget.ViewPager;
 import com.google.android.material.tabs.TabLayout;
 import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
 
+import ai.tomorrow.instagramclone.Login.LoginActivity;
 import ai.tomorrow.instagramclone.R;
 import ai.tomorrow.instagramclone.Utils.BottomNavigationViewHelper;
 import ai.tomorrow.instagramclone.Utils.Permissions;
@@ -115,6 +116,7 @@ public class ShareActivity extends AppCompatActivity {
                     setupViewPager();
                 } else {
                     finish();
+                    ShareActivity.this.overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
                 }
             }
 

@@ -142,6 +142,7 @@ public class SearchActivity extends AppCompatActivity {
 //                intent.putExtra(getString(R.string.calling_activity), getString(R.string.search_activity));
                 intent.putExtra(getString(R.string.selected_user), mUserList.get(position));
                 startActivity(intent);
+                SearchActivity.this.overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
             }
         });
 

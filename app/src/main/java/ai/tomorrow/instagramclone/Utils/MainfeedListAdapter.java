@@ -1,5 +1,6 @@
 package ai.tomorrow.instagramclone.Utils;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
@@ -239,6 +240,7 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
         intent.putExtra(mContext.getString(R.string.calling_activity_number), mContext.getResources().getInteger(R.integer.home_activity_number));
         intent.putExtra(mContext.getString(R.string.selected_user), holder.user);
         mContext.startActivity(intent);
+        ((Activity)mContext).overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
     }
 
     public class GestureListener extends GestureDetector.SimpleOnGestureListener {

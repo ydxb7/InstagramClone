@@ -1,5 +1,6 @@
 package ai.tomorrow.instagramclone.Utils;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
@@ -203,6 +204,7 @@ public class CommentListAdapter extends ArrayAdapter<Comment> {
                             intent.putExtra(mContext.getString(R.string.calling_activity_number), mContext.getResources().getInteger(R.integer.home_activity_number));
                             intent.putExtra(mContext.getString(R.string.selected_user), commentUser);
                             mContext.startActivity(intent);
+                            ((Activity)mContext).overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
                         }
                     });
 
@@ -241,6 +243,7 @@ public class CommentListAdapter extends ArrayAdapter<Comment> {
                                             intent.putExtra(mContext.getString(R.string.calling_activity_number), mContext.getResources().getInteger(R.integer.home_activity_number));
                                             intent.putExtra(mContext.getString(R.string.selected_user), replyToUser);
                                             mContext.startActivity(intent);
+                                            ((Activity)mContext).overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
                                         }
 
                                         @Override

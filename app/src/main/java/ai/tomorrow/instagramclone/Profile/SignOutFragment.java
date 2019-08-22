@@ -57,6 +57,7 @@ public class SignOutFragment extends Fragment {
 
                 mAuth.signOut();
                 getActivity().finish();
+                getActivity().overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
             }
         });
 
@@ -88,6 +89,7 @@ public class SignOutFragment extends Fragment {
                     // clean the activity stack
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     startActivity(intent);
+                    getActivity().overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
                 }
             }
         };

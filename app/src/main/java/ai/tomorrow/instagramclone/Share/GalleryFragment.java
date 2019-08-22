@@ -68,6 +68,7 @@ public class GalleryFragment extends Fragment {
             public void onClick(View v) {
                 Log.d(TAG, "onClick: closing the gallery fragment");
                 getActivity().finish();
+                getActivity().overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
             }
         });
 
@@ -81,12 +82,14 @@ public class GalleryFragment extends Fragment {
                     Intent intent = new Intent(getActivity(), NextActivity.class);
                     intent.putExtra(getString(R.string.selected_image), mSelectedImage);
                     startActivity(intent);
+                    getActivity().overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
                 } else {
                     Intent intent = new Intent(getActivity(), AccountSettingsActivity.class);
                     intent.putExtra(getString(R.string.selected_image), mSelectedImage);
                     intent.putExtra(getString(R.string.return_to_fragment), getString(R.string.edit_profile_fragment));
                     startActivity(intent);
                     getActivity().finish();
+                    getActivity().overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
                 }
 
             }

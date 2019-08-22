@@ -140,6 +140,7 @@ public class ProfileActivity extends AppCompatActivity implements
         Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.container);
         if (currentFragment instanceof ProfileFragment || currentFragment instanceof ViewProfileFragment){
             finish();
+            this.overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
         }
         super.onBackPressed();
     }

@@ -99,6 +99,7 @@ public class LoginActivity extends AppCompatActivity {
                                             if (user.isEmailVerified()) {
                                                 Intent intent = new Intent(mContext, HomeActivity.class);
                                                 startActivity(intent);
+                                                LoginActivity.this.overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
                                             } else {
                                                 Toast.makeText(mContext, "Email is not verified \n Please check your email inbox", Toast.LENGTH_SHORT).show();
                                                 mAuth.signOut();
@@ -129,6 +130,7 @@ public class LoginActivity extends AppCompatActivity {
                 Log.d(TAG, "onClick: navigating to register screen");
                 Intent intent = new Intent(mContext, RegisterActivity.class);
                 startActivity(intent);
+                LoginActivity.this.overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
             }
         });
 
@@ -140,6 +142,7 @@ public class LoginActivity extends AppCompatActivity {
             Intent intent = new Intent(mContext, HomeActivity.class);
             startActivity(intent);
             finish();
+            LoginActivity.this.overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
         }
 
         mSendEmail.setOnClickListener(new View.OnClickListener() {
@@ -158,6 +161,7 @@ public class LoginActivity extends AppCompatActivity {
                                         if (user.isEmailVerified()) {
                                             Intent intent = new Intent(mContext, HomeActivity.class);
                                             startActivity(intent);
+                                            LoginActivity.this.overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
                                         } else {
                                             mFirebaseMethods.sendVerificationEmail();
                                             mAuth.signOut();

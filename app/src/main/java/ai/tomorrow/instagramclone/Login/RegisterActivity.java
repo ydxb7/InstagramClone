@@ -195,6 +195,7 @@ public class RegisterActivity extends AppCompatActivity {
                     });
 
                     finish();
+                    RegisterActivity.this.overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
 
                 } else {
                     // User is signed out
