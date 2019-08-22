@@ -6,14 +6,14 @@
     android:layout_height="wrap_content"
     android:background="@color/white"
     android:paddingTop="8dp"
-    android:paddingBottom="8dp">
+    android:paddingBottom="12dp">
 
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/profile_photo"
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:layout_centerVertical="true"
-        android:layout_marginStart="8dp"
+        android:layout_marginStart="16dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -31,8 +31,9 @@
 
     <ai.tomorrow.instagramclone.Utils.SquareImageView
         android:id="@+id/post_image"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
+        android:layout_width="45dp"
+        android:layout_height="45dp"
+        android:scaleType="centerCrop"
         android:layout_alignParentEnd="true"
         android:layout_centerVertical="true"
         android:layout_marginEnd="12dp"
