@@ -70,6 +70,7 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
         mPhotos = objects;
         mFirebaseMethods = new FirebaseMethods(context);
         myRef = FirebaseDatabase.getInstance().getReference();
+        UniversalImageLoader.initImageLoader(mContext);
         try {
             mOnCommentThreadSelectedListener = (OnCommentThreadSelectedListener) mContext;
             mOnLoadMoreItemsListener = (OnLoadMoreItemsListener) mContext;
@@ -234,7 +235,8 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
         Log.d(TAG, "navigateToProfileActivity: navigating.");
         // navigate to profile activity
         Intent intent = new Intent(mContext, ProfileActivity.class);
-        intent.putExtra(mContext.getString(R.string.calling_activity), mContext.getString(R.string.home_activity));
+//        intent.putExtra(mContext.getString(R.string.calling_activity), mContext.getString(R.string.home_activity));
+        intent.putExtra(mContext.getString(R.string.calling_activity_number), mContext.getResources().getInteger(R.integer.home_activity_number));
         intent.putExtra(mContext.getString(R.string.selected_user), holder.user);
         mContext.startActivity(intent);
     }

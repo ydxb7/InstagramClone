@@ -67,6 +67,7 @@ public class FollowingLikesListAdapter extends ArrayAdapter<List<LikePhoto>>  {
         mFirebaseMethods = new FirebaseMethods(context);
         myRef = FirebaseDatabase.getInstance().getReference();
         mOnGridImageSelectedListener = (OnGridImageSelectedListener) mContext;
+        UniversalImageLoader.initImageLoader(mContext);
     }
 
     public void setNewData(List<List<LikePhoto>> objects){

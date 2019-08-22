@@ -43,6 +43,7 @@ public class UserListAdapter extends ArrayAdapter<User> {
         layoutResource = resource;
         mUsers = objects;
         mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        UniversalImageLoader.initImageLoader(mContext);
     }
 
     private class ViewHolder{

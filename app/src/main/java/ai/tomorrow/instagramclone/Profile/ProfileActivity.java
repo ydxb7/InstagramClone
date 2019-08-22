@@ -63,11 +63,12 @@ public class ProfileActivity extends AppCompatActivity implements
         Log.d(TAG, "onGridImageSelected: selected an image gridview: " + photo.toString());
         ViewPostFragment fragment = new ViewPostFragment();
         Bundle args = new Bundle();
-        if (getIntent().hasExtra(getString(R.string.calling_activity))){
-            args.putString(getString(R.string.calling_activity), getIntent().getStringExtra(getString(R.string.calling_activity)));
-        } else {
-            args.putString(getString(R.string.calling_activity), getString(R.string.profile_activity));
-        }
+        args.putInt(getString(R.string.calling_activity_number), getIntent().getIntExtra(getString(R.string.calling_activity_number), 4));
+//        if (getIntent().hasExtra(getString(R.string.calling_activity))){
+//            args.putString(getString(R.string.calling_activity), getIntent().getStringExtra(getString(R.string.calling_activity)));
+//        } else {
+//            args.putString(getString(R.string.calling_activity), getString(R.string.profile_activity));
+//        }
         args.putParcelable(getString(R.string.photo), photo);
         fragment.setArguments(args);
 
@@ -81,7 +82,7 @@ public class ProfileActivity extends AppCompatActivity implements
         Log.d(TAG, "init: inflating" + getString(R.string.profile_fragment));
 
         Intent intent = getIntent();
-        if (intent.hasExtra(mContext.getString(R.string.calling_activity))){
+        if (intent.hasExtra(mContext.getString(R.string.calling_activity_number))){
             Log.d(TAG, "init: searching for user object attached as intent extra");
             if (intent.hasExtra(mContext.getString(R.string.selected_user))){
                 User user = intent.getParcelableExtra(getString(R.string.selected_user));
@@ -100,7 +101,8 @@ public class ProfileActivity extends AppCompatActivity implements
                     Bundle args = new Bundle();
                     args.putParcelable(mContext.getString(R.string.selected_user),
                             intent.getParcelableExtra(mContext.getString(R.string.selected_user)));
-                    args.putString(mContext.getString(R.string.calling_activity), intent.getStringExtra(mContext.getString(R.string.calling_activity)));
+                    args.putInt(getString(R.string.calling_activity_number), intent.getIntExtra(getString(R.string.calling_activity_number), 4));
+//                    args.putString(mContext.getString(R.string.calling_activity), intent.getStringExtra(mContext.getString(R.string.calling_activity)));
                     fragment.setArguments(args);
 
                     FragmentTransaction transaction = ProfileActivity.this.getSupportFragmentManager().beginTransaction();

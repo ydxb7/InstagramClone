@@ -56,6 +56,7 @@ public class NextActivity extends AppCompatActivity {
         setContentView(R.layout.activity_next);
         Log.d(TAG, "onCreate: get the chosen image: " + getIntent().getStringExtra(getString(R.string.selected_image)));
 
+        UniversalImageLoader.initImageLoader(NextActivity.this);
         mFirebaseMethods = new FirebaseMethods(NextActivity.this);
         mCaption = (EditText) findViewById(R.id.caption);
         setupFirebaseAuth();

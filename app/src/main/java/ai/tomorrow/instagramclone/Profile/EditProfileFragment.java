@@ -145,6 +145,8 @@ public class EditProfileFragment extends Fragment implements
         mContext = getActivity();
         mFirebaseMethods = new FirebaseMethods(getActivity());
 
+        UniversalImageLoader.initImageLoader(mContext);
+
         Log.d(TAG, "onCreateView: started");
 
         setupFirebaseAuth();

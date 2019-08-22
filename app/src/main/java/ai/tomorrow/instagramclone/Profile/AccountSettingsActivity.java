@@ -87,7 +87,7 @@ public class AccountSettingsActivity extends AppCompatActivity {
                     null, (Bitmap) intent.getParcelableExtra(getString(R.string.selected_bitmap)));
         }
 
-        if (intent.hasExtra(getString(R.string.calling_activity))){
+        if (intent.hasExtra(getString(R.string.calling_activity_number))){
             Log.d(TAG, "getIncomingIntent: received incoming intent from " + getString(R.string.profile_activity));
             setViewPager(pagerAdapter.getFragmentNumber(getString(R.string.edit_profile_fragment)));
         }

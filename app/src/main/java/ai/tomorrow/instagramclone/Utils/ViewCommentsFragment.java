@@ -126,10 +126,16 @@ public class ViewCommentsFragment extends Fragment implements CommentListAdapter
                 Log.d(TAG, "onClick: navigating back.");
                 getActivity().getSupportFragmentManager().popBackStack();
                 Bundle bundle = getArguments();
-                Log.d(TAG, "onClick: bundle.getString(mContext.getString(R.string.calling_activity)):" + bundle.getString(mContext.getString(R.string.calling_activity)));
+                Log.d(TAG, "onClick: bundle.getInt(mContext.getString(R.string.calling_activity_number), -1) :" +
+                        bundle.getInt(mContext.getString(R.string.calling_activity_number), -1) );
+//                if (bundle != null
+//                        && bundle.getString(mContext.getString(R.string.calling_activity)) != null
+//                        && bundle.getString(mContext.getString(R.string.calling_activity)).equals(mContext.getString(R.string.home_activity))){
+//                    ((HomeActivity)getActivity()).showRelativeLayout();
+//                }
                 if (bundle != null
-                        && bundle.getString(mContext.getString(R.string.calling_activity)) != null
-                        && bundle.getString(mContext.getString(R.string.calling_activity)).equals(mContext.getString(R.string.home_activity))){
+                        && bundle.getInt(mContext.getString(R.string.calling_activity_number), -1) ==
+                        mContext.getResources().getInteger(R.integer.home_activity_number)){
                     ((HomeActivity)getActivity()).showRelativeLayout();
                 }
             }

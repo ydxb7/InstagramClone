@@ -70,6 +70,7 @@ public class CommentListAdapter extends ArrayAdapter<Comment> {
         this.photoOwnerID = photoOwnerID;
         mFirebaseMethods = new FirebaseMethods(context);
         myRef = FirebaseDatabase.getInstance().getReference();
+        UniversalImageLoader.initImageLoader(mContext);
     }
 
     private static class ViewHolder {
@@ -198,7 +199,8 @@ public class CommentListAdapter extends ArrayAdapter<Comment> {
                         public void onClick(View view) {
                             Log.d(TAG, "onClick: navigating to user's profile.");
                             Intent intent = new Intent(mContext, ProfileActivity.class);
-                            intent.putExtra(mContext.getString(R.string.calling_activity), mContext.getString(R.string.home_activity));
+//                            intent.putExtra(mContext.getString(R.string.calling_activity), mContext.getString(R.string.home_activity));
+                            intent.putExtra(mContext.getString(R.string.calling_activity_number), mContext.getResources().getInteger(R.integer.home_activity_number));
                             intent.putExtra(mContext.getString(R.string.selected_user), commentUser);
                             mContext.startActivity(intent);
                         }
@@ -235,7 +237,8 @@ public class CommentListAdapter extends ArrayAdapter<Comment> {
                                         public void onClick(View widget) {
                                             //put whatever you like here, below is an example
                                             Intent intent = new Intent(mContext, ProfileActivity.class);
-                                            intent.putExtra(mContext.getString(R.string.calling_activity), mContext.getString(R.string.home_activity));
+//                                            intent.putExtra(mContext.getString(R.string.calling_activity), mContext.getString(R.string.home_activity));
+                                            intent.putExtra(mContext.getString(R.string.calling_activity_number), mContext.getResources().getInteger(R.integer.home_activity_number));
                                             intent.putExtra(mContext.getString(R.string.selected_user), replyToUser);
                                             mContext.startActivity(intent);
                                         }

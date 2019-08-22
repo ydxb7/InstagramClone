@@ -94,7 +94,7 @@ public class LikesActivity extends AppCompatActivity implements FollowingLikesLi
         ViewPostFragment fragment = new ViewPostFragment();
         Bundle args = new Bundle();
         args.putParcelable(getString(R.string.photo), photo);
-        args.putString(getString(R.string.calling_activity), getString(R.string.likes_activity));
+        args.putInt(getString(R.string.calling_activity_number), getResources().getInteger(R.integer.likes_activity_number));
         fragment.setArguments(args);
 
         FragmentTransaction transaction = LikesActivity.this.getSupportFragmentManager().beginTransaction();

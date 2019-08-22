@@ -72,7 +72,7 @@ public class HomeActivity extends AppCompatActivity implements
         ViewCommentsFragment fragment = new ViewCommentsFragment();
         Bundle args = new Bundle();
         args.putParcelable(getString(R.string.photo), photo);
-        args.putString(getString(R.string.calling_activity), getString(R.string.home_activity));
+        args.putInt(getString(R.string.calling_activity_number), getResources().getInteger(R.integer.home_activity_number));
         fragment.setArguments(args);
 
         FragmentTransaction transaction = HomeActivity.this.getSupportFragmentManager().beginTransaction();
@@ -119,7 +119,7 @@ public class HomeActivity extends AppCompatActivity implements
     }
 
     private void init() {
-        initImageLoader();
+        UniversalImageLoader.initImageLoader(HomeActivity.this);
         setupBottomNavigationView();
         setupFragments();
         Log.d(TAG, "onCreate: getFragmentNumber: " + pagerAdapter.getFragmentNumber(getString(R.string.home_fragment)));
@@ -164,11 +164,6 @@ public class HomeActivity extends AppCompatActivity implements
                 }
             }
         }
-    }
-
-    private void initImageLoader() {
-        UniversalImageLoader universalImageLoader = new UniversalImageLoader(mContext);
-        ImageLoader.getInstance().init(universalImageLoader.getConfig());
     }
 
     private void setupFragments() {

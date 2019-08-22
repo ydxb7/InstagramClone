@@ -26,6 +26,11 @@ public class UniversalImageLoader {
         this.mContext = mContext;
     }
 
+    public static void initImageLoader(Context context) {
+        UniversalImageLoader universalImageLoader = new UniversalImageLoader(context);
+        ImageLoader.getInstance().init(universalImageLoader.getConfig());
+    }
+
     public ImageLoaderConfiguration getConfig(){
         DisplayImageOptions defaultOptions = new DisplayImageOptions.Builder()
                 .showImageOnLoading(defaultImage)

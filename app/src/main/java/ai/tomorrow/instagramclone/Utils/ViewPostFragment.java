@@ -108,6 +108,7 @@ public class ViewPostFragment extends Fragment {
         mLikes = (TextView) view.findViewById(R.id.image_likes);
         mComment = (ImageView) view.findViewById(R.id.speech_bubble);
         mComments = (TextView) view.findViewById(R.id.image_comments_link);
+        UniversalImageLoader.initImageLoader(mContext);
 
         mHeart = new Heart(mHeartWhite, mHeartRed);
         mGestureDetector = new GestureDetector(getActivity(), new GestureListener());
@@ -351,7 +352,8 @@ public class ViewPostFragment extends Fragment {
                     public void onClick(View view) {
                         Log.d(TAG, "onClick: navigate to view profile.");
                         Intent intent = new Intent(mContext, ProfileActivity.class);
-                        intent.putExtra(mContext.getString(R.string.calling_activity), mContext.getString(R.string.likes_activity));
+//                        intent.putExtra(mContext.getString(R.string.calling_activity), mContext.getString(R.string.likes_activity));
+                        intent.putExtra(mContext.getString(R.string.calling_activity_number), mContext.getResources().getInteger(R.integer.likes_activity_number));
                         intent.putExtra(mContext.getString(R.string.selected_user), mUser);
                         mContext.startActivity(intent);
 
@@ -387,10 +389,15 @@ public class ViewPostFragment extends Fragment {
 
                 Bundle bundle = getArguments();
                 if (bundle != null
-                        && bundle.getString(mContext.getString(R.string.calling_activity)) != null
-                        && bundle.getString(mContext.getString(R.string.calling_activity)).equals(mContext.getString(R.string.likes_activity))) {
+                        && bundle.getInt(mContext.getString(R.string.calling_activity_number), -1) ==
+                        mContext.getResources().getInteger(R.integer.likes_activity_number)) {
                     ((LikesActivity) getActivity()).showRelativeLayout();
                 }
+//                if (bundle != null
+//                        && bundle.getString(mContext.getString(R.string.calling_activity)) != null
+//                        && bundle.getString(mContext.getString(R.string.calling_activity)).equals(mContext.getString(R.string.likes_activity))) {
+//                    ((LikesActivity) getActivity()).showRelativeLayout();
+//                }
 
             }
         });
@@ -508,14 +515,16 @@ public class ViewPostFragment extends Fragment {
         BottomNavigationViewHelper.enableNavigation(getActivity(), getActivity(), bottomNavigationView);
         Menu menu = bottomNavigationView.getMenu();
         try {
-            String callingActivity = bundle.getString(mContext.getString(R.string.calling_activity));
-            Log.d(TAG, "setupBottomNavigationView: callingActivity: " + callingActivity);
+            mActivityNumber = bundle.getInt(mContext.getString(R.string.calling_activity_number), 4);
 
-            if (callingActivity.equals(mContext.getString(R.string.home_activity))) {
-                mActivityNumber = mContext.getResources().getInteger(R.integer.home_activity_number);
-            } else if (callingActivity.equals(mContext.getString(R.string.likes_activity))) {
-                mActivityNumber = mContext.getResources().getInteger(R.integer.likes_activity_number);
-            }
+//            String callingActivity = bundle.getString(mContext.getString(R.string.calling_activity));
+//            Log.d(TAG, "setupBottomNavigationView: callingActivity: " + callingActivity);
+//
+//            if (callingActivity.equals(mContext.getString(R.string.home_activity))) {
+//                mActivityNumber = mContext.getResources().getInteger(R.integer.home_activity_number);
+//            } else if (callingActivity.equals(mContext.getString(R.string.likes_activity))) {
+//                mActivityNumber = mContext.getResources().getInteger(R.integer.likes_activity_number);
+//            }
 
         } catch (NullPointerException e) {
             Log.d(TAG, "setupBottomNavigationView: NullPointerException" + e.getMessage());

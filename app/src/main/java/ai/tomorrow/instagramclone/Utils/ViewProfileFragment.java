@@ -99,6 +99,7 @@ public class ViewProfileFragment extends Fragment {
         mSendEmail = (TextView) view.findViewById(R.id.sendEmail);
         mContext = getActivity();
         mFirebaseMethods = new FirebaseMethods(getActivity());
+        UniversalImageLoader.initImageLoader(mContext);
 
         Log.d(TAG, "onCreateView: started");
 
@@ -441,13 +442,14 @@ public class ViewProfileFragment extends Fragment {
         BottomNavigationViewHelper.enableNavigation(getActivity(), getActivity(), bottomNavigationView);
         Menu menu = bottomNavigationView.getMenu();
         try {
-            String callingActivity = bundle.getString(mContext.getString(R.string.calling_activity));
-
-            if (callingActivity.equals(mContext.getString(R.string.home_activity))) {
-                mActivityNumber = mContext.getResources().getInteger(R.integer.home_activity_number);
-            } else if (callingActivity.equals(mContext.getString(R.string.likes_activity))) {
-                mActivityNumber = mContext.getResources().getInteger(R.integer.likes_activity_number);
-            }
+            mActivityNumber = bundle.getInt(mContext.getString(R.string.calling_activity_number));
+//            String callingActivity = bundle.getString(mContext.getString(R.string.calling_activity));
+//
+//            if (callingActivity.equals(mContext.getString(R.string.home_activity))) {
+//                mActivityNumber = mContext.getResources().getInteger(R.integer.home_activity_number);
+//            } else if (callingActivity.equals(mContext.getString(R.string.likes_activity))) {
+//                mActivityNumber = mContext.getResources().getInteger(R.integer.likes_activity_number);
+//            }
 
         } catch (NullPointerException e) {
             Log.d(TAG, "setupBottomNavigationView: NullPointerException" + e.getMessage());
