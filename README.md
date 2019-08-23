@@ -8,8 +8,8 @@ Time spent: 3 weeks spent in total
 
 Here's a walkthrough of implemented user stories:
 
-![Video Walkthrough 1](show_instagram_clone1.gif)
-![Video Walkthrough 1](show_instagram_clone2.gif)
+![Video Walkthrough 1](show_instagram_clone4.gif)
+![Video Walkthrough 1](show_instagram_clone3.gif)
 
 ## User Stories
 

@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -49,6 +50,7 @@ public class NextActivity extends AppCompatActivity {
 
     //widgets
     private EditText mCaption;
+    private ProgressBar mProgressBar;
 
 
     @Override
@@ -59,7 +61,9 @@ public class NextActivity extends AppCompatActivity {
 
         UniversalImageLoader.initImageLoader(NextActivity.this);
         mFirebaseMethods = new FirebaseMethods(NextActivity.this);
-        mCaption = (EditText) findViewById(R.id.caption);
+        mCaption = findViewById(R.id.caption);
+        mProgressBar = findViewById(R.id.progressBar);
+        mProgressBar.setVisibility(View.GONE);
         setupFirebaseAuth();
 
         ImageView backArrow = (ImageView) findViewById(R.id.ivBackArrow);
@@ -73,7 +77,7 @@ public class NextActivity extends AppCompatActivity {
         });
 
 
-        TextView share = (TextView) findViewById(R.id.tvShare);
+        TextView share = findViewById(R.id.tvShare);
         share.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -85,9 +89,9 @@ public class NextActivity extends AppCompatActivity {
                 String caption = mCaption.getText().toString();
 
                 if (intent.hasExtra(getString(R.string.selected_image))){
-                    mFirebaseMethods.uploadNewPhotos(getString(R.string.new_photo), caption, imageCount, imgUrl, null);
+                    mFirebaseMethods.uploadNewPhotos(getString(R.string.new_photo), mProgressBar, caption, imageCount, imgUrl, null);
                 } else if (intent.hasExtra(getString(R.string.selected_bitmap))){
-                    mFirebaseMethods.uploadNewPhotos(getString(R.string.new_photo), caption, imageCount, null, bitmap);
+                    mFirebaseMethods.uploadNewPhotos(getString(R.string.new_photo), mProgressBar, caption, imageCount, null, bitmap);
                 }
 
             }

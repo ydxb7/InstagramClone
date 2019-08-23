@@ -41,6 +41,7 @@ public class AccountSettingsActivity extends AppCompatActivity {
     private SectionsStatePagerAdapter pagerAdapter;
     private ViewPager mViewPager;
     private RelativeLayout mRelativeLayout;
+    private ProgressBar mProgressBar;
 
 
     @Override
@@ -51,6 +52,8 @@ public class AccountSettingsActivity extends AppCompatActivity {
         Log.d(TAG, "onCreate: started.");
         mViewPager = (ViewPager) findViewById(R.id.viewpager_container);
         mRelativeLayout = (RelativeLayout) findViewById(R.id.relLayout1);
+        mProgressBar = findViewById(R.id.progressBar);
+        mProgressBar.setVisibility(View.GONE);
 
         setupSettingList();
         setupBottomNavigationView();
@@ -78,8 +81,9 @@ public class AccountSettingsActivity extends AppCompatActivity {
             setViewPager(pagerAdapter.getFragmentNumber(getString(R.string.edit_profile_fragment)));
             // set the new profile picture
             FirebaseMethods firebaseMethods = new FirebaseMethods(AccountSettingsActivity.this);
-            firebaseMethods.uploadNewPhotos(getString(R.string.profile_photo), null, 0,
+            firebaseMethods.uploadNewPhotos(getString(R.string.profile_photo), mProgressBar, null, 0,
                     getIntent().getStringExtra(getString(R.string.selected_image)), null);
+
         }
 
         // if there is an bitmap attached as an extra, then it was chosen from the photo fragment
@@ -88,7 +92,7 @@ public class AccountSettingsActivity extends AppCompatActivity {
             setViewPager(pagerAdapter.getFragmentNumber(getString(R.string.edit_profile_fragment)));
             // set the new profile picture
             FirebaseMethods firebaseMethods = new FirebaseMethods(AccountSettingsActivity.this);
-            firebaseMethods.uploadNewPhotos(getString(R.string.profile_photo), null, 0,
+            firebaseMethods.uploadNewPhotos(getString(R.string.profile_photo), mProgressBar, null, 0,
                     null, (Bitmap) intent.getParcelableExtra(getString(R.string.selected_bitmap)));
         }
 

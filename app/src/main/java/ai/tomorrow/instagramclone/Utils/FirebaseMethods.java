@@ -6,6 +6,8 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.util.Log;
+import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -278,10 +280,11 @@ public class FirebaseMethods {
                 .setValue(like);
     }
 
-    public void uploadNewPhotos(String photoType, final String caption, int count, String imgUrl, Bitmap bm) {
+    public void uploadNewPhotos(String photoType, final ProgressBar progressBar, final String caption, int count, String imgUrl, Bitmap bm) {
         Log.d(TAG, "uploadNewPhotos: Attempting to upload new photo");
         final FilePaths filePaths = new FilePaths();
         mPhotoUploadProgress = 0;
+        progressBar.setVisibility(View.VISIBLE);
 
         // case1) new photo
         if (photoType.equals(mContext.getString(R.string.new_photo))){
@@ -304,6 +307,7 @@ public class FirebaseMethods {
             uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                 @Override
                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    progressBar.setVisibility(View.GONE);
                     Toast.makeText(mContext, "photo upload success", Toast.LENGTH_SHORT).show();
                 }
             }).addOnFailureListener(new OnFailureListener() {
@@ -384,6 +388,7 @@ public class FirebaseMethods {
             uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                 @Override
                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    progressBar.setVisibility(View.GONE);
                     Toast.makeText(mContext, "photo upload success", Toast.LENGTH_SHORT).show();
                 }
             }).addOnFailureListener(new OnFailureListener() {
