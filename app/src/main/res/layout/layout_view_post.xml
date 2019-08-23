@@ -60,7 +60,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/post_image"
-                android:layout_marginTop="5dp"
                 android:layout_marginLeft="6dp"
                 android:background="@color/white">
 
@@ -73,18 +72,18 @@
 
                     <ImageView
                         android:id="@+id/image_heart_red"
-                        android:layout_width="30dp"
-                        android:layout_height="25dp"
-                        android:layout_margin="5dp"
+                        android:layout_width="50dp"
+                        android:layout_height="45dp"
+                        android:padding="10dp"
                         android:layout_centerInParent="true"
                         android:src="@drawable/ic_heart_red"
                         android:visibility="invisible" />
 
                     <ImageView
                         android:id="@+id/image_heart"
-                        android:layout_width="30dp"
-                        android:layout_height="25dp"
-                        android:layout_margin="5dp"
+                        android:layout_width="50dp"
+                        android:layout_height="45dp"
+                        android:padding="10dp"
                         android:layout_centerInParent="true"
                         android:src="@drawable/ic_heart_white"
                         android:visibility="visible" />
