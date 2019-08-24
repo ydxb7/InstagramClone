@@ -70,9 +70,7 @@ public class RegisterActivity extends AppCompatActivity {
                     loadingPleaseWait.setVisibility(View.VISIBLE);
 
                     firebaseMethods.registerNewEmail(email, password);
-
                 }
-
             }
         });
     }
@@ -153,12 +151,11 @@ public class RegisterActivity extends AppCompatActivity {
 
                 // user can be signed in after verify the email, so keep them signed out
                 mAuth.signOut();
-
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-
+                Log.d(TAG, "onCancelled.");
             }
         });
     }
@@ -189,7 +186,7 @@ public class RegisterActivity extends AppCompatActivity {
 
                         @Override
                         public void onCancelled(@NonNull DatabaseError databaseError) {
-
+                            Log.d(TAG, "onCancelled.");
                         }
                     });
 

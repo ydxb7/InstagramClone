@@ -54,53 +54,57 @@ public class EditProfileFragment extends Fragment implements
         AuthCredential credential = EmailAuthProvider
                 .getCredential(mAuth.getCurrentUser().getEmail(), password);
 
-        ////////////////////////////////////// Prompt the user to re-provide their sign-in credentials
-        mAuth.getCurrentUser().reauthenticate(credential)
-                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        if (task.isSuccessful()) {
-                            Log.d(TAG, "User re-authenticated.");
+        // Prompt the user to re-provide their sign-in credentials
+        mAuth.getCurrentUser().reauthenticate(credential).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if (task.isSuccessful()) {
+                    Log.d(TAG, "User re-authenticated.");
 
-                            ////////////////////////////////////// check if email already present in the database.
-                            mAuth.fetchSignInMethodsForEmail(mEmail.getText().toString()).addOnCompleteListener(new OnCompleteListener<SignInMethodQueryResult>() {
-                                @Override
-                                public void onComplete(@NonNull Task<SignInMethodQueryResult> task) {
-                                    if (task.isSuccessful()) {
-                                        try {
-                                            if (task.getResult().getSignInMethods().size() == 0) {
-                                                // email not existed
-                                                //////////////////////////////////the email is available so update it
-                                                Log.d(TAG, "onComplete: that email is available");
-                                                mAuth.getCurrentUser().updateEmail(mEmail.getText().toString())
-                                                        .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                            @Override
-                                                            public void onComplete(@NonNull Task<Void> task) {
-                                                                if (task.isSuccessful()) {
-                                                                    Log.d(TAG, "User email address updated.");
-                                                                    mFirebaseMethods.updateEmail(mEmail.getText().toString());
-                                                                    Toast.makeText(getActivity(), "email updated", Toast.LENGTH_SHORT).show();
-                                                                }
-                                                            }
-                                                        });
-                                            } else {
-                                                // email existed
-                                                Log.d(TAG, "onComplete: that email is already in use");
-                                                Toast.makeText(getActivity(), "That email is already in use", Toast.LENGTH_SHORT).show();
-                                            }
-                                        } catch (NullPointerException e) {
-                                            Log.e(TAG, "onComplete: NullPointerException: " + e.getMessage());
-                                        }
-                                    }
-                                }
-                            });
-                        } else {
-                            Log.d(TAG, "onComplete: re-authentication failed.");
-                        }
-                    }
-                });
+                    // check if email already present in the database.
+                    checkEmail();
+                } else {
+                    Log.d(TAG, "onComplete: re-authentication failed.");
+                }
+            }
+        });
     }
 
+    public void checkEmail() {
+        mAuth.fetchSignInMethodsForEmail(mEmail.getText().toString()).addOnCompleteListener(new OnCompleteListener<SignInMethodQueryResult>() {
+            @Override
+            public void onComplete(@NonNull Task<SignInMethodQueryResult> task) {
+                if (task.isSuccessful()) {
+                    try {
+                        if (task.getResult().getSignInMethods().size() == 0) {
+                            // email not existed, the email is available so update it
+                            Log.d(TAG, "onComplete: that email is available");
+                            changeEmail();
+                        } else {
+                            // email existed
+                            Log.d(TAG, "onComplete: that email is already in use");
+                            Toast.makeText(getActivity(), "That email is already in use", Toast.LENGTH_SHORT).show();
+                        }
+                    } catch (NullPointerException e) {
+                        Log.e(TAG, "onComplete: NullPointerException: " + e.getMessage());
+                    }
+                }
+            }
+        });
+    }
+
+    public void changeEmail() {
+        mAuth.getCurrentUser().updateEmail(mEmail.getText().toString()).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if (task.isSuccessful()) {
+                    Log.d(TAG, "User email address updated.");
+                    mFirebaseMethods.updateEmail(mEmail.getText().toString());
+                    Toast.makeText(getActivity(), "email updated", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+    }
 
     private static final String TAG = "EditProfileFragment";
 
@@ -181,19 +185,9 @@ public class EditProfileFragment extends Fragment implements
         }
         // case2: if the user made a change to their email
         if (!mUserSettings.getUser().getEmail().equals(email)) {
-
-            // step1) Reauthenticate
-            //          -confirm the password and email
             ConfirmPasswordDialog dialog = new ConfirmPasswordDialog();
             dialog.show(getFragmentManager(), getString(R.string.confirm_password_dialog));
             dialog.setTargetFragment(EditProfileFragment.this, 1);
-
-
-            // step2) check if the email already is registered
-            //          -'fetchProvidersForEmail(String email)'
-            // step3) change the email
-            //          -submit the new email to the database and authentication
-
         }
 
         /**

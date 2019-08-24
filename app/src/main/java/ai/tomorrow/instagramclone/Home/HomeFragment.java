@@ -81,7 +81,7 @@ public class HomeFragment extends Fragment {
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-
+                Log.d(TAG, "onCancelled.");
             }
         });
     }
@@ -112,7 +112,7 @@ public class HomeFragment extends Fragment {
 
                 @Override
                 public void onCancelled(@NonNull DatabaseError databaseError) {
-
+                    Log.d(TAG, "onCancelled.");
                 }
             });
         }

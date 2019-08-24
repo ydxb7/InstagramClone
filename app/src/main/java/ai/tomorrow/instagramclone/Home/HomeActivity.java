@@ -90,11 +90,11 @@ public class HomeActivity extends AppCompatActivity implements
         setContentView(R.layout.activity_home);
         Log.d(TAG, "onCreate: starting");
 
-        mRelativeLayout = (RelativeLayout) findViewById(R.id.relLayoutParent);
-        mFrameLayout = (FrameLayout) findViewById(R.id.container);
-        mViewPager = (ViewPager) findViewById(R.id.viewpager_container);
-        mCamera = (ImageView) findViewById(R.id.ivCamera);
-        mSend = (ImageView) findViewById(R.id.ivSend);
+        mRelativeLayout = findViewById(R.id.relLayoutParent);
+        mFrameLayout = findViewById(R.id.container);
+        mViewPager = findViewById(R.id.viewpager_container);
+        mCamera = findViewById(R.id.ivCamera);
+        mSend = findViewById(R.id.ivSend);
 
         setupFirebaseAuth();
 
@@ -199,7 +199,7 @@ public class HomeActivity extends AppCompatActivity implements
      * BottomNavigationView setup
      */
     private void setupBottomNavigationView() {
-        BottomNavigationViewEx bottomNavigationViewEx = (BottomNavigationViewEx) findViewById(R.id.bottomNavViewBar);
+        BottomNavigationViewEx bottomNavigationViewEx = findViewById(R.id.bottomNavViewBar);
         BottomNavigationViewHelper.setupBottomNavigationView(bottomNavigationViewEx);
         BottomNavigationViewHelper.enableNavigation(mContext, this, bottomNavigationViewEx);
         Menu menu = bottomNavigationViewEx.getMenu();
@@ -232,11 +232,7 @@ public class HomeActivity extends AppCompatActivity implements
      */
 
     private boolean isLoggedin() {
-        if (FirebaseAuth.getInstance().getCurrentUser() == null) {
-            return false;
-        } else {
-            return true;
-        }
+        return FirebaseAuth.getInstance().getCurrentUser() != null;
     }
 
     /**

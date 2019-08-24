@@ -87,35 +87,10 @@ public class ProfileActivity extends AppCompatActivity implements
                 User user = intent.getParcelableExtra(getString(R.string.selected_user));
                 if (user.getUser_id().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
                     Log.d(TAG, "init: view user is our own user.");
-                    Log.d(TAG, "init: inflating Profile");
-
-                    ProfileFragment fragment = new ProfileFragment();
-
-                    Bundle args = new Bundle();
-                    args.putInt(getString(R.string.calling_activity_number),
-                            getIntent().getIntExtra(getString(R.string.calling_activity_number),
-                                    getResources().getInteger(R.integer.profile_activity_number)));
-                    fragment.setArguments(args);
-
-                    FragmentTransaction transaction = ProfileActivity.this.getSupportFragmentManager().beginTransaction();
-                    transaction.replace(R.id.container, fragment);
-                    transaction.addToBackStack(getString(R.string.profile_fragment)); // add fragment into backstack
-                    transaction.commit();
+                    startProfileFragmentForOwnUser();
                 } else {
                     Log.d(TAG, "init: view profile for other user.");
-                    ViewProfileFragment fragment = new ViewProfileFragment();
-                    Bundle args = new Bundle();
-                    args.putParcelable(mContext.getString(R.string.selected_user),
-                            intent.getParcelableExtra(mContext.getString(R.string.selected_user)));
-                    args.putInt(getString(R.string.calling_activity_number),
-                            intent.getIntExtra(getString(R.string.calling_activity_number),
-                                    getResources().getInteger(R.integer.profile_activity_number)));
-                    fragment.setArguments(args);
-
-                    FragmentTransaction transaction = ProfileActivity.this.getSupportFragmentManager().beginTransaction();
-                    transaction.replace(R.id.container, fragment);
-                    transaction.addToBackStack(getString(R.string.view_profile_fragment)); // add fragment into backstack
-                    transaction.commit();
+                    startViewProfileFragmentForOtherUser(intent);
                 }
             } else {
                 Toast.makeText(mContext, "something went wrong", Toast.LENGTH_SHORT).show();
@@ -123,13 +98,50 @@ public class ProfileActivity extends AppCompatActivity implements
         } else {
             Log.d(TAG, "init: inflating Profile");
 
-            ProfileFragment fragment = new ProfileFragment();
-            FragmentTransaction transaction = ProfileActivity.this.getSupportFragmentManager().beginTransaction();
-            transaction.replace(R.id.container, fragment);
-            transaction.addToBackStack(getString(R.string.profile_fragment)); // add fragment into backstack
-            transaction.commit();
+            startProfileFragment();
         }
 
+    }
+
+    private void startProfileFragmentForOwnUser() {
+        Log.d(TAG, "startViewProfileFragmentForOwnUser.");
+        ProfileFragment fragment = new ProfileFragment();
+
+        Bundle args = new Bundle();
+        args.putInt(getString(R.string.calling_activity_number),
+                getIntent().getIntExtra(getString(R.string.calling_activity_number),
+                        getResources().getInteger(R.integer.profile_activity_number)));
+        fragment.setArguments(args);
+
+        FragmentTransaction transaction = ProfileActivity.this.getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.container, fragment);
+        transaction.addToBackStack(getString(R.string.profile_fragment)); // add fragment into backstack
+        transaction.commit();
+    }
+
+    private void startViewProfileFragmentForOtherUser(Intent intent) {
+        Log.d(TAG, "startViewProfileFragmentForOtherUser.");
+        ViewProfileFragment fragment = new ViewProfileFragment();
+        Bundle args = new Bundle();
+        args.putParcelable(mContext.getString(R.string.selected_user),
+                intent.getParcelableExtra(mContext.getString(R.string.selected_user)));
+        args.putInt(getString(R.string.calling_activity_number),
+                intent.getIntExtra(getString(R.string.calling_activity_number),
+                        getResources().getInteger(R.integer.profile_activity_number)));
+        fragment.setArguments(args);
+
+        FragmentTransaction transaction = ProfileActivity.this.getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.container, fragment);
+        transaction.addToBackStack(getString(R.string.view_profile_fragment)); // add fragment into backstack
+        transaction.commit();
+    }
+
+    private void startProfileFragment() {
+        ProfileFragment fragment = new ProfileFragment();
+        FragmentTransaction transaction = ProfileActivity.this.getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.container, fragment);
+        transaction.addToBackStack(getString(R.string.profile_fragment)); // add fragment into backstack
+        transaction.commit();
     }
 
     @Override

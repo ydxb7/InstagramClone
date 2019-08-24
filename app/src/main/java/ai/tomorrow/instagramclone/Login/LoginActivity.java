@@ -46,11 +46,11 @@ public class LoginActivity extends AppCompatActivity {
         Log.d(TAG, "onCreate: started.");
 
         mContext = LoginActivity.this;
-        mProgressBar = (ProgressBar) findViewById(R.id.progressBar);
-        mEmail = (EditText) findViewById(R.id.input_email);
-        mPassword = (EditText) findViewById(R.id.input_password);
-        mPleaseWait = (TextView) findViewById(R.id.pleaseWait);
-        mSendEmail = (TextView) findViewById(R.id.link_send_email);
+        mProgressBar = findViewById(R.id.progressBar);
+        mEmail = findViewById(R.id.input_email);
+        mPassword = findViewById(R.id.input_password);
+        mPleaseWait = findViewById(R.id.pleaseWait);
+        mSendEmail = findViewById(R.id.link_send_email);
         mFirebaseMethods = new FirebaseMethods(mContext);
 
         mPleaseWait.setVisibility(View.GONE);
@@ -61,11 +61,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private boolean isStringNull(String string) {
-        if (string.equals("")) {
-            return true;
-        } else {
-            return false;
-        }
+        return string.equals("");
     }
 
     /**
@@ -73,7 +69,7 @@ public class LoginActivity extends AppCompatActivity {
      */
     private void init() {
         // initialize the button to logging in
-        Button btnLogin = (Button) findViewById(R.id.btn_login);
+        Button btnLogin = findViewById(R.id.btn_login);
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -112,7 +108,6 @@ public class LoginActivity extends AppCompatActivity {
                                         Toast.makeText(mContext, "Authentication failed.",
                                                 Toast.LENGTH_SHORT).show();
                                     }
-                                    // ...
                                     mProgressBar.setVisibility(View.GONE);
                                     mPleaseWait.setVisibility(View.GONE);
                                 }
@@ -121,7 +116,7 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
-        TextView linkSignUp = (TextView) findViewById(R.id.link_signup);
+        TextView linkSignUp = findViewById(R.id.link_signup);
         linkSignUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

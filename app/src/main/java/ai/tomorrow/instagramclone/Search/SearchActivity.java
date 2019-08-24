@@ -131,7 +131,6 @@ public class SearchActivity extends AppCompatActivity {
                 // navigate to profile activity
                 Intent intent = new Intent(SearchActivity.this, ProfileActivity.class);
                 intent.putExtra(getString(R.string.calling_activity_number), getString(R.string.search_activity));
-//                intent.putExtra(getString(R.string.calling_activity), getString(R.string.search_activity));
                 intent.putExtra(getString(R.string.selected_user), mUserList.get(position));
                 startActivity(intent);
                 SearchActivity.this.overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
