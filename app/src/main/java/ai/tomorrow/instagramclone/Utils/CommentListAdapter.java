@@ -18,7 +18,6 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -75,11 +74,9 @@ public class CommentListAdapter extends ArrayAdapter<Comment> {
     }
 
     private static class ViewHolder {
-
         CircleImageView profileImage;
         TextView username, comment, timePostes, likes_number, reply;
         ImageView like, heart_white, heart_red;
-
     }
 
     @NonNull
@@ -91,14 +88,13 @@ public class CommentListAdapter extends ArrayAdapter<Comment> {
         if (convertView == null) {
             convertView = mInflater.inflate(layoutResource, parent, false);
             holder = new ViewHolder();
-            holder.profileImage = (CircleImageView) convertView.findViewById(R.id.comment_profile_image);
-//            holder.username = (TextView) convertView.findViewById(R.id.comment_username);
-            holder.comment = (TextView) convertView.findViewById(R.id.comment);
-            holder.timePostes = (TextView) convertView.findViewById(R.id.comment_time_posted);
-            holder.likes_number = (TextView) convertView.findViewById(R.id.likes_number);
-            holder.reply = (TextView) convertView.findViewById(R.id.comment_reply);
-            holder.heart_white = (ImageView) convertView.findViewById(R.id.heart_white);
-            holder.heart_red = (ImageView) convertView.findViewById(R.id.heart_red);
+            holder.profileImage = convertView.findViewById(R.id.comment_profile_image);
+            holder.comment = convertView.findViewById(R.id.comment);
+            holder.timePostes = convertView.findViewById(R.id.comment_time_posted);
+            holder.likes_number = convertView.findViewById(R.id.likes_number);
+            holder.reply = convertView.findViewById(R.id.comment_reply);
+            holder.heart_white = convertView.findViewById(R.id.heart_white);
+            holder.heart_red = convertView.findViewById(R.id.heart_red);
 
             convertView.setTag(holder);
         } else {
@@ -110,7 +106,7 @@ public class CommentListAdapter extends ArrayAdapter<Comment> {
         return convertView;
     }
 
-    public void setNewData(ArrayList<Comment> comments){
+    public void setNewData(ArrayList<Comment> comments) {
         mComments = comments;
         notifyDataSetChanged();
     }
@@ -169,7 +165,7 @@ public class CommentListAdapter extends ArrayAdapter<Comment> {
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-
+                Log.d(TAG, "onCancelled.");
             }
         });
 
@@ -200,15 +196,14 @@ public class CommentListAdapter extends ArrayAdapter<Comment> {
                         public void onClick(View view) {
                             Log.d(TAG, "onClick: navigating to user's profile.");
                             Intent intent = new Intent(mContext, ProfileActivity.class);
-//                            intent.putExtra(mContext.getString(R.string.calling_activity), mContext.getString(R.string.home_activity));
                             intent.putExtra(mContext.getString(R.string.calling_activity_number), mContext.getResources().getInteger(R.integer.home_activity_number));
                             intent.putExtra(mContext.getString(R.string.selected_user), commentUser);
                             mContext.startActivity(intent);
-                            ((Activity)mContext).overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+                            ((Activity) mContext).overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
                         }
                     });
 
-                    if (!getItem(position).getReply_to_username().equals("")){
+                    if (!getItem(position).getReply_to_username().equals("")) {
                         // reply to comment, this comment has @username
                         Query query = myRef.child(mContext.getString(R.string.dbname_users))
                                 .orderByChild(mContext.getString(R.string.field_username))
@@ -239,11 +234,10 @@ public class CommentListAdapter extends ArrayAdapter<Comment> {
                                         public void onClick(View widget) {
                                             //put whatever you like here, below is an example
                                             Intent intent = new Intent(mContext, ProfileActivity.class);
-//                                            intent.putExtra(mContext.getString(R.string.calling_activity), mContext.getString(R.string.home_activity));
                                             intent.putExtra(mContext.getString(R.string.calling_activity_number), mContext.getResources().getInteger(R.integer.home_activity_number));
                                             intent.putExtra(mContext.getString(R.string.selected_user), replyToUser);
                                             mContext.startActivity(intent);
-                                            ((Activity)mContext).overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+                                            ((Activity) mContext).overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
                                         }
 
                                         @Override
@@ -262,7 +256,7 @@ public class CommentListAdapter extends ArrayAdapter<Comment> {
 
                             @Override
                             public void onCancelled(@NonNull DatabaseError databaseError) {
-
+                                Log.d(TAG, "onCancelled.");
                             }
                         });
                     } else {
@@ -284,7 +278,7 @@ public class CommentListAdapter extends ArrayAdapter<Comment> {
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-
+                Log.d(TAG, "onCancelled.");
             }
         });
     }
@@ -329,9 +323,8 @@ public class CommentListAdapter extends ArrayAdapter<Comment> {
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-
+                Log.d(TAG, "onCancelled.");
             }
         });
     }
-
 }

@@ -47,9 +47,10 @@ public class ProfileFragment extends Fragment {
 
     private static final String TAG = "ProfileFragment";
 
-    public interface OnGridImageSelectedListener{
+    public interface OnGridImageSelectedListener {
         void onGridImageSelected(Photo photo, int activityNumber);
     }
+
     OnGridImageSelectedListener mOnGridImageSelectedListener;
 
     public ProfileFragment() {
@@ -86,19 +87,19 @@ public class ProfileFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_profile, container, false);
         Log.d(TAG, "onCreateView: started");
 
-        mDisplayName = (TextView) view.findViewById(R.id.display_name);
-        mUsername = (TextView) view.findViewById(R.id.username);
-        mWebsite = (TextView) view.findViewById(R.id.website);
-        mDescription = (TextView) view.findViewById(R.id.description);
-        mProfilePhoto = (CircleImageView) view.findViewById(R.id.profile_photo);
-        mPosts = (TextView) view.findViewById(R.id.tvPosts);
-        mFollowers = (TextView) view.findViewById(R.id.tvFollowers);
-        mFollowing = (TextView) view.findViewById(R.id.tvFollowing);
-        mProgressBar = (ProgressBar) view.findViewById(R.id.profileProgressBar);
-        gridView = (RecyclerView) view.findViewById(R.id.gridView);
-        toolbar = (Toolbar) view.findViewById(R.id.profileToolBar);
-        profileMenu = (ImageView) view.findViewById(R.id.profileMenu);
-        bottomNavigationView = (BottomNavigationViewEx) view.findViewById(R.id.bottomNavViewBar);
+        mDisplayName = view.findViewById(R.id.display_name);
+        mUsername = view.findViewById(R.id.username);
+        mWebsite = view.findViewById(R.id.website);
+        mDescription = view.findViewById(R.id.description);
+        mProfilePhoto = view.findViewById(R.id.profile_photo);
+        mPosts = view.findViewById(R.id.tvPosts);
+        mFollowers = view.findViewById(R.id.tvFollowers);
+        mFollowing = view.findViewById(R.id.tvFollowing);
+        mProgressBar = view.findViewById(R.id.profileProgressBar);
+        gridView = view.findViewById(R.id.gridView);
+        toolbar = view.findViewById(R.id.profileToolBar);
+        profileMenu = view.findViewById(R.id.profileMenu);
+        bottomNavigationView = view.findViewById(R.id.bottomNavViewBar);
         mContext = getActivity();
         mFirebaseMethods = new FirebaseMethods(getActivity());
         UniversalImageLoader.initImageLoader(mContext);
@@ -109,7 +110,7 @@ public class ProfileFragment extends Fragment {
         setupToolbar();
         setupFirebaseAuth();
 
-        TextView editProfile = (TextView) view.findViewById(R.id.textEditProfile);
+        TextView editProfile = view.findViewById(R.id.textEditProfile);
         editProfile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -121,8 +122,6 @@ public class ProfileFragment extends Fragment {
                 getActivity().overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
             }
         });
-
-
         return view;
     }
 
@@ -130,14 +129,13 @@ public class ProfileFragment extends Fragment {
     public void onAttach(Context context) {
         try {
             mOnGridImageSelectedListener = (OnGridImageSelectedListener) getActivity();
-        }catch (ClassCastException e){
+        } catch (ClassCastException e) {
             Log.d(TAG, "onAttach: ClassCastException: " + e.getMessage());
         }
-
         super.onAttach(context);
     }
 
-    private void setFollowingCount(){
+    private void setFollowingCount() {
         Log.d(TAG, "setFollowingCount: set following count");
         mFollowingCount = 0;
 
@@ -147,7 +145,7 @@ public class ProfileFragment extends Fragment {
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for (DataSnapshot singleSnapshot: dataSnapshot.getChildren()){
+                for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
                     Log.d(TAG, "onDataChange: found following: " + singleSnapshot.getChildren());
                     mFollowingCount++;
                 }
@@ -156,12 +154,12 @@ public class ProfileFragment extends Fragment {
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-
+                Log.d(TAG, "onCancelled.");
             }
         });
     }
 
-    private void setFollowerCount(){
+    private void setFollowerCount() {
         Log.d(TAG, "setFollowingCount: set followers count");
         mFollowersCount = 0;
 
@@ -171,7 +169,7 @@ public class ProfileFragment extends Fragment {
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for (DataSnapshot singleSnapshot: dataSnapshot.getChildren()){
+                for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
                     Log.d(TAG, "onDataChange: found follower: " + singleSnapshot.getChildren());
                     mFollowersCount++;
                 }
@@ -180,12 +178,12 @@ public class ProfileFragment extends Fragment {
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-
+                Log.d(TAG, "onCancelled.");
             }
         });
     }
 
-    private void setPostsCount(){
+    private void setPostsCount() {
         Log.d(TAG, "setFollowingCount: set posts count");
         mPostsCount = 0;
 
@@ -195,7 +193,7 @@ public class ProfileFragment extends Fragment {
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for (DataSnapshot singleSnapshot: dataSnapshot.getChildren()){
+                for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
                     Log.d(TAG, "onDataChange: found post: " + singleSnapshot.getChildren());
                     mPostsCount++;
                 }
@@ -204,7 +202,7 @@ public class ProfileFragment extends Fragment {
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-
+                Log.d(TAG, "onCancelled.");
             }
         });
     }
@@ -222,14 +220,14 @@ public class ProfileFragment extends Fragment {
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for (DataSnapshot singleSnapshot: dataSnapshot.getChildren()){
+                for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
                     // In the Photo class, we have a List<Like>, but Firebase thinks it has a HashMap
                     // so we need to manually insert these into our photos
                     photos.add(mFirebaseMethods.getPhoto(singleSnapshot));
                 }
 
                 // sort photos by date created
-                if (photos.size() > 0){
+                if (photos.size() > 0) {
                     Collections.sort(photos, new Comparator<Photo>() {
                         @Override
                         public int compare(Photo o1, Photo o2) {
@@ -239,7 +237,7 @@ public class ProfileFragment extends Fragment {
                 }
 
                 ArrayList<String> imgURLs = new ArrayList<>();
-                for (int i = 0; i < photos.size(); i++){
+                for (int i = 0; i < photos.size(); i++) {
                     imgURLs.add(photos.get(i).getImage_path());
                 }
                 GridImageAdapter adapter = new GridImageAdapter(mContext, R.layout.layout_grid_imageview,
@@ -250,7 +248,6 @@ public class ProfileFragment extends Fragment {
                     }
                 });
                 gridView.setAdapter(adapter);
-
             }
 
             @Override
@@ -266,7 +263,6 @@ public class ProfileFragment extends Fragment {
         Log.d(TAG, "setProfileWidgets: setting widgets with data retrieved from firebase databse: " + userSettings.toString());
         Log.d(TAG, "setProfileWidgets: mUsername = " + mUsername);
 
-//        User user = userSettings.getUser();
         UserAccountSettings settings = userSettings.getSettings();
 
         UniversalImageLoader.setImage(settings.getProfile_photo(), mProfilePhoto, null, "");
@@ -282,7 +278,6 @@ public class ProfileFragment extends Fragment {
         setFollowingCount();
         setPostsCount();
     }
-
 
     /**
      * Responsible for setting up the profile toolbar
@@ -348,19 +343,13 @@ public class ProfileFragment extends Fragment {
 
                 //retrieve user information from the database
                 setProfileWidgets(mFirebaseMethods.getUserSettings(dataSnapshot));
-
-
-                //retrieve images for the user in question
-
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-
+                Log.d(TAG, "onCancelled.");
             }
         });
-
-
     }
 
     @Override

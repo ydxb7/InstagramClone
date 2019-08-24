@@ -9,7 +9,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -17,7 +16,6 @@ import android.widget.ListView;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -28,17 +26,13 @@ import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 import ai.tomorrow.instagramclone.Profile.ProfileActivity;
 import ai.tomorrow.instagramclone.R;
 import ai.tomorrow.instagramclone.Utils.BottomNavigationViewHelper;
 import ai.tomorrow.instagramclone.Utils.Helpers;
 import ai.tomorrow.instagramclone.Utils.UserListAdapter;
-import ai.tomorrow.instagramclone.Utils.ViewPostFragment;
 import ai.tomorrow.instagramclone.models.User;
-
-import static ai.tomorrow.instagramclone.Utils.Helpers.hideSoftKeyboard;
 
 public class SearchActivity extends AppCompatActivity {
 
@@ -55,24 +49,22 @@ public class SearchActivity extends AppCompatActivity {
     private UserListAdapter adapter;
     private int mActivityNumber;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
         Log.d(TAG, "onCreate: starting");
-        mSearch = (EditText) findViewById(R.id.search);
-        mListView = (ListView) findViewById(R.id.listView);
+        mSearch = findViewById(R.id.search);
+        mListView = findViewById(R.id.listView);
 
         Helpers.hideSoftKeyboard(this);
 
         setupBottomNavigationView();
 
         initTextListener();
-
     }
 
-    private void initTextListener(){
+    private void initTextListener() {
         Log.d(TAG, "initTextListener: initializing");
 
         mUserList = new ArrayList<>();
@@ -80,26 +72,27 @@ public class SearchActivity extends AppCompatActivity {
         mSearch.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
+                Log.d(TAG, "beforeTextChanged.");
             }
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-
+                Log.d(TAG, "onTextChanged.");
             }
 
             @Override
             public void afterTextChanged(Editable s) {
+                Log.d(TAG, "afterTextChanged.");
                 String text = mSearch.getText().toString().trim();
                 searchForMatch(text);
             }
         });
     }
 
-    private void searchForMatch(String keyword){
+    private void searchForMatch(String keyword) {
         Log.d(TAG, "searchForMatch: searching for: " + keyword);
         mUserList.clear();
-        if (!keyword.equals("")){
+        if (!keyword.equals("")) {
             DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
 
             Query query = reference.child(getString(R.string.dbname_users))
@@ -108,24 +101,23 @@ public class SearchActivity extends AppCompatActivity {
             query.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    for (DataSnapshot singleDatasnapshot: dataSnapshot.getChildren()){
+                    for (DataSnapshot singleDatasnapshot : dataSnapshot.getChildren()) {
                         Log.d(TAG, "onDataChange: getting user: " + singleDatasnapshot.getValue(User.class).toString());
                         mUserList.add(singleDatasnapshot.getValue(User.class));
                     }
                     // update the users list view
                     updateUsersList();
-
                 }
 
                 @Override
                 public void onCancelled(@NonNull DatabaseError databaseError) {
-
+                    Log.d(TAG, "onCancelled.");
                 }
             });
         }
     }
 
-    private void updateUsersList(){
+    private void updateUsersList() {
         Log.d(TAG, "updateUsersList: updating users list");
         adapter = new UserListAdapter(mContext, R.layout.layout_user_listitem, mUserList);
 
@@ -145,22 +137,13 @@ public class SearchActivity extends AppCompatActivity {
                 SearchActivity.this.overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
             }
         });
-
     }
-
-
-//    private void hideSoftKeyboard(){
-//        if (getCurrentFocus() != null){
-//            InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
-//            imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
-//        }
-//    }
 
     /**
      * BottomNavigationView setup
      */
     private void setupBottomNavigationView() {
-        BottomNavigationViewEx bottomNavigationViewEx = (BottomNavigationViewEx) findViewById(R.id.bottomNavViewBar);
+        BottomNavigationViewEx bottomNavigationViewEx = findViewById(R.id.bottomNavViewBar);
         BottomNavigationViewHelper.setupBottomNavigationView(bottomNavigationViewEx);
         BottomNavigationViewHelper.enableNavigation(mContext, this, bottomNavigationViewEx);
         Menu menu = bottomNavigationViewEx.getMenu();

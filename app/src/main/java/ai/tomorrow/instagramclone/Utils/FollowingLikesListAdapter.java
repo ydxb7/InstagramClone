@@ -10,7 +10,6 @@ import android.text.TextPaint;
 import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
 import android.text.style.ForegroundColorSpan;
-import android.text.style.StyleSpan;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,9 +29,7 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import ai.tomorrow.instagramclone.Profile.ProfileActivity;
 import ai.tomorrow.instagramclone.R;
@@ -42,12 +39,13 @@ import ai.tomorrow.instagramclone.models.User;
 import ai.tomorrow.instagramclone.models.UserAccountSettings;
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class FollowingLikesListAdapter extends ArrayAdapter<List<LikePhoto>>  {
+public class FollowingLikesListAdapter extends ArrayAdapter<List<LikePhoto>> {
     private static final String TAG = "FollowingLikesListAdapt";
 
-    public interface OnGridImageSelectedListener{
+    public interface OnGridImageSelectedListener {
         void onGridImageSelected(Photo photo, int activityNumber);
     }
+
     OnGridImageSelectedListener mOnGridImageSelectedListener;
 
     //vars
@@ -73,13 +71,12 @@ public class FollowingLikesListAdapter extends ArrayAdapter<List<LikePhoto>>  {
         UniversalImageLoader.initImageLoader(mContext);
     }
 
-    public void setNewData(List<List<LikePhoto>> objects){
+    public void setNewData(List<List<LikePhoto>> objects) {
         mLikes = objects;
         notifyDataSetChanged();
     }
 
     private static class ViewHolder {
-
         CircleImageView profilePhoto;
         TextView tv_liked_post;
         RecyclerView gridView;
@@ -87,7 +84,6 @@ public class FollowingLikesListAdapter extends ArrayAdapter<List<LikePhoto>>  {
         UserAccountSettings settings;
         List<Photo> mPhotos = new ArrayList<>();
         User mUser;
-
     }
 
     @NonNull
@@ -99,9 +95,9 @@ public class FollowingLikesListAdapter extends ArrayAdapter<List<LikePhoto>>  {
         if (convertView == null) {
             convertView = mInflater.inflate(layoutResource, parent, false);
             holder = new ViewHolder();
-            holder.profilePhoto = (CircleImageView) convertView.findViewById(R.id.profile_photo);
-            holder.tv_liked_post = (TextView) convertView.findViewById(R.id.tv_liked_post);
-            holder.gridView = (RecyclerView) convertView.findViewById(R.id.gridView);
+            holder.profilePhoto = convertView.findViewById(R.id.profile_photo);
+            holder.tv_liked_post = convertView.findViewById(R.id.tv_liked_post);
+            holder.gridView = convertView.findViewById(R.id.gridView);
             holder.userID = getItem(position).get(0).getLiked_by_user_id();
 
             convertView.setTag(holder);
@@ -111,7 +107,6 @@ public class FollowingLikesListAdapter extends ArrayAdapter<List<LikePhoto>>  {
 
         setupWidgets(position, holder);
         setupGridView(position, holder);
-
 
         return convertView;
     }
@@ -124,7 +119,7 @@ public class FollowingLikesListAdapter extends ArrayAdapter<List<LikePhoto>>  {
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for (DataSnapshot singleSnapshot: dataSnapshot.getChildren()){
+                for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
                     Log.d(TAG, "onDataChange: found user account settings: " + singleSnapshot);
 
                     holder.settings = singleSnapshot.getValue(UserAccountSettings.class);
@@ -139,7 +134,7 @@ public class FollowingLikesListAdapter extends ArrayAdapter<List<LikePhoto>>  {
                     query.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            for (DataSnapshot singleSnapshot: dataSnapshot.getChildren()){
+                            for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
                                 holder.mUser = singleSnapshot.getValue(User.class);
 
                                 holder.profilePhoto.setOnClickListener(new View.OnClickListener() {
@@ -154,7 +149,7 @@ public class FollowingLikesListAdapter extends ArrayAdapter<List<LikePhoto>>  {
 
                         @Override
                         public void onCancelled(@NonNull DatabaseError databaseError) {
-
+                            Log.d(TAG, "onCancelled.");
                         }
                     });
 
@@ -177,12 +172,11 @@ public class FollowingLikesListAdapter extends ArrayAdapter<List<LikePhoto>>  {
                     };
 
                     spannableString.append(holder.settings.getUsername());
-//                    StyleSpan boldStyleSpan = new StyleSpan(Typeface.BOLD);//粗体
                     int s1 = spannableString.length();
                     spannableString.setSpan(clickSpan, 0, s1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 
                     // liked 3 posts
-                    spannableString.append(" liked " + getItem(position).size() + " posts. " );
+                    spannableString.append(" liked " + getItem(position).size() + " posts. ");
 
                     // time diff
                     int s2 = spannableString.length();
@@ -191,13 +185,12 @@ public class FollowingLikesListAdapter extends ArrayAdapter<List<LikePhoto>>  {
                     spannableString.setSpan(colorSpan, s2, spannableString.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                     holder.tv_liked_post.setMovementMethod(LinkMovementMethod.getInstance());
                     holder.tv_liked_post.setText(spannableString);
-
                 }
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-
+                Log.d(TAG, "onCancelled.");
             }
         });
     }
@@ -209,16 +202,16 @@ public class FollowingLikesListAdapter extends ArrayAdapter<List<LikePhoto>>  {
         intent.putExtra(mContext.getString(R.string.calling_activity_number), mContext.getResources().getInteger(R.integer.likes_activity_number));
         intent.putExtra(mContext.getString(R.string.selected_user), user);
         mContext.startActivity(intent);
-        ((Activity)mContext).overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+        ((Activity) mContext).overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
     }
 
-    private void setupGridView(final int position, final ViewHolder holder){
+    private void setupGridView(final int position, final ViewHolder holder) {
         Log.d(TAG, "setupGridView. ");
 
         // get imgURLs and setup grid view
         holder.mPhotos.clear();
 
-        for (int i = 0; i < getItem(position).size(); i++){
+        for (int i = 0; i < getItem(position).size(); i++) {
 
             final String photoID = getItem(position).get(i).getPhoto_id();
             Query query = myRef.child(mContext.getString(R.string.dbname_photos))
@@ -227,14 +220,14 @@ public class FollowingLikesListAdapter extends ArrayAdapter<List<LikePhoto>>  {
             query.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    for (DataSnapshot singleSnapshot: dataSnapshot.getChildren()){
+                    for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
                         Log.d(TAG, "onDataChange: found photo: " + singleSnapshot);
                         holder.mPhotos.add(mFirebaseMethods.getPhoto(singleSnapshot));
                         Log.d(TAG, "onDataChange: mPhotos.size() = " + holder.mPhotos.size() + " getItem(position).size() = " + getItem(position).size());
                     }
-                    if (holder.mPhotos.size() == getItem(position).size()){
+                    if (holder.mPhotos.size() == getItem(position).size()) {
                         final ArrayList<String> imgURLs = new ArrayList<>();
-                        for (Photo photo: holder.mPhotos){
+                        for (Photo photo : holder.mPhotos) {
                             imgURLs.add(photo.getImage_path());
                         }
                         // set grid view
@@ -248,19 +241,15 @@ public class FollowingLikesListAdapter extends ArrayAdapter<List<LikePhoto>>  {
                                         mContext.getResources().getInteger(R.integer.likes_activity_number));
                             }
                         });
-
                         holder.gridView.setAdapter(adapter);
-
                     }
                 }
 
                 @Override
                 public void onCancelled(@NonNull DatabaseError databaseError) {
-
+                    Log.d(TAG, "onCancelled.");
                 }
             });
         }
     }
-
-
 }

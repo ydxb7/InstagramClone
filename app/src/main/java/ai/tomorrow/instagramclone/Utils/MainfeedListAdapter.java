@@ -89,7 +89,7 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
 
         UserAccountSettings settings = new UserAccountSettings();
         User user = new User();
-//        StringBuilder users;
+        //        StringBuilder users;
         String mLikesString;
         boolean likeByCurrentUser;
         Heart heart;
@@ -107,16 +107,16 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
             convertView = mInflater.inflate(layoutResource, parent, false);
             holder = new ViewHolder();
 
-            holder.username = (TextView) convertView.findViewById(R.id.username);
-            holder.image = (SquareImageView) convertView.findViewById(R.id.post_image);
-            holder.heartRed = (ImageView) convertView.findViewById(R.id.image_heart_red);
-            holder.heartWhite = (ImageView) convertView.findViewById(R.id.image_heart);
-            holder.comment = (ImageView) convertView.findViewById(R.id.speech_bubble);
-            holder.likes = (TextView) convertView.findViewById(R.id.image_likes);
-            holder.comments = (TextView) convertView.findViewById(R.id.image_comments_link);
-            holder.caption = (TextView) convertView.findViewById(R.id.image_caption);
-            holder.mTimestamp = (TextView) convertView.findViewById(R.id.image_time_posted);
-            holder.mprofileImage = (CircleImageView) convertView.findViewById(R.id.profile_photo);
+            holder.username = convertView.findViewById(R.id.username);
+            holder.image = convertView.findViewById(R.id.post_image);
+            holder.heartRed = convertView.findViewById(R.id.image_heart_red);
+            holder.heartWhite = convertView.findViewById(R.id.image_heart);
+            holder.comment = convertView.findViewById(R.id.speech_bubble);
+            holder.likes = convertView.findViewById(R.id.image_likes);
+            holder.comments = convertView.findViewById(R.id.image_comments_link);
+            holder.caption = convertView.findViewById(R.id.image_caption);
+            holder.mTimestamp = convertView.findViewById(R.id.image_time_posted);
+            holder.mprofileImage = convertView.findViewById(R.id.profile_photo);
             holder.heart = new Heart(holder.heartWhite, holder.heartRed);
 
             convertView.setTag(holder);
@@ -156,7 +156,7 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-
+                Log.d(TAG, "onCancelled.");
             }
         });
 
@@ -183,7 +183,7 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-
+                Log.d(TAG, "onCancelled.");
             }
         });
 
@@ -215,7 +215,7 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
 
                     @Override
                     public void onCancelled(@NonNull DatabaseError databaseError) {
-
+                        Log.d(TAG, "onCancelled.");
                     }
                 });
 
@@ -236,11 +236,10 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
         Log.d(TAG, "navigateToProfileActivity: navigating.");
         // navigate to profile activity
         Intent intent = new Intent(mContext, ProfileActivity.class);
-//        intent.putExtra(mContext.getString(R.string.calling_activity), mContext.getString(R.string.home_activity));
         intent.putExtra(mContext.getString(R.string.calling_activity_number), mContext.getResources().getInteger(R.integer.home_activity_number));
         intent.putExtra(mContext.getString(R.string.selected_user), holder.user);
         mContext.startActivity(intent);
-        ((Activity)mContext).overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+        ((Activity) mContext).overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
     }
 
     public class GestureListener extends GestureDetector.SimpleOnGestureListener {
@@ -261,7 +260,7 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
             Log.d(TAG, "onDoubleTap: double tap detected.");
 
             mHolder.heart.toggleLike();
-            if (mHolder.likeByCurrentUser){
+            if (mHolder.likeByCurrentUser) {
                 mFirebaseMethods.removePhotoLike(mHolder.photo.getPhoto_id(), mHolder.photo.getUser_id());
             } else {
                 mFirebaseMethods.addPhotoNewLike(mHolder.photo.getPhoto_id(), mHolder.photo.getUser_id());
@@ -283,7 +282,7 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if (!dataSnapshot.exists()){
+                if (!dataSnapshot.exists()) {
                     Log.d(TAG, "onDataChange: there is no likes node in photo: " + holder.photo.getPhoto_id());
                     holder.mLikesString = "";
                     setupWidgets(holder);
@@ -328,7 +327,7 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
                                     Log.d(TAG, "onDataChange: likesUsername.add: " + singleSnapshot.getValue(User.class).getUsername());
                                     likesUsername.add(singleSnapshot.getValue(User.class).getUsername());
                                 }
-                                if (likesUsername.size() == Math.min(likes.size(), 4)){
+                                if (likesUsername.size() == Math.min(likes.size(), 4)) {
                                     Log.d(TAG, "onDataChange: likes.size() = " + likes.size() + " likesUsername.size: " + likesUsername.size());
                                     holder.mLikesString = StringManipulation.getLikesString(likes.size(), likesUsername);
                                     setupWidgets(holder);
@@ -337,22 +336,18 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
 
                             @Override
                             public void onCancelled(@NonNull DatabaseError databaseError) {
-
+                                Log.d(TAG, "onCancelled.");
                             }
                         });
-
                     }
                 }
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-
+                Log.d(TAG, "onCancelled.");
             }
-
         });
-
-
     }
 
 
@@ -360,7 +355,7 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
         String timestampDiff = StringManipulation.getTimeStampDifference(holder.photo.getDate_created());
         holder.mTimestamp.setText(timestampDiff);
 
-        if (holder.mLikesString.equals("")){
+        if (holder.mLikesString.equals("")) {
             holder.likes.setVisibility(View.GONE);
         } else {
             holder.likes.setVisibility(View.VISIBLE);
@@ -373,7 +368,6 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
                 Log.d(TAG, "onClick: navigating to comments thread");
 
                 mOnCommentThreadSelectedListener.onCommentThreadSelectedListener(holder.photo);
-
             }
         });
 
@@ -421,16 +415,12 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
                 for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
                     currentUsername = singleSnapshot.getValue(User.class).getUsername();
                 }
-
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-
+                Log.d(TAG, "onCancelled.");
             }
         });
-
-
     }
-
 }

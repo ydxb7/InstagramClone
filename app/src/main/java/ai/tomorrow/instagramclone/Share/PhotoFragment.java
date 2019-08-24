@@ -30,7 +30,6 @@ public class PhotoFragment extends Fragment {
     //vars
     private Context mContext;
 
-
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -38,13 +37,13 @@ public class PhotoFragment extends Fragment {
         Log.d(TAG, "onCreateView: stated.");
 
         mContext = getActivity();
-        Button btnLaunchCamera = (Button) view.findViewById(R.id.btnLaunchCamera);
+        Button btnLaunchCamera = view.findViewById(R.id.btnLaunchCamera);
         btnLaunchCamera.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Log.d(TAG, "onClick: launching camera.");
-                if (((ShareActivity) getActivity()).getCurrentTabNumber() == PHOTO_FRAGMENT_NUM){
-                    if (Permissions.checkPermissions(mContext, Permissions.CAMERA_PERMISSION[0])){
+                if (((ShareActivity) getActivity()).getCurrentTabNumber() == PHOTO_FRAGMENT_NUM) {
+                    if (Permissions.checkPermissions(mContext, Permissions.CAMERA_PERMISSION[0])) {
                         Log.d(TAG, "onClick: starting camera");
                         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                         if (takePictureIntent.resolveActivity(getActivity().getPackageManager()) != null) {
@@ -62,25 +61,21 @@ public class PhotoFragment extends Fragment {
         return view;
     }
 
-    private boolean isRootTask(){
-        if (((ShareActivity) getActivity()).getTask() == 0){
-            return true;
-        } else {
-            // It's coming from EditProfileFragment
-            return false;
-        }
+    private boolean isRootTask() {
+        // It's coming from EditProfileFragment
+        return ((ShareActivity) getActivity()).getTask() == 0;
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == CAMERA_REQUEST_CODE){
+        if (requestCode == CAMERA_REQUEST_CODE) {
             Log.d(TAG, "onActivityResult: done taking a photo.");
 
             Bitmap bitmap = (Bitmap) data.getExtras().get("data");
 
             // navigate to the final share screen to publish photo
-            if (isRootTask()){
+            if (isRootTask()) {
                 Log.d(TAG, "onActivityResult: attempting to navigate to final share screen");
                 Intent intent = new Intent(getActivity(), NextActivity.class);
                 intent.putExtra(getString(R.string.selected_bitmap), bitmap);
@@ -95,13 +90,10 @@ public class PhotoFragment extends Fragment {
                     startActivity(intent);
                     getActivity().finish();
                     getActivity().overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
-                }catch (NullPointerException e){
-                    Log.e(TAG, "onActivityResult: NullPointerException: " + e.getMessage() );
+                } catch (NullPointerException e) {
+                    Log.e(TAG, "onActivityResult: NullPointerException: " + e.getMessage());
                 }
             }
-
         }
-
-
     }
 }

@@ -34,11 +34,6 @@ import ai.tomorrow.instagramclone.models.LikePhoto;
 public class FollowingFragment extends Fragment {
     private static final String TAG = "FollowingFragment";
 
-//    public interface OnGridImageSelectedListener{
-//        void onGridImageSelected(Photo photo, int activityNumber);
-//    }
-//    OnGridImageSelectedListener mOnGridImageSelectedListener;
-
     //widgets
     private ListView mListView;
 
@@ -48,7 +43,6 @@ public class FollowingFragment extends Fragment {
     private List<List<LikePhoto>> mLikes = new ArrayList<>();
     private List<String> mFollowingsUserID = new ArrayList<>();
     private FollowingLikesListAdapter mAdapter;
-
 
     //firebase
     private DatabaseReference myRef;
@@ -110,33 +104,23 @@ public class FollowingFragment extends Fragment {
 
                                 getLikesForFollowingUsers();
                                 Log.d(TAG, "onDataChange: mLikes: " + mLikes);
-//                                updateListView();
                                 mAdapter.setNewData(mLikes);
-
-
                             }
                         }
 
                         @Override
                         public void onCancelled(@NonNull DatabaseError databaseError) {
-
+                            Log.d(TAG, "onCancelled.");
                         }
                     });
-
-
                 }
-
-
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-
+                Log.d(TAG, "onCancelled.");
             }
         });
-
-
-
     }
 
     public void getLikesForFollowingUsers() {
@@ -162,5 +146,4 @@ public class FollowingFragment extends Fragment {
             }
         }
     }
-
 }

@@ -6,7 +6,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ListView;
 
 import androidx.annotation.NonNull;
@@ -28,7 +27,6 @@ import java.util.List;
 
 import ai.tomorrow.instagramclone.R;
 import ai.tomorrow.instagramclone.Utils.FirebaseMethods;
-import ai.tomorrow.instagramclone.Utils.FollowingLikesListAdapter;
 import ai.tomorrow.instagramclone.Utils.YouLikesListAdapter;
 import ai.tomorrow.instagramclone.models.LikePhoto;
 import ai.tomorrow.instagramclone.models.LikeYou;
@@ -68,7 +66,7 @@ public class YouFragment extends Fragment {
         return view;
     }
 
-    private void getLikes(){
+    private void getLikes() {
         Log.d(TAG, "getLikes: get likes.");
         mLikeYous.clear();
 
@@ -78,11 +76,11 @@ public class YouFragment extends Fragment {
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for (DataSnapshot singleSnapshot: dataSnapshot.getChildren()){
+                for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
                     Photo photo = mFirebaseMethods.getPhoto(singleSnapshot);
 
-                    for (LikePhoto like: photo.getLikes_photo()){
-                        if (!like.getLiked_by_user_id().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())){
+                    for (LikePhoto like : photo.getLikes_photo()) {
+                        if (!like.getLiked_by_user_id().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
                             LikeYou likeYou = new LikeYou();
                             likeYou.setDate_created(like.getDate_created());
                             likeYou.setLiked_by_user_id(like.getLiked_by_user_id());
@@ -101,20 +99,12 @@ public class YouFragment extends Fragment {
                 });
 
                 mAdapter.setNewData(mLikeYous);
-
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-
+                Log.d(TAG, "onCancelled.");
             }
         });
-
-
-
-
-
     }
-
-
 }

@@ -22,7 +22,7 @@ import ai.tomorrow.instagramclone.R;
 public class GridImageAdapter extends RecyclerView.Adapter<GridImageAdapter.ViewHolder> {
     private static final String TAG = "GridImageAdapter";
 
-    public interface OnGridItemClickListener{
+    public interface OnGridItemClickListener {
         void OnGridItemClick(int clickedItemIndex);
     }
 
@@ -51,8 +51,6 @@ public class GridImageAdapter extends RecyclerView.Adapter<GridImageAdapter.View
 
         View view = inflater.inflate(layoutResource, parent, shouldAttachToParentImmediately);
         ViewHolder viewHolder = new ViewHolder(view);
-
-
         return viewHolder;
     }
 
@@ -75,37 +73,37 @@ public class GridImageAdapter extends RecyclerView.Adapter<GridImageAdapter.View
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
 
-            mProgressBar = (ProgressBar) itemView.findViewById(R.id.gridImageProgressbar);
-            image = (SquareImageView) itemView.findViewById(R.id.gridImageView);
+            mProgressBar = itemView.findViewById(R.id.gridImageProgressbar);
+            image = itemView.findViewById(R.id.gridImageView);
         }
 
-        void bind(String imgURL, String append){
+        void bind(String imgURL, String append) {
             ImageLoader imageLoader = ImageLoader.getInstance();
             imageLoader.displayImage(append + imgURL, image, new ImageLoadingListener() {
                 @Override
                 public void onLoadingStarted(String imageUri, View view) {
-                    if (mProgressBar != null){
+                    if (mProgressBar != null) {
                         mProgressBar.setVisibility(View.VISIBLE);
                     }
                 }
 
                 @Override
                 public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
-                    if (mProgressBar != null){
+                    if (mProgressBar != null) {
                         mProgressBar.setVisibility(View.GONE);
                     }
                 }
 
                 @Override
                 public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-                    if (mProgressBar != null){
+                    if (mProgressBar != null) {
                         mProgressBar.setVisibility(View.GONE);
                     }
                 }
 
                 @Override
                 public void onLoadingCancelled(String imageUri, View view) {
-                    if (mProgressBar != null){
+                    if (mProgressBar != null) {
                         mProgressBar.setVisibility(View.GONE);
                     }
                 }
@@ -120,5 +118,4 @@ public class GridImageAdapter extends RecyclerView.Adapter<GridImageAdapter.View
             mOnGridItemClickListener.OnGridItemClick(clickedPosition);
         }
     }
-
 }

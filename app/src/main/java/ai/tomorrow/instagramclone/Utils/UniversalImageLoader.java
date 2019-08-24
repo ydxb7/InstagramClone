@@ -31,7 +31,7 @@ public class UniversalImageLoader {
         ImageLoader.getInstance().init(universalImageLoader.getConfig());
     }
 
-    public ImageLoaderConfiguration getConfig(){
+    public ImageLoaderConfiguration getConfig() {
         DisplayImageOptions defaultOptions = new DisplayImageOptions.Builder()
                 .showImageOnLoading(defaultImage)
                 .showImageForEmptyUri(defaultImage)
@@ -53,42 +53,42 @@ public class UniversalImageLoader {
     /**
      * this method can be used set images that are static. It can't be used if the images are being
      * changed in the Fragment/Activity - Or if they are being set in a list or a grid view.
+     *
      * @param imgURL
      * @param image
      * @param mProgressBar
      * @param append
      */
-    public static void setImage(String imgURL, final ImageView image, final ProgressBar mProgressBar, String append){
+    public static void setImage(String imgURL, final ImageView image, final ProgressBar mProgressBar, String append) {
         ImageLoader imageLoader = ImageLoader.getInstance();
         imageLoader.displayImage(append + imgURL, image, new ImageLoadingListener() {
             @Override
             public void onLoadingStarted(String imageUri, View view) {
-                if (mProgressBar != null){
+                if (mProgressBar != null) {
                     mProgressBar.setVisibility(View.VISIBLE);
                 }
             }
 
             @Override
             public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
-                if (mProgressBar != null){
+                if (mProgressBar != null) {
                     mProgressBar.setVisibility(View.GONE);
                 }
             }
 
             @Override
             public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-                if (mProgressBar != null){
+                if (mProgressBar != null) {
                     mProgressBar.setVisibility(View.GONE);
                 }
             }
 
             @Override
             public void onLoadingCancelled(String imageUri, View view) {
-                if (mProgressBar != null){
+                if (mProgressBar != null) {
                     mProgressBar.setVisibility(View.GONE);
                 }
             }
         });
-
     }
 }

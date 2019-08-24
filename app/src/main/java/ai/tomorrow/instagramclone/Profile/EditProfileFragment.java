@@ -8,9 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
-import android.widget.GridView;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -32,8 +30,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
-import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
-import com.nostra13.universalimageloader.core.ImageLoader;
 
 import ai.tomorrow.instagramclone.R;
 import ai.tomorrow.instagramclone.Share.ShareActivity;
@@ -47,7 +43,6 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class EditProfileFragment extends Fragment implements
         ConfirmPasswordDialog.OnConfirmPasswordListener {
-
 
     // change the email in the database
     @Override
@@ -104,8 +99,6 @@ public class EditProfileFragment extends Fragment implements
                         }
                     }
                 });
-
-
     }
 
 
@@ -134,14 +127,14 @@ public class EditProfileFragment extends Fragment implements
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_editprofile, container, false);
         mProfilePhoto = view.findViewById(R.id.profile_photo);
-        mDisplayName = (EditText) view.findViewById(R.id.display_name);
-        mUsername = (EditText) view.findViewById(R.id.username);
-        mWebsite = (EditText) view.findViewById(R.id.website);
-        mDescription = (EditText) view.findViewById(R.id.description);
-        mEmail = (EditText) view.findViewById(R.id.email);
-        mPhoneNumber = (EditText) view.findViewById(R.id.phoneNumber);
-        mChangeProfilePhoto = (TextView) view.findViewById(R.id.changeProfilePhoto);
-        toolbar = (Toolbar) view.findViewById(R.id.profileToolBar);
+        mDisplayName = view.findViewById(R.id.display_name);
+        mUsername = view.findViewById(R.id.username);
+        mWebsite = view.findViewById(R.id.website);
+        mDescription = view.findViewById(R.id.description);
+        mEmail = view.findViewById(R.id.email);
+        mPhoneNumber = view.findViewById(R.id.phoneNumber);
+        mChangeProfilePhoto = view.findViewById(R.id.changeProfilePhoto);
+        toolbar = view.findViewById(R.id.profileToolBar);
         mContext = getActivity();
         mFirebaseMethods = new FirebaseMethods(getActivity());
 
@@ -152,7 +145,7 @@ public class EditProfileFragment extends Fragment implements
         setupFirebaseAuth();
 
         // back arrow for navigating back to 'ProfileActivity'
-        ImageView backArrow = (ImageView) view.findViewById(R.id.backArrow);
+        ImageView backArrow = view.findViewById(R.id.backArrow);
         backArrow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -161,7 +154,7 @@ public class EditProfileFragment extends Fragment implements
             }
         });
 
-        ImageView checkmark = (ImageView) view.findViewById(R.id.saveChanges);
+        ImageView checkmark = view.findViewById(R.id.saveChanges);
         checkmark.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -170,8 +163,6 @@ public class EditProfileFragment extends Fragment implements
                 getActivity().finish();
             }
         });
-
-
         return view;
     }
 
@@ -208,28 +199,25 @@ public class EditProfileFragment extends Fragment implements
         /**
          * change the reset of the settings that do not require uniqueness
          */
-        if (!mUserSettings.getSettings().getDisplay_name().equals(displayName)){
+        if (!mUserSettings.getSettings().getDisplay_name().equals(displayName)) {
             // update displayname
             mFirebaseMethods.updateUserAccountSettings(displayName, null, null, 0);
         }
 
-        if (!mUserSettings.getSettings().getWebsite().equals(website)){
+        if (!mUserSettings.getSettings().getWebsite().equals(website)) {
             // update website
             mFirebaseMethods.updateUserAccountSettings(null, website, null, 0);
         }
 
-        if (!mUserSettings.getSettings().getDescription().equals(description)){
+        if (!mUserSettings.getSettings().getDescription().equals(description)) {
             // update description
             mFirebaseMethods.updateUserAccountSettings(null, null, description, 0);
         }
 
-        if (!mUserSettings.getUser().getPhone_number().equals(phoneNumber)){
+        if (!mUserSettings.getUser().getPhone_number().equals(phoneNumber)) {
             // update phone number
             mFirebaseMethods.updateUserAccountSettings(null, null, null, phoneNumber);
         }
-
-
-
     }
 
     /**
@@ -260,12 +248,11 @@ public class EditProfileFragment extends Fragment implements
                         Toast.makeText(mContext, "That username already exists.", Toast.LENGTH_SHORT).show();
                     }
                 }
-
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-
+                Log.d(TAG, "onCancelled.");
             }
         });
     }
@@ -275,7 +262,6 @@ public class EditProfileFragment extends Fragment implements
         Log.d(TAG, "setProfileWidgets: setting widgets with data retrieved from firebase databse: " + userSettings.toString());
         Log.d(TAG, "setProfileWidgets: mUsername = " + mUsername);
 
-//        User user = userSettings.getUser();
         mUserSettings = userSettings;
         UserAccountSettings settings = userSettings.getSettings();
 
@@ -332,18 +318,13 @@ public class EditProfileFragment extends Fragment implements
         myRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-
                 //retrieve user information from the database
                 setProfileWidgets(mFirebaseMethods.getUserSettings(dataSnapshot));
-
-
-                //retrieve images for the user in question
-
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-
+                Log.d(TAG, "onCancelled.");
             }
         });
     }

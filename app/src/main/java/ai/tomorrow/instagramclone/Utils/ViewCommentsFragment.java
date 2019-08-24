@@ -18,7 +18,6 @@ import androidx.fragment.app.Fragment;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -127,17 +126,12 @@ public class ViewCommentsFragment extends Fragment implements CommentListAdapter
                 getActivity().getSupportFragmentManager().popBackStack();
                 Bundle bundle = getArguments();
                 Log.d(TAG, "onClick: bundle.getInt(mContext.getString(R.string.calling_activity_number), -1) :" +
-                        bundle.getInt(mContext.getString(R.string.calling_activity_number), -1) );
-//                if (bundle != null
-//                        && bundle.getString(mContext.getString(R.string.calling_activity)) != null
-//                        && bundle.getString(mContext.getString(R.string.calling_activity)).equals(mContext.getString(R.string.home_activity))){
-//                    ((HomeActivity)getActivity()).showRelativeLayout();
-//                }
+                        bundle.getInt(mContext.getString(R.string.calling_activity_number), -1));
                 if (mContext instanceof HomeActivity
                         && bundle != null
                         && bundle.getInt(mContext.getString(R.string.calling_activity_number), -1) ==
-                        mContext.getResources().getInteger(R.integer.home_activity_number)){
-                    ((HomeActivity)mContext).showRelativeLayout();
+                        mContext.getResources().getInteger(R.integer.home_activity_number)) {
+                    ((HomeActivity) mContext).showRelativeLayout();
                 }
             }
         });

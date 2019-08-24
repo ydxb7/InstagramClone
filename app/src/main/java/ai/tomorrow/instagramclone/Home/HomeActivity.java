@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.media.Image;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
@@ -21,23 +20,16 @@ import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.viewpager.widget.ViewPager;
 
-import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
-import com.nostra13.universalimageloader.core.ImageLoader;
 
 import ai.tomorrow.instagramclone.Login.LoginActivity;
-import ai.tomorrow.instagramclone.Profile.AccountSettingsActivity;
-import ai.tomorrow.instagramclone.Profile.EditProfileFragment;
-import ai.tomorrow.instagramclone.Profile.ProfileActivity;
-import ai.tomorrow.instagramclone.Profile.SignOutFragment;
 import ai.tomorrow.instagramclone.R;
 import ai.tomorrow.instagramclone.Share.NextActivity;
 import ai.tomorrow.instagramclone.Utils.BottomNavigationViewHelper;
 import ai.tomorrow.instagramclone.Utils.MainfeedListAdapter;
 import ai.tomorrow.instagramclone.Utils.Permissions;
-import ai.tomorrow.instagramclone.Utils.SectionsPagerAdapter;
 import ai.tomorrow.instagramclone.Utils.SectionsStatePagerAdapter;
 import ai.tomorrow.instagramclone.Utils.UniversalImageLoader;
 import ai.tomorrow.instagramclone.Utils.ViewCommentsFragment;
@@ -203,7 +195,6 @@ public class HomeActivity extends AppCompatActivity implements
         }
     }
 
-
     /**
      * BottomNavigationView setup
      */
@@ -301,5 +292,4 @@ public class HomeActivity extends AppCompatActivity implements
             mAuth.removeAuthStateListener(mAuthListener);
         }
     }
-
 }

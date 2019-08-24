@@ -14,12 +14,10 @@ import androidx.viewpager.widget.ViewPager;
 import com.google.android.material.tabs.TabLayout;
 import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
 
-import ai.tomorrow.instagramclone.Login.LoginActivity;
 import ai.tomorrow.instagramclone.R;
 import ai.tomorrow.instagramclone.Utils.BottomNavigationViewHelper;
 import ai.tomorrow.instagramclone.Utils.Permissions;
 import ai.tomorrow.instagramclone.Utils.SectionsPagerAdapter;
-import ai.tomorrow.instagramclone.Utils.SectionsStatePagerAdapter;
 
 public class ShareActivity extends AppCompatActivity {
 
@@ -40,7 +38,7 @@ public class ShareActivity extends AppCompatActivity {
         setContentView(R.layout.activiy_share);
         Log.d(TAG, "onCreate: starting");
 
-        if (Permissions.checkPermissionArray(this, Permissions.PERMISSIONS)){
+        if (Permissions.checkPermissionArray(this, Permissions.PERMISSIONS)) {
             // all permissions are granted
             setupViewPager();
         } else {
@@ -52,49 +50,46 @@ public class ShareActivity extends AppCompatActivity {
                     VERIFY_PERMISSION_REQUEST
             );
         }
-
-//        setupBottomNavigationView();
     }
 
     /**
      * if it getFlags != 0: it's coming from EditProfileFragment, otherwise it's the root Task
+     *
      * @return
      */
-    public int getTask(){
+    public int getTask() {
         Log.d(TAG, "getTask: getTask: TASK: " + getIntent().getFlags());
         return getIntent().getFlags();
     }
-
-
 
     /**
      * return the current tab number
      * 0 = GalleryFragment
      * 1 = PhotoFragment
+     *
      * @return
      */
-    public int getCurrentTabNumber(){
+    public int getCurrentTabNumber() {
         return mViewPager.getCurrentItem();
     }
 
     /**
      * setup viewpager for manager the tabs
      */
-    private void setupViewPager(){
+    private void setupViewPager() {
         SectionsPagerAdapter adapter = new SectionsPagerAdapter(getSupportFragmentManager());
 
         adapter.addFragment(new GalleryFragment());
         adapter.addFragment(new PhotoFragment());
 
-        mViewPager = (ViewPager) findViewById(R.id.viewpager_container);
+        mViewPager = findViewById(R.id.viewpager_container);
         mViewPager.setAdapter(adapter);
 
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabsBottom);
+        TabLayout tabLayout = findViewById(R.id.tabsBottom);
         tabLayout.setupWithViewPager(mViewPager);
 
         tabLayout.getTabAt(0).setText(getString(R.string.gallery));
         tabLayout.getTabAt(1).setText(getString(R.string.photo));
-
     }
 
     @Override
@@ -104,22 +99,21 @@ public class ShareActivity extends AppCompatActivity {
             case VERIFY_PERMISSION_REQUEST: {
                 // If request is cancelled, the result arrays are empty.
                 boolean isAllGranted = true;
-                if (grantResults.length > 0){
-                    for (int result: grantResults){
-                        if (result != PackageManager.PERMISSION_GRANTED){
+                if (grantResults.length > 0) {
+                    for (int result : grantResults) {
+                        if (result != PackageManager.PERMISSION_GRANTED) {
                             isAllGranted = false;
                         }
                     }
                 }
 
-                if (isAllGranted){
+                if (isAllGranted) {
                     setupViewPager();
                 } else {
                     finish();
                     ShareActivity.this.overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
                 }
             }
-
         }
     }
 
@@ -127,7 +121,7 @@ public class ShareActivity extends AppCompatActivity {
      * BottomNavigationView setup
      */
     private void setupBottomNavigationView() {
-        BottomNavigationViewEx bottomNavigationViewEx = (BottomNavigationViewEx) findViewById(R.id.bottomNavViewBar);
+        BottomNavigationViewEx bottomNavigationViewEx = findViewById(R.id.bottomNavViewBar);
         BottomNavigationViewHelper.setupBottomNavigationView(bottomNavigationViewEx);
         BottomNavigationViewHelper.enableNavigation(mContext, this, bottomNavigationViewEx);
         Menu menu = bottomNavigationViewEx.getMenu();

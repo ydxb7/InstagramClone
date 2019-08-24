@@ -42,7 +42,6 @@ public class ProfileActivity extends AppCompatActivity implements
                 getResources().getInteger(R.integer.profile_activity_number));
 
         init();
-
     }
 
     @Override
@@ -78,15 +77,15 @@ public class ProfileActivity extends AppCompatActivity implements
         transaction.commit();
     }
 
-    private void init(){
+    private void init() {
         Log.d(TAG, "init: inflating" + getString(R.string.profile_fragment));
 
         Intent intent = getIntent();
-        if (intent.hasExtra(mContext.getString(R.string.calling_activity_number))){
+        if (intent.hasExtra(mContext.getString(R.string.calling_activity_number))) {
             Log.d(TAG, "init: searching for user object attached as intent extra");
-            if (intent.hasExtra(mContext.getString(R.string.selected_user))){
+            if (intent.hasExtra(mContext.getString(R.string.selected_user))) {
                 User user = intent.getParcelableExtra(getString(R.string.selected_user));
-                if (user.getUser_id().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())){
+                if (user.getUser_id().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
                     Log.d(TAG, "init: view user is our own user.");
                     Log.d(TAG, "init: inflating Profile");
 
@@ -110,8 +109,7 @@ public class ProfileActivity extends AppCompatActivity implements
                             intent.getParcelableExtra(mContext.getString(R.string.selected_user)));
                     args.putInt(getString(R.string.calling_activity_number),
                             intent.getIntExtra(getString(R.string.calling_activity_number),
-                            getResources().getInteger(R.integer.profile_activity_number)));
-//                    args.putString(mContext.getString(R.string.calling_activity), intent.getStringExtra(mContext.getString(R.string.calling_activity)));
+                                    getResources().getInteger(R.integer.profile_activity_number)));
                     fragment.setArguments(args);
 
                     FragmentTransaction transaction = ProfileActivity.this.getSupportFragmentManager().beginTransaction();
@@ -119,10 +117,10 @@ public class ProfileActivity extends AppCompatActivity implements
                     transaction.addToBackStack(getString(R.string.view_profile_fragment)); // add fragment into backstack
                     transaction.commit();
                 }
-            }else {
+            } else {
                 Toast.makeText(mContext, "something went wrong", Toast.LENGTH_SHORT).show();
             }
-        }else {
+        } else {
             Log.d(TAG, "init: inflating Profile");
 
             ProfileFragment fragment = new ProfileFragment();
@@ -138,7 +136,7 @@ public class ProfileActivity extends AppCompatActivity implements
     public void onBackPressed() {
         Log.d(TAG, "onBackPressed.");
         Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.container);
-        if (currentFragment instanceof ProfileFragment || currentFragment instanceof ViewProfileFragment){
+        if (currentFragment instanceof ProfileFragment || currentFragment instanceof ViewProfileFragment) {
             finish();
             this.overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
         }

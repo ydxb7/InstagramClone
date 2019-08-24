@@ -68,11 +68,9 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
-
     /**
      * -------------------------------- firebase --------------------------
      */
-
     private void init() {
         // initialize the button to logging in
         Button btnLogin = (Button) findViewById(R.id.btn_login);
@@ -133,7 +131,6 @@ public class LoginActivity extends AppCompatActivity {
                 LoginActivity.this.overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
             }
         });
-
 
         /**
          * If the user is logged in then navigate to 'HomeActivity' and call 'finish()'
@@ -219,5 +216,4 @@ public class LoginActivity extends AppCompatActivity {
             mAuth.removeAuthStateListener(mAuthListener);
         }
     }
-
 }

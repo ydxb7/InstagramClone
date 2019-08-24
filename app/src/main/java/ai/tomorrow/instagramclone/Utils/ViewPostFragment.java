@@ -34,7 +34,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import ai.tomorrow.instagramclone.Home.HomeActivity;
 import ai.tomorrow.instagramclone.Likes.LikesActivity;
 import ai.tomorrow.instagramclone.Profile.ProfileActivity;
 import ai.tomorrow.instagramclone.R;
@@ -46,7 +45,6 @@ import ai.tomorrow.instagramclone.models.UserAccountSettings;
 public class ViewPostFragment extends Fragment {
 
     private static final String TAG = "ViewPostFragment";
-
 
     public interface OnCommentThreadSelectedListener {
         void onCommentThreadSelectedListener(Photo photo);
@@ -66,13 +64,11 @@ public class ViewPostFragment extends Fragment {
     private DatabaseReference myRef;
     private FirebaseMethods mFirebaseMethods;
 
-
     //widgets
     private SquareImageView mPostImage;
     private BottomNavigationViewEx bottomNavigationView;
     private TextView mBackLabel, mCaption, mUsername, mTimestamp, mLikes, mComments;
     private ImageView mBackArrow, mEllipses, mHeartRed, mHeartWhite, mProfileImage, mComment;
-
 
     //vars
     private Context mContext;
@@ -87,7 +83,6 @@ public class ViewPostFragment extends Fragment {
     private Boolean mLikedByCurrentUser;
     private StringBuilder mUsers;
     private String mLikesString = "";
-//    private User mCurrentUser;
 
     @Nullable
     @Override
@@ -95,20 +90,20 @@ public class ViewPostFragment extends Fragment {
         Log.d(TAG, "onCreateView: started.");
         View view = inflater.inflate(R.layout.fragment_view_post, container, false);
         mContext = getActivity();
-        mPostImage = (SquareImageView) view.findViewById(R.id.post_image);
-        bottomNavigationView = (BottomNavigationViewEx) view.findViewById(R.id.bottomNavViewBar);
-        mBackArrow = (ImageView) view.findViewById(R.id.imageBackArrow);
-        mBackLabel = (TextView) view.findViewById(R.id.tvBackLabel);
-        mCaption = (TextView) view.findViewById(R.id.image_caption);
-        mUsername = (TextView) view.findViewById(R.id.username);
-        mTimestamp = (TextView) view.findViewById(R.id.image_time_posted);
-        mEllipses = (ImageView) view.findViewById(R.id.ivEllipses);
-        mHeartRed = (ImageView) view.findViewById(R.id.image_heart_red);
-        mHeartWhite = (ImageView) view.findViewById(R.id.image_heart);
-        mProfileImage = (ImageView) view.findViewById(R.id.profile_photo);
-        mLikes = (TextView) view.findViewById(R.id.image_likes);
-        mComment = (ImageView) view.findViewById(R.id.speech_bubble);
-        mComments = (TextView) view.findViewById(R.id.image_comments_link);
+        mPostImage = view.findViewById(R.id.post_image);
+        bottomNavigationView = view.findViewById(R.id.bottomNavViewBar);
+        mBackArrow = view.findViewById(R.id.imageBackArrow);
+        mBackLabel = view.findViewById(R.id.tvBackLabel);
+        mCaption = view.findViewById(R.id.image_caption);
+        mUsername = view.findViewById(R.id.username);
+        mTimestamp = view.findViewById(R.id.image_time_posted);
+        mEllipses = view.findViewById(R.id.ivEllipses);
+        mHeartRed = view.findViewById(R.id.image_heart_red);
+        mHeartWhite = view.findViewById(R.id.image_heart);
+        mProfileImage = view.findViewById(R.id.profile_photo);
+        mLikes = view.findViewById(R.id.image_likes);
+        mComment = view.findViewById(R.id.speech_bubble);
+        mComments = view.findViewById(R.id.image_comments_link);
         UniversalImageLoader.initImageLoader(mContext);
 
         mHeart = new Heart(mHeartWhite, mHeartRed);
@@ -117,7 +112,6 @@ public class ViewPostFragment extends Fragment {
 
         setupFirebaseAuth();
         setupBottomNavigationView();
-
 
         return view;
     }
@@ -141,14 +135,10 @@ public class ViewPostFragment extends Fragment {
 
                         mPhoto = newPhoto;
 
-//                        getCurrentUser();
                         setupWidgets();
                         getLikesString();
                         getPhotoDetails();
-
-
                     }
-
                 }
 
                 @Override
@@ -248,7 +238,7 @@ public class ViewPostFragment extends Fragment {
 
                             @Override
                             public void onCancelled(@NonNull DatabaseError databaseError) {
-
+                                Log.d(TAG, "onCancelled.");
                             }
                         });
                     }
@@ -257,7 +247,7 @@ public class ViewPostFragment extends Fragment {
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-
+                Log.d(TAG, "onCancelled.");
             }
         });
     }
@@ -298,7 +288,6 @@ public class ViewPostFragment extends Fragment {
                     mUserAccountSettings = singleSnapshot.getValue(UserAccountSettings.class);
                     UniversalImageLoader.setImage(mUserAccountSettings.getProfile_photo(), mProfileImage, null, "");
                 }
-                //setupWidgets();
             }
 
             @Override
@@ -307,7 +296,6 @@ public class ViewPostFragment extends Fragment {
             }
         });
     }
-
 
     private void setupWidgets() {
         String timestampDiff = StringManipulation.getTimeStampDifference(mPhoto.getDate_created());
@@ -330,23 +318,19 @@ public class ViewPostFragment extends Fragment {
                     public void onClick(View view) {
                         Log.d(TAG, "onClick: navigate to view profile.");
                         Intent intent = new Intent(mContext, ProfileActivity.class);
-//                        intent.putExtra(mContext.getString(R.string.calling_activity), mContext.getString(R.string.likes_activity));
                         intent.putExtra(mContext.getString(R.string.calling_activity_number),
                                 getArguments().getInt(mContext.getString(R.string.calling_activity_number),
                                         getResources().getInteger(R.integer.home_activity_number)));
                         intent.putExtra(mContext.getString(R.string.selected_user), mUser);
                         mContext.startActivity(intent);
-                        ((Activity)mContext).overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
-
+                        ((Activity) mContext).overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
                     }
                 });
-
-
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-
+                Log.d(TAG, "onCancelled.");
             }
         });
 
@@ -358,7 +342,6 @@ public class ViewPostFragment extends Fragment {
                 Log.d(TAG, "onClick: navigating to comments thread");
 
                 mOnCommentThreadSelectedListener.onCommentThreadSelectedListener(mPhoto);
-
             }
         });
 
@@ -375,7 +358,6 @@ public class ViewPostFragment extends Fragment {
                         mContext.getResources().getInteger(R.integer.likes_activity_number)) {
                     ((LikesActivity) mContext).showRelativeLayout();
                 }
-
             }
         });
 
@@ -384,7 +366,6 @@ public class ViewPostFragment extends Fragment {
             public void onClick(View v) {
                 Log.d(TAG, "onClick: navigating back");
                 mOnCommentThreadSelectedListener.onCommentThreadSelectedListener(mPhoto);
-
             }
         });
 
@@ -409,7 +390,7 @@ public class ViewPostFragment extends Fragment {
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-
+                Log.d(TAG, "onCancelled.");
             }
         });
 
@@ -428,7 +409,6 @@ public class ViewPostFragment extends Fragment {
                 return mGestureDetector.onTouchEvent(event);
             }
         });
-
     }
 
     private void setupLikes() {
@@ -527,13 +507,9 @@ public class ViewPostFragment extends Fragment {
                     // User is signed out
                     Log.d(TAG, "onAuthStateChanged:signed_out");
                 }
-                // ...
             }
         };
-
-
     }
-
 
     @Override
     public void onStart() {

@@ -6,13 +6,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -46,7 +44,7 @@ public class UserListAdapter extends ArrayAdapter<User> {
         UniversalImageLoader.initImageLoader(mContext);
     }
 
-    private class ViewHolder{
+    private class ViewHolder {
         TextView username, email;
         CircleImageView profileImage;
     }
@@ -56,17 +54,17 @@ public class UserListAdapter extends ArrayAdapter<User> {
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
         final ViewHolder holder;
 
-        if (convertView == null){
+        if (convertView == null) {
             convertView = mInflater.inflate(layoutResource, parent, false);
             holder = new ViewHolder();
 
-            holder.username = (TextView) convertView.findViewById(R.id.username);
-            holder.email = (TextView) convertView.findViewById(R.id.email);
-            holder.profileImage = (CircleImageView) convertView.findViewById(R.id.profile_image);
+            holder.username = convertView.findViewById(R.id.username);
+            holder.email = convertView.findViewById(R.id.email);
+            holder.profileImage = convertView.findViewById(R.id.profile_image);
 
             convertView.setTag(holder);
 
-        }else {
+        } else {
             holder = (ViewHolder) convertView.getTag();
         }
 
@@ -81,7 +79,7 @@ public class UserListAdapter extends ArrayAdapter<User> {
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for (DataSnapshot singleSnapshot: dataSnapshot.getChildren()){
+                for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
                     Log.d(TAG, "onDataChange: found user: " + singleSnapshot.getValue(UserAccountSettings.class).toString());
                     UniversalImageLoader.setImage(singleSnapshot.getValue(UserAccountSettings.class).getProfile_photo(),
                             holder.profileImage, null, "");
@@ -90,7 +88,7 @@ public class UserListAdapter extends ArrayAdapter<User> {
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-
+                Log.d(TAG, "onCancelled.");
             }
         });
         return convertView;

@@ -35,7 +35,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 
-import ai.tomorrow.instagramclone.Login.LoginActivity;
 import ai.tomorrow.instagramclone.R;
 import ai.tomorrow.instagramclone.models.Photo;
 import ai.tomorrow.instagramclone.models.User;
@@ -47,9 +46,10 @@ public class ViewProfileFragment extends Fragment {
 
     private static final String TAG = "ViewProfileFragment";
 
-    public interface OnGridImageSelectedListener{
+    public interface OnGridImageSelectedListener {
         void onGridImageSelected(Photo photo, int activityNumber);
     }
+
     OnGridImageSelectedListener mOnGridImageSelectedListener;
 
     //widgets
@@ -76,7 +76,6 @@ public class ViewProfileFragment extends Fragment {
     private int mFollowersCount = 0;
     private int mPostsCount = 0;
     private int mActivityNumber = 0;
-
 
     @Nullable
     @Override
@@ -106,7 +105,7 @@ public class ViewProfileFragment extends Fragment {
 
         try {
             mUser = getUserFromBundle();
-        }catch (NullPointerException e){
+        } catch (NullPointerException e) {
             Log.d(TAG, "onCreateView: NullPointerException" + e.getMessage());
             Toast.makeText(mContext, "can't get user correct.", Toast.LENGTH_SHORT).show();
             getActivity().getSupportFragmentManager().popBackStack();
@@ -119,7 +118,7 @@ public class ViewProfileFragment extends Fragment {
         return view;
     }
 
-    private void init(){
+    private void init() {
         // set the profile widgets
         Query query1 = myRef.child(getString(R.string.dbname_user_account_settings))
                 .orderByChild(getString(R.string.field_user_id))
@@ -128,7 +127,7 @@ public class ViewProfileFragment extends Fragment {
         query1.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for (DataSnapshot singleSnapshot: dataSnapshot.getChildren()){
+                for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
                     Log.d(TAG, "onDataChange: found user: " + singleSnapshot.getValue(UserAccountSettings.class).toString());
                     UserSettings settings = new UserSettings();
                     settings.setUser(mUser);
@@ -139,7 +138,7 @@ public class ViewProfileFragment extends Fragment {
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-
+                Log.d(TAG, "onCancelled.");
             }
         });
 
@@ -218,25 +217,25 @@ public class ViewProfileFragment extends Fragment {
         }
     }
 
-    private void setFollowing(){
+    private void setFollowing() {
         Log.d(TAG, "setFollowing: updating UI for following widgets");
         mFollow.setVisibility(View.GONE);
         mUnfollow.setVisibility(View.VISIBLE);
     }
 
-    private void setUnfollowing(){
+    private void setUnfollowing() {
         Log.d(TAG, "setFollowing: updating UI for unfollowing widgets");
         mFollow.setVisibility(View.VISIBLE);
         mUnfollow.setVisibility(View.GONE);
     }
 
-    private void setCurrentUsersProfile(){
+    private void setCurrentUsersProfile() {
         Log.d(TAG, "setFollowing: updating UI for showing this user own profile");
         mFollow.setVisibility(View.GONE);
         mUnfollow.setVisibility(View.GONE);
     }
 
-    private void setFollowingCount(){
+    private void setFollowingCount() {
         Log.d(TAG, "setFollowingCount: set following count");
         mFollowingCount = 0;
 
@@ -246,7 +245,7 @@ public class ViewProfileFragment extends Fragment {
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for (DataSnapshot singleSnapshot: dataSnapshot.getChildren()){
+                for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
                     Log.d(TAG, "onDataChange: found following: " + singleSnapshot.getChildren());
                     mFollowingCount++;
                 }
@@ -255,12 +254,12 @@ public class ViewProfileFragment extends Fragment {
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-
+                Log.d(TAG, "onCancelled.");
             }
         });
     }
 
-    private void setFollowerCount(){
+    private void setFollowerCount() {
         Log.d(TAG, "setFollowingCount: set followers count");
         mFollowersCount = 0;
 
@@ -270,7 +269,7 @@ public class ViewProfileFragment extends Fragment {
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for (DataSnapshot singleSnapshot: dataSnapshot.getChildren()){
+                for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
                     Log.d(TAG, "onDataChange: found follower: " + singleSnapshot.getChildren());
                     mFollowersCount++;
                 }
@@ -279,12 +278,12 @@ public class ViewProfileFragment extends Fragment {
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-
+                Log.d(TAG, "onCancelled.");
             }
         });
     }
 
-    private void setPostsCount(){
+    private void setPostsCount() {
         Log.d(TAG, "setFollowingCount: set posts count");
         mPostsCount = 0;
 
@@ -294,7 +293,7 @@ public class ViewProfileFragment extends Fragment {
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for (DataSnapshot singleSnapshot: dataSnapshot.getChildren()){
+                for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
                     Log.d(TAG, "onDataChange: found post: " + singleSnapshot.getChildren());
                     mPostsCount++;
                 }
@@ -303,13 +302,13 @@ public class ViewProfileFragment extends Fragment {
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-
+                Log.d(TAG, "onCancelled.");
             }
         });
     }
 
 
-    private void isFollowing(){
+    private void isFollowing() {
         Log.d(TAG, "isFollowing: checking if following this user.");
         setUnfollowing();
 
@@ -321,7 +320,7 @@ public class ViewProfileFragment extends Fragment {
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for (DataSnapshot singleSnapshot: dataSnapshot.getChildren()){
+                for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
                     Log.d(TAG, "onDataChange: found following: " + singleSnapshot.getValue());
                     setFollowing();
                 }
@@ -329,31 +328,29 @@ public class ViewProfileFragment extends Fragment {
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-
+                Log.d(TAG, "onCancelled.");
             }
         });
-
-
     }
 
     @Override
     public void onAttach(Context context) {
         try {
             mOnGridImageSelectedListener = (OnGridImageSelectedListener) getActivity();
-        }catch (ClassCastException e){
+        } catch (ClassCastException e) {
             Log.d(TAG, "onAttach: ClassCastException: " + e.getMessage());
         }
 
         super.onAttach(context);
     }
 
-    private User getUserFromBundle(){
+    private User getUserFromBundle() {
         Log.d(TAG, "getUserFromBundle: arguments: " + getArguments());
 
         Bundle bundle = this.getArguments();
-        if (bundle != null){
+        if (bundle != null) {
             return bundle.getParcelable(getString(R.string.selected_user));
-        }else {
+        } else {
             return null;
         }
     }
@@ -370,12 +367,12 @@ public class ViewProfileFragment extends Fragment {
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for (DataSnapshot singleSnapshot: dataSnapshot.getChildren()){
+                for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
                     photos.add(mFirebaseMethods.getPhoto(singleSnapshot));
                 }
 
                 // sort photos by date created
-                if (photos.size() > 0){
+                if (photos.size() > 0) {
                     Collections.sort(photos, new Comparator<Photo>() {
                         @Override
                         public int compare(Photo o1, Photo o2) {
@@ -385,7 +382,7 @@ public class ViewProfileFragment extends Fragment {
                 }
 
                 ArrayList<String> imgURLs = new ArrayList<>();
-                for (int i = 0; i < photos.size(); i++){
+                for (int i = 0; i < photos.size(); i++) {
                     imgURLs.add(photos.get(i).getImage_path());
                 }
 
@@ -413,7 +410,6 @@ public class ViewProfileFragment extends Fragment {
         Log.d(TAG, "setProfileWidgets: setting widgets with data retrieved from firebase databse: " + userSettings.toString());
         Log.d(TAG, "setProfileWidgets: mUsername = " + mUsername);
 
-//        User user = userSettings.getUser();
         UserAccountSettings settings = userSettings.getSettings();
 
         UniversalImageLoader.setImage(settings.getProfile_photo(), mProfilePhoto, null, "");

@@ -16,23 +16,24 @@ public class ImageManager {
 
     /**
      * get bitmap from the image url
+     *
      * @param imgUrl
      * @return
      */
-    public static Bitmap getBitmap(String imgUrl){
+    public static Bitmap getBitmap(String imgUrl) {
         File imageFile = new File(imgUrl);
         FileInputStream fis = null;
         Bitmap bitmap = null;
         try {
             fis = new FileInputStream(imageFile);
             bitmap = BitmapFactory.decodeStream(fis);
-        }catch (FileNotFoundException e){
+        } catch (FileNotFoundException e) {
             Log.e(TAG, "getBitmap: FileNotFoundException: " + e.getMessage());
-        }finally {
+        } finally {
             try {
                 fis.close();
-            }catch (IOException e){
-                Log.e(TAG, "getBitmap: FileNotFoundException: " + e.getMessage() );
+            } catch (IOException e) {
+                Log.e(TAG, "getBitmap: FileNotFoundException: " + e.getMessage());
             }
         }
         return bitmap;
@@ -41,11 +42,12 @@ public class ImageManager {
     /**
      * return byte array from a bitmap
      * quality is greater than 0 but less than 100
+     *
      * @param bm
      * @param quality
      * @return
      */
-    public static byte[] getBytesFromBitmap(Bitmap bm, int quality){
+    public static byte[] getBytesFromBitmap(Bitmap bm, int quality) {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         bm.compress(Bitmap.CompressFormat.JPEG, quality, stream);
         return stream.toByteArray();

@@ -23,7 +23,6 @@ import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
 
 import java.util.ArrayList;
 
-import ai.tomorrow.instagramclone.Login.LoginActivity;
 import ai.tomorrow.instagramclone.R;
 import ai.tomorrow.instagramclone.Utils.BottomNavigationViewHelper;
 import ai.tomorrow.instagramclone.Utils.FirebaseMethods;
@@ -72,22 +71,21 @@ public class AccountSettingsActivity extends AppCompatActivity {
         });
     }
 
-    private void getIncomingIntent(){
+    private void getIncomingIntent() {
         Intent intent = getIntent();
 
         // if there is an imageUrl attached as an extra, then it was chosen from the gallery fragment
-        if (intent.hasExtra(getString(R.string.selected_image))){
+        if (intent.hasExtra(getString(R.string.selected_image))) {
             Log.d(TAG, "getIncomingIntent: navigating to EditProfileFragment");
             setViewPager(pagerAdapter.getFragmentNumber(getString(R.string.edit_profile_fragment)));
             // set the new profile picture
             FirebaseMethods firebaseMethods = new FirebaseMethods(AccountSettingsActivity.this);
             firebaseMethods.uploadNewPhotos(getString(R.string.profile_photo), mProgressBar, null, 0,
                     getIntent().getStringExtra(getString(R.string.selected_image)), null);
-
         }
 
         // if there is an bitmap attached as an extra, then it was chosen from the photo fragment
-        if (intent.hasExtra(getString(R.string.selected_bitmap))){
+        if (intent.hasExtra(getString(R.string.selected_bitmap))) {
             Log.d(TAG, "getIncomingIntent: navigating to EditProfileFragment");
             setViewPager(pagerAdapter.getFragmentNumber(getString(R.string.edit_profile_fragment)));
             // set the new profile picture
@@ -96,23 +94,19 @@ public class AccountSettingsActivity extends AppCompatActivity {
                     null, (Bitmap) intent.getParcelableExtra(getString(R.string.selected_bitmap)));
         }
 
-        if (intent.hasExtra(getString(R.string.calling_activity_number))){
+        if (intent.hasExtra(getString(R.string.calling_activity_number))) {
             Log.d(TAG, "getIncomingIntent: received incoming intent from " + getString(R.string.profile_activity));
             setViewPager(pagerAdapter.getFragmentNumber(getString(R.string.edit_profile_fragment)));
         }
     }
 
-
-
-
-    private void setupFragments(){
+    private void setupFragments() {
         pagerAdapter = new SectionsStatePagerAdapter(getSupportFragmentManager());
         pagerAdapter.addFragment(new EditProfileFragment(), getString(R.string.edit_profile_fragment)); // fragment 0
         pagerAdapter.addFragment(new SignOutFragment(), getString(R.string.sign_out_fragment)); // fragment 1
-
     }
 
-    private void setViewPager(int fragmentNumber){
+    private void setViewPager(int fragmentNumber) {
         mRelativeLayout.setVisibility(View.GONE);
         Log.d(TAG, "setViewPager: navigating to fragment #: " + fragmentNumber);
 
@@ -120,7 +114,7 @@ public class AccountSettingsActivity extends AppCompatActivity {
         mViewPager.setCurrentItem(fragmentNumber);
     }
 
-    private void setupSettingList(){
+    private void setupSettingList() {
         Log.d(TAG, "setupSettingList: initializing 'Account Settings' list. ");
         ListView listView = (ListView) findViewById(R.id.lvAccountSettings);
 
@@ -139,7 +133,6 @@ public class AccountSettingsActivity extends AppCompatActivity {
             }
         });
     }
-
 
     /**
      * BottomNavigationView setup

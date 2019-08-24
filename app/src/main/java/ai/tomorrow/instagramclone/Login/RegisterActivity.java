@@ -57,7 +57,7 @@ public class RegisterActivity extends AppCompatActivity {
         init();
     }
 
-    private void init(){
+    private void init() {
         btnRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -65,7 +65,7 @@ public class RegisterActivity extends AppCompatActivity {
                 password = mPassword.getText().toString();
                 username = mUsername.getText().toString();
 
-                if (checkInputs(email, password, username)){
+                if (checkInputs(email, password, username)) {
                     mProgressBar.setVisibility(View.VISIBLE);
                     loadingPleaseWait.setVisibility(View.VISIBLE);
 
@@ -78,8 +78,8 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
 
-    private boolean checkInputs(String email, String password, String username){
-        if (email.equals("") || password.equals("") || username.equals("")){
+    private boolean checkInputs(String email, String password, String username) {
+        if (email.equals("") || password.equals("") || username.equals("")) {
             Toast.makeText(mContext, "All fields must be fill out.", Toast.LENGTH_SHORT).show();
             return false;
         }
@@ -87,12 +87,10 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
 
-
-
     /**
      * Initializing the activity widgets
      */
-    private void initWidgets(){
+    private void initWidgets() {
         Log.d(TAG, "initWidgets: Initializing widgets");
         mContext = RegisterActivity.this;
         firebaseMethods = new FirebaseMethods(mContext);
@@ -108,8 +106,8 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
 
-    private boolean isStringNull(String string){
-        if (string.equals("")){
+    private boolean isStringNull(String string) {
+        if (string.equals("")) {
             return true;
         } else {
             return false;
@@ -121,9 +119,10 @@ public class RegisterActivity extends AppCompatActivity {
      */
     /**
      * check is @param username already exists in the database
+     *
      * @param username
      */
-    private void checkIfUsernameExists(final String username){
+    private void checkIfUsernameExists(final String username) {
         Log.d(TAG, "checkIfUsernameExists: checking if " + username + " already exists.");
 
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
@@ -135,11 +134,11 @@ public class RegisterActivity extends AppCompatActivity {
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if (!dataSnapshot.exists()){
+                if (!dataSnapshot.exists()) {
                     // add new user
                 }
-                for (DataSnapshot singleSnapshot: dataSnapshot.getChildren()){
-                    if (singleSnapshot.exists()){
+                for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
+                    if (singleSnapshot.exists()) {
                         Log.d(TAG, "checkIfUsernameExists: FOUND A MATCH: " + singleSnapshot.getValue(User.class).getUsername());
                         append = myRef.push().getKey();
                         Log.d(TAG, "onDataChange: username already exists, append random string to name " + append);
@@ -167,7 +166,7 @@ public class RegisterActivity extends AppCompatActivity {
     /**
      * setup the firebase auth object
      */
-    private void setupFirebaseAuth(){
+    private void setupFirebaseAuth() {
         // Initialize Firebase Auth
         mAuth = FirebaseAuth.getInstance();
         mFirebaseDatabase = FirebaseDatabase.getInstance();
@@ -178,7 +177,7 @@ public class RegisterActivity extends AppCompatActivity {
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 FirebaseUser user = mAuth.getCurrentUser();
 
-                if (user != null){
+                if (user != null) {
                     // User is signed in
                     Log.d(TAG, "onAuthStateChanged: signed_in: " + user.getUid());
 
@@ -214,7 +213,7 @@ public class RegisterActivity extends AppCompatActivity {
     @Override
     protected void onStop() {
         super.onStop();
-        if (mAuthListener != null){
+        if (mAuthListener != null) {
             mAuth.removeAuthStateListener(mAuthListener);
         }
     }

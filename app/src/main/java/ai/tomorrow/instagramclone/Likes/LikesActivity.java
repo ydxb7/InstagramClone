@@ -9,42 +9,20 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.tabs.TabLayout;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
-import com.google.firebase.database.ValueEventListener;
 import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
 
-import java.lang.reflect.Array;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-
-import ai.tomorrow.instagramclone.Home.HomeActivity;
-import ai.tomorrow.instagramclone.Home.HomeFragment;
-import ai.tomorrow.instagramclone.Home.MessagesFragment;
-import ai.tomorrow.instagramclone.Profile.ProfileActivity;
 import ai.tomorrow.instagramclone.R;
 import ai.tomorrow.instagramclone.Utils.BottomNavigationViewHelper;
-import ai.tomorrow.instagramclone.Utils.FirebaseMethods;
 import ai.tomorrow.instagramclone.Utils.FollowingLikesListAdapter;
 import ai.tomorrow.instagramclone.Utils.SectionsPagerAdapter;
 import ai.tomorrow.instagramclone.Utils.ViewCommentsFragment;
 import ai.tomorrow.instagramclone.Utils.ViewPostFragment;
 import ai.tomorrow.instagramclone.Utils.YouLikesListAdapter;
-import ai.tomorrow.instagramclone.models.Follow;
-import ai.tomorrow.instagramclone.models.LikePhoto;
 import ai.tomorrow.instagramclone.models.Photo;
 
 public class LikesActivity extends AppCompatActivity implements
@@ -62,7 +40,6 @@ public class LikesActivity extends AppCompatActivity implements
     private FrameLayout mFrameLayout;
     private RelativeLayout mRelativeLayout;
     private ViewPager mViewPager;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,7 +59,7 @@ public class LikesActivity extends AppCompatActivity implements
     /**
      * Responsible for adding the 3 tabs: Camera, Home, Messages
      */
-    private void setupViewPager(){
+    private void setupViewPager() {
         SectionsPagerAdapter adapter = new SectionsPagerAdapter(getSupportFragmentManager());
         adapter.addFragment(new FollowingFragment()); //index 0
         adapter.addFragment(new YouFragment()); //index 1
@@ -93,7 +70,6 @@ public class LikesActivity extends AppCompatActivity implements
         mTab.getTabAt(0).setText(getString(R.string.following));
         mTab.getTabAt(1).setText(getString(R.string.you));
     }
-
 
     @Override
     public void onCommentThreadSelectedListener(Photo photo) {
@@ -129,7 +105,6 @@ public class LikesActivity extends AppCompatActivity implements
         transaction.commit();
         hideRelativeLayout();
     }
-
 
     @Override
     public void onPostImageSelected(Photo photo, int activityNumber) {
@@ -183,5 +158,4 @@ public class LikesActivity extends AppCompatActivity implements
         MenuItem menuItem = menu.getItem(mActivityNumber);
         menuItem.setChecked(true);
     }
-
 }

@@ -1,11 +1,9 @@
 package ai.tomorrow.instagramclone.Utils;
 
-import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.util.Log;
 import android.view.View;
-import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.ImageView;
@@ -24,12 +22,12 @@ public class Heart {
         this.heartRed = heartRed;
     }
 
-    public void toggleLike(){
+    public void toggleLike() {
         Log.d(TAG, "toggleLike: toggling heart");
 
         AnimatorSet animatorSet = new AnimatorSet();
 
-        if (heartRed.getVisibility() == View.VISIBLE){
+        if (heartRed.getVisibility() == View.VISIBLE) {
             Log.d(TAG, "toggleLike: toggling red heart off.");
 
             ObjectAnimator scaleDownY = ObjectAnimator.ofFloat(heartWhite, "scaleY", 0.1f, 1.5f, 1f);
@@ -45,7 +43,7 @@ public class Heart {
             heartRed.setVisibility(View.GONE);
             heartWhite.setVisibility(View.VISIBLE);
 
-        } else if (heartRed.getVisibility() == View.GONE){
+        } else if (heartRed.getVisibility() == View.GONE) {
             Log.d(TAG, "toggleLike: toggling red heart on.");
 
             ObjectAnimator scaleDownY = ObjectAnimator.ofFloat(heartRed, "scaleY", 0.1f, 1.5f, 1f);
@@ -61,10 +59,6 @@ public class Heart {
             heartWhite.setVisibility(View.GONE);
             heartRed.setVisibility(View.VISIBLE);
         }
-
         animatorSet.start();
-
     }
-
-
 }

@@ -3,7 +3,6 @@ package ai.tomorrow.instagramclone.Utils;
 import android.os.Environment;
 
 public class FilePaths {
-
     //"storage/emulated/0"
     public String ROOT_DIR = Environment.getExternalStorageDirectory().getPath();
 

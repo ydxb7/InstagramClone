@@ -3,8 +3,6 @@ package ai.tomorrow.instagramclone.models;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import ai.tomorrow.instagramclone.Login.LoginActivity;
-
 public class User implements Parcelable {
 
     private static final String TAG = "User";
@@ -23,7 +21,6 @@ public class User implements Parcelable {
 
     public User() {
     }
-
 
     protected User(Parcel in) {
         user_id = in.readString();

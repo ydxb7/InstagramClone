@@ -17,7 +17,6 @@ import androidx.fragment.app.Fragment;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
-import ai.tomorrow.instagramclone.Home.HomeActivity;
 import ai.tomorrow.instagramclone.Login.LoginActivity;
 import ai.tomorrow.instagramclone.R;
 
@@ -28,7 +27,6 @@ public class SignOutFragment extends Fragment {
     Button btnConfirmSignout;
     ProgressBar mProgressBar;
 
-
     // Firebase
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
@@ -38,10 +36,10 @@ public class SignOutFragment extends Fragment {
     public View onCreateView(@NonNull final LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_signout, container, false);
 
-        tvConfirmSignout = (TextView) view.findViewById(R.id.tvConfirmSignout);
-        btnConfirmSignout = (Button) view.findViewById(R.id.btnConfirmSignout);
-        tvSigningOut = (TextView) view.findViewById(R.id.tvSigningOut);
-        mProgressBar = (ProgressBar) view.findViewById(R.id.progressBar);
+        tvConfirmSignout = view.findViewById(R.id.tvConfirmSignout);
+        btnConfirmSignout = view.findViewById(R.id.btnConfirmSignout);
+        tvSigningOut = view.findViewById(R.id.tvSigningOut);
+        mProgressBar = view.findViewById(R.id.progressBar);
 
         mProgressBar.setVisibility(View.GONE);
         tvSigningOut.setVisibility(View.GONE);
@@ -67,7 +65,7 @@ public class SignOutFragment extends Fragment {
     /**
      * setup the firebase auth object
      */
-    private void setupFirebaseAuth(){
+    private void setupFirebaseAuth() {
         // Initialize Firebase Auth
         mAuth = FirebaseAuth.getInstance();
 
@@ -76,7 +74,7 @@ public class SignOutFragment extends Fragment {
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 FirebaseUser user = mAuth.getCurrentUser();
 
-                if (user != null){
+                if (user != null) {
                     // User is logged in
                     Log.d(TAG, "onAuthStateChanged: signed_in: " + user.getUid());
                 } else {
@@ -104,9 +102,8 @@ public class SignOutFragment extends Fragment {
     @Override
     public void onStop() {
         super.onStop();
-        if (mAuthListener != null){
+        if (mAuthListener != null) {
             mAuth.removeAuthStateListener(mAuthListener);
         }
     }
-
 }

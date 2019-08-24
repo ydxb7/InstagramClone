@@ -3,7 +3,6 @@ package ai.tomorrow.instagramclone.Share;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
@@ -23,9 +22,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.nostra13.universalimageloader.core.ImageLoader;
 
-import ai.tomorrow.instagramclone.Login.LoginActivity;
 import ai.tomorrow.instagramclone.R;
 import ai.tomorrow.instagramclone.Utils.FirebaseMethods;
 import ai.tomorrow.instagramclone.Utils.UniversalImageLoader;
@@ -52,7 +49,6 @@ public class NextActivity extends AppCompatActivity {
     private EditText mCaption;
     private ProgressBar mProgressBar;
 
-
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -66,7 +62,7 @@ public class NextActivity extends AppCompatActivity {
         mProgressBar.setVisibility(View.GONE);
         setupFirebaseAuth();
 
-        ImageView backArrow = (ImageView) findViewById(R.id.ivBackArrow);
+        ImageView backArrow = findViewById(R.id.ivBackArrow);
         backArrow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -88,9 +84,9 @@ public class NextActivity extends AppCompatActivity {
 
                 String caption = mCaption.getText().toString();
 
-                if (intent.hasExtra(getString(R.string.selected_image))){
+                if (intent.hasExtra(getString(R.string.selected_image))) {
                     mFirebaseMethods.uploadNewPhotos(getString(R.string.new_photo), mProgressBar, caption, imageCount, imgUrl, null);
-                } else if (intent.hasExtra(getString(R.string.selected_bitmap))){
+                } else if (intent.hasExtra(getString(R.string.selected_bitmap))) {
                     mFirebaseMethods.uploadNewPhotos(getString(R.string.new_photo), mProgressBar, caption, imageCount, null, bitmap);
                 }
 
@@ -100,45 +96,22 @@ public class NextActivity extends AppCompatActivity {
         setImage();
     }
 
-    private void someMethod(){
-
-        /**
-         * step 1)
-         * create a data model for photos
-         *
-         * step 2)
-         * add properties to the photo objects (caption, data, imageUrl, photo_id, tags, user_id)
-         *
-         * step 3)
-         * count the number of photos that the user already has.
-         *
-         * step 4)
-         * a) upload the photo to Firebase Storage
-         * b) insert into 'photos' node
-         * c) insert into 'user_photos' node
-         *
-         */
-
-    }
-
-
     /**
      * gets the image url from the incoming intent and displays the chosen image
      */
-    private void setImage(){
-        ImageView imageView = (ImageView) findViewById(R.id.imageShare);
+    private void setImage() {
+        ImageView imageView = findViewById(R.id.imageShare);
         intent = getIntent();
 
-        if (intent.hasExtra(getString(R.string.selected_image))){
+        if (intent.hasExtra(getString(R.string.selected_image))) {
             imgUrl = getIntent().getStringExtra(getString(R.string.selected_image));
             Log.d(TAG, "setImage: got new image url: " + imgUrl);
             UniversalImageLoader.setImage(intent.getStringExtra(getString(R.string.selected_image)), imageView, null, mAppend);
-        } else if (intent.hasExtra(getString(R.string.selected_bitmap))){
+        } else if (intent.hasExtra(getString(R.string.selected_bitmap))) {
             bitmap = intent.getParcelableExtra(getString(R.string.selected_bitmap));
             Log.d(TAG, "setImage: got new bitmap.");
             imageView.setImageBitmap(bitmap);
         }
-
     }
 
     /**
@@ -148,7 +121,7 @@ public class NextActivity extends AppCompatActivity {
     /**
      * setup the firebase auth object
      */
-    private void setupFirebaseAuth(){
+    private void setupFirebaseAuth() {
         // Initialize Firebase Auth
         mAuth = FirebaseAuth.getInstance();
         mFirebaseDatabase = FirebaseDatabase.getInstance();
@@ -160,7 +133,7 @@ public class NextActivity extends AppCompatActivity {
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 FirebaseUser user = mAuth.getCurrentUser();
 
-                if (user != null){
+                if (user != null) {
                     // User is logged in
                     Log.d(TAG, "onAuthStateChanged: signed_in: " + user.getUid());
                 } else {
@@ -179,13 +152,9 @@ public class NextActivity extends AppCompatActivity {
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-
+                Log.d(TAG, "onCancelled.");
             }
         });
-
-
-
-
     }
 
     @Override
@@ -197,7 +166,7 @@ public class NextActivity extends AppCompatActivity {
     @Override
     public void onStop() {
         super.onStop();
-        if (mAuthListener != null){
+        if (mAuthListener != null) {
             mAuth.removeAuthStateListener(mAuthListener);
         }
     }

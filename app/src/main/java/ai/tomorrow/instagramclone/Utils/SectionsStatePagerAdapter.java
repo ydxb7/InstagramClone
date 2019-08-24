@@ -18,7 +18,6 @@ public class SectionsStatePagerAdapter extends FragmentStatePagerAdapter {
     private final HashMap<String, Integer> mFragmentNumbers = new HashMap<>();
     private final HashMap<Integer, String> mFragmentNames = new HashMap<>();
 
-
     public SectionsStatePagerAdapter(FragmentManager fm) {
         super(fm);
     }
@@ -33,20 +32,21 @@ public class SectionsStatePagerAdapter extends FragmentStatePagerAdapter {
         return mFragmentList.size();
     }
 
-    public void addFragment(Fragment fragment, String fragmentName){
+    public void addFragment(Fragment fragment, String fragmentName) {
         mFragmentList.add(fragment);
         mFragments.put(fragment, mFragmentList.size() - 1);
         mFragmentNumbers.put(fragmentName, mFragmentList.size() - 1);
-        mFragmentNames.put( mFragmentList.size() - 1, fragmentName);
+        mFragmentNames.put(mFragmentList.size() - 1, fragmentName);
     }
 
     /**
      * returns the fragment with the name @param
+     *
      * @param fragmentName
      * @return
      */
-    public Integer getFragmentNumber(String fragmentName){
-        if(mFragmentNumbers.containsKey(fragmentName)){
+    public Integer getFragmentNumber(String fragmentName) {
+        if (mFragmentNumbers.containsKey(fragmentName)) {
             return mFragmentNumbers.get(fragmentName);
         } else {
             return null;
@@ -55,11 +55,12 @@ public class SectionsStatePagerAdapter extends FragmentStatePagerAdapter {
 
     /**
      * returns the fragment with the name @param
+     *
      * @param fragment
      * @return
      */
-    public Integer getFragmentNumber(Fragment fragment){
-        if(mFragments.containsKey(fragment)){
+    public Integer getFragmentNumber(Fragment fragment) {
+        if (mFragments.containsKey(fragment)) {
             return mFragments.get(fragment);
         } else {
             return null;
@@ -68,11 +69,12 @@ public class SectionsStatePagerAdapter extends FragmentStatePagerAdapter {
 
     /**
      * returns the fragment with the name @param
+     *
      * @param fragmentNumber
      * @return
      */
-    public String getFragmentName (Integer fragmentNumber){
-        if(mFragmentNames.containsKey(fragmentNumber)){
+    public String getFragmentName(Integer fragmentNumber) {
+        if (mFragmentNames.containsKey(fragmentNumber)) {
             return mFragmentNames.get(fragmentNumber);
         } else {
             return null;
@@ -81,16 +83,16 @@ public class SectionsStatePagerAdapter extends FragmentStatePagerAdapter {
 
     /**
      * return the fragment from the fragment name
+     *
      * @param fragmentName
      * @return
      */
-    public Fragment getFragmentFromName(String fragmentName){
-        if(mFragmentNumbers.containsKey(fragmentName)){
+    public Fragment getFragmentFromName(String fragmentName) {
+        if (mFragmentNumbers.containsKey(fragmentName)) {
             int i = mFragmentNumbers.get(fragmentName);
             return mFragmentList.get(i);
         } else {
             return null;
         }
     }
-
 }

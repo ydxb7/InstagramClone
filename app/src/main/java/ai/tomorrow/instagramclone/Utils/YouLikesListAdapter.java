@@ -19,7 +19,6 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -29,28 +28,24 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import ai.tomorrow.instagramclone.Profile.ProfileActivity;
 import ai.tomorrow.instagramclone.R;
-import ai.tomorrow.instagramclone.models.LikePhoto;
 import ai.tomorrow.instagramclone.models.LikeYou;
 import ai.tomorrow.instagramclone.models.Photo;
 import ai.tomorrow.instagramclone.models.User;
 import ai.tomorrow.instagramclone.models.UserAccountSettings;
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class YouLikesListAdapter extends ArrayAdapter<LikeYou>  {
+public class YouLikesListAdapter extends ArrayAdapter<LikeYou> {
     private static final String TAG = "YouLikesListAdapter";
 
-    public interface OnPostImageSelectedListener{
+    public interface OnPostImageSelectedListener {
         void onPostImageSelected(Photo photo, int activityNumber);
     }
-    OnPostImageSelectedListener mOnPostImageSelectedListener;
 
-    //constance
-//    private static final int ACTIVITY_NUM = 3;
+    OnPostImageSelectedListener mOnPostImageSelectedListener;
 
     //vars
     private Context mContext;
@@ -77,13 +72,12 @@ public class YouLikesListAdapter extends ArrayAdapter<LikeYou>  {
         mOnPostImageSelectedListener = (OnPostImageSelectedListener) mContext;
     }
 
-    public void setNewData(List<LikeYou> objects){
+    public void setNewData(List<LikeYou> objects) {
         mLikes = objects;
         notifyDataSetChanged();
     }
 
     private static class ViewHolder {
-
         CircleImageView profilePhoto;
         TextView tv_liked_post;
         SquareImageView postImage;
@@ -92,7 +86,6 @@ public class YouLikesListAdapter extends ArrayAdapter<LikeYou>  {
         String user_id;
         String photo_id;
         Photo mPhoto;
-
     }
 
     @NonNull
@@ -115,7 +108,6 @@ public class YouLikesListAdapter extends ArrayAdapter<LikeYou>  {
 
         getUserSettingAndPhoto(position, holder);
 
-
         return convertView;
     }
 
@@ -131,7 +123,7 @@ public class YouLikesListAdapter extends ArrayAdapter<LikeYou>  {
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for (DataSnapshot singleSnapshot: dataSnapshot.getChildren()){
+                for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
                     holder.settings = singleSnapshot.getValue(UserAccountSettings.class);
                 }
 
@@ -142,7 +134,7 @@ public class YouLikesListAdapter extends ArrayAdapter<LikeYou>  {
                 query.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        for (DataSnapshot singleSnapshot: dataSnapshot.getChildren()){
+                        for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
                             holder.mUser = singleSnapshot.getValue(User.class);
 
                             Query query = myRef.child(mContext.getString(R.string.dbname_photos))
@@ -152,7 +144,7 @@ public class YouLikesListAdapter extends ArrayAdapter<LikeYou>  {
                             query.addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                    for (DataSnapshot singleSnapshot: dataSnapshot.getChildren()){
+                                    for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
                                         holder.mPhoto = mFirebaseMethods.getPhoto(singleSnapshot);
 
                                         setupWidgets(holder, position);
@@ -161,7 +153,7 @@ public class YouLikesListAdapter extends ArrayAdapter<LikeYou>  {
 
                                 @Override
                                 public void onCancelled(@NonNull DatabaseError databaseError) {
-
+                                    Log.d(TAG, "onCancelled.");
                                 }
                             });
                         }
@@ -169,18 +161,16 @@ public class YouLikesListAdapter extends ArrayAdapter<LikeYou>  {
 
                     @Override
                     public void onCancelled(@NonNull DatabaseError databaseError) {
-
+                        Log.d(TAG, "onCancelled.");
                     }
                 });
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-
+                Log.d(TAG, "onCancelled.");
             }
         });
-
-
     }
 
     public void setupWidgets(final ViewHolder holder, int position) {
@@ -217,7 +207,7 @@ public class YouLikesListAdapter extends ArrayAdapter<LikeYou>  {
         spannableString.setSpan(clickSpan, 0, s1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 
         // liked your post
-        spannableString.append(" liked your post. " );
+        spannableString.append(" liked your post. ");
 
         // time diff
         int s2 = spannableString.length();
@@ -246,10 +236,6 @@ public class YouLikesListAdapter extends ArrayAdapter<LikeYou>  {
         intent.putExtra(mContext.getString(R.string.calling_activity_number), mContext.getResources().getInteger(R.integer.likes_activity_number));
         intent.putExtra(mContext.getString(R.string.selected_user), user);
         mContext.startActivity(intent);
-        ((Activity)mContext).overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+        ((Activity) mContext).overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
     }
-
-
-
-
 }

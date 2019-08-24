@@ -8,8 +8,6 @@ import android.util.Log;
 
 import androidx.core.app.ActivityCompat;
 
-import ai.tomorrow.instagramclone.Share.ShareActivity;
-
 public class Permissions {
     private static final String TAG = "Permissions";
 
@@ -35,9 +33,10 @@ public class Permissions {
 
     /**
      * verify all the permissions passed to the array
+     *
      * @param permissions
      */
-    public static void verifyPermissions(Activity activity, String[] permissions){
+    public static void verifyPermissions(Activity activity, String[] permissions) {
         Log.d(TAG, "verifyPermissions: verifying permissions");
 
         ActivityCompat.requestPermissions(
@@ -49,15 +48,16 @@ public class Permissions {
 
     /**
      * check an array of permissions are they have been granted
+     *
      * @param permissions
      * @return
      */
-    public static boolean checkPermissionArray(Context context, String[] permissions){
+    public static boolean checkPermissionArray(Context context, String[] permissions) {
         Log.d(TAG, "checkPermissionArray: checking permissions array.");
 
-        for (int i = 0; i < permissions.length; i++){
+        for (int i = 0; i < permissions.length; i++) {
             String check = permissions[i];
-            if (!checkPermissions(context, check)){
+            if (!checkPermissions(context, check)) {
                 return false;
             }
         }
@@ -66,15 +66,16 @@ public class Permissions {
 
     /**
      * check a single permission is it has been granted
+     *
      * @param permission
      * @return
      */
-    public static boolean checkPermissions(Context context, String permission){
+    public static boolean checkPermissions(Context context, String permission) {
         Log.d(TAG, "checkPermissions: checking permission: " + permission);
 
         int permissionRequest = ActivityCompat.checkSelfPermission(context, permission);
 
-        if (permissionRequest != PackageManager.PERMISSION_GRANTED){
+        if (permissionRequest != PackageManager.PERMISSION_GRANTED) {
             Log.d(TAG, "checkPermissions: Permission was not granted for: " + permission);
             return false;
         } else {
@@ -82,5 +83,4 @@ public class Permissions {
             return true;
         }
     }
-
 }

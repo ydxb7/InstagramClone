@@ -20,16 +20,6 @@ public class ConfirmPasswordDialog extends DialogFragment {
 
     private static final String TAG = "ConfirmPasswordDialog";
 
-    public interface OnConfirmPasswordListener{
-        public void onComfirmPasswordListener(String password);
-    }
-
-    OnConfirmPasswordListener mOnConfirmPasswordListener;
-
-    //vars
-    EditText mPassword;
-
-
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -45,7 +35,7 @@ public class ConfirmPasswordDialog extends DialogFragment {
             public void onClick(View v) {
                 Log.d(TAG, "onClick: capture password and confirming");
                 String password = mPassword.getText().toString();
-                if (!password.equals("")){
+                if (!password.equals("")) {
                     mOnConfirmPasswordListener.onComfirmPasswordListener(password);
                 } else {
                     Toast.makeText(getActivity(), "You must enter a password", Toast.LENGTH_SHORT).show();
@@ -53,8 +43,6 @@ public class ConfirmPasswordDialog extends DialogFragment {
                 getDialog().dismiss();
             }
         });
-
-
 
 
         TextView cancelDialog = view.findViewById(R.id.dialogCancel);
@@ -69,6 +57,10 @@ public class ConfirmPasswordDialog extends DialogFragment {
         return view;
     }
 
+    OnConfirmPasswordListener mOnConfirmPasswordListener;
+
+    //vars
+    EditText mPassword;
 
     @Override
     public void onAttach(Context context) {
@@ -76,8 +68,13 @@ public class ConfirmPasswordDialog extends DialogFragment {
 
         try {
             mOnConfirmPasswordListener = (OnConfirmPasswordListener) getTargetFragment();
-        } catch (ClassCastException e){
-            Log.e(TAG, "onAttach: ClassCastException: " + e.getMessage() );
+        } catch (ClassCastException e) {
+            Log.e(TAG, "onAttach: ClassCastException: " + e.getMessage());
         }
+    }
+
+
+    public interface OnConfirmPasswordListener {
+        void onComfirmPasswordListener(String password);
     }
 }
