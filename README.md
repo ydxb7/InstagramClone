@@ -1,4 +1,4 @@
-# *InstagramClone*
+# *Photory / InstagramClone*
 
 **InstagramClone** An android application clones the basic features of Instagram. I first follows [mitchtabian](https://github.com/mitchtabian/Android-Instagram-Clone/tree/24e82c30bfc64b474b08f64c304564cb626a2bfc)'s work, and then add some new features to the app, and make it a complete android application.
 
@@ -8,8 +8,8 @@ Time spent: 3 weeks spent in total
 
 Here's a walkthrough of implemented user stories:
 
-![Video Walkthrough 1](show_instagram_clone4.gif)
-![Video Walkthrough 1](show_instagram_clone3.gif)
+![Video Walkthrough 1](show_photory1.gif)
+![Video Walkthrough 1](show_photory2.gif)
 
 ## User Stories
 
