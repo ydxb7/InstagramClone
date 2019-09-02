@@ -37,6 +37,7 @@ public class NextActivity extends AppCompatActivity {
     private String imgUrl;
     private Bitmap bitmap;
     private Intent intent;
+    private boolean isSharing;
 
     // Firebase
     private FirebaseAuth mAuth;
@@ -79,17 +80,19 @@ public class NextActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Log.d(TAG, "onClick: upload the image");
 
-                // upload the image and description to firebase
-                Toast.makeText(NextActivity.this, "Attempting to upload new photo", Toast.LENGTH_SHORT).show();
+                if (!isSharing) {
+                    // upload the image and description to firebase
+                    Toast.makeText(NextActivity.this, "Attempting to upload new photo", Toast.LENGTH_SHORT).show();
 
-                String caption = mCaption.getText().toString();
+                    String caption = mCaption.getText().toString();
+                    isSharing = true;
 
-                if (intent.hasExtra(getString(R.string.selected_image))) {
-                    mFirebaseMethods.uploadNewPhotos(getString(R.string.new_photo), mProgressBar, caption, imageCount, imgUrl, null);
-                } else if (intent.hasExtra(getString(R.string.selected_bitmap))) {
-                    mFirebaseMethods.uploadNewPhotos(getString(R.string.new_photo), mProgressBar, caption, imageCount, null, bitmap);
+                    if (intent.hasExtra(getString(R.string.selected_image))) {
+                        mFirebaseMethods.uploadNewPhotos(getString(R.string.new_photo), mProgressBar, caption, imageCount, imgUrl, null);
+                    } else if (intent.hasExtra(getString(R.string.selected_bitmap))) {
+                        mFirebaseMethods.uploadNewPhotos(getString(R.string.new_photo), mProgressBar, caption, imageCount, null, bitmap);
+                    }
                 }
-
             }
         });
 

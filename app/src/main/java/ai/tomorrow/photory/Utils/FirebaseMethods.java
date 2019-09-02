@@ -433,7 +433,6 @@ public class FirebaseMethods {
                         // insert into 'user_account_settings' node
                         setProfilePhoto(firebaseUrl);
 
-
                     } else {
                         // Handle failures
                         Log.d(TAG, "onComplete: get firebase download url failed.");
