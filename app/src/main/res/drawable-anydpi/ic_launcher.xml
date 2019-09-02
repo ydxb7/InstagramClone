@@ -1,0 +1,28 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="248.20833"
+    android:viewportHeight="248.20833"
+    android:tint="#000000">
+  <group android:translateX="-0.2248264"
+      android:translateY="-5.3958335">
+      <path
+          android:fillColor="#000"
+          android:name="形状 1"
+          android:pathData="m61.5 21c-4.45 0 -8.19 3.06 -9.22 7.2h-0c-24.21 2.94 -42.78 20.02 -42.78 40.65v111.8c0 22.7 22.48 41.1 50.21 41.1h136.58c27.73 0 50.21 -18.4 50.21 -41.1v-111.8c0 -22.7 -22.48 -41.1 -50.21 -41.1h-97.69c-1.18 -3.91 -4.81 -6.75 -9.1 -6.75z" />
+      <path
+          android:fillColor="#000"
+          android:name="形状 1 副本"
+          android:pathData="m59.71 41.75h136.58c27.73 0 50.21 18.4 50.21 41.1v111.8c0 22.7 -22.48 41.1 -50.21 41.1h-136.58c-27.73 0 -50.21 -18.4 -50.21 -41.1v-111.8c0 -22.7 22.48 -41.1 50.21 -41.1z" />
+      <path
+          android:fillColor="#000"
+          android:fillAlpha="0"
+          android:name="形状 3"
+          android:pathData="m128.5 90c26.79 0 48.5 21.71 48.5 48.5c0 26.79 -21.71 48.5 -48.5 48.5c-26.79 0 -48.5 -21.71 -48.5 -48.5c0 -26.79 21.71 -48.5 48.5 -48.5z" />
+      <path
+          android:fillColor="#000"
+          android:fillAlpha="0"
+          android:name="形状 2"
+          android:pathData="m128 92.06c25.51 0 46.19 20.68 46.19 46.19c0 25.51 -20.68 46.19 -46.19 46.19c-25.51 0 -46.19 -20.68 -46.19 -46.19c0 -25.51 20.68 -46.19 46.19 -46.19z" />
+  </group>
+</vector>

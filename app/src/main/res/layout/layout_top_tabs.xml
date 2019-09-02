@@ -33,7 +33,7 @@
                         android:layout_height="25dp"
                         android:layout_marginTop="8dp"
                         android:layout_toRightOf="@id/ivCamera"
-                        android:src="@drawable/ic_instagram_text_logo"
+                        android:src="@drawable/ic_photory_text_logo"
                         android:tint="@color/black" />
 
 
