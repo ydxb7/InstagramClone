@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="ai.tomorrow.instagramclone">
+    package="ai.tomorrow.photory">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.CAMERA" />
@@ -14,7 +14,7 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Home.HomeActivity">
+        <activity android:name="ai.tomorrow.photory.Home.HomeActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -23,15 +23,15 @@
         </activity>
 
         <activity
-            android:name=".Search.SearchActivity"
+            android:name="ai.tomorrow.photory.Search.SearchActivity"
             android:windowSoftInputMode="adjustNothing"></activity>
-        <activity android:name=".Likes.LikesActivity"></activity>
-        <activity android:name=".Share.ShareActivity"></activity>
-        <activity android:name=".Profile.ProfileActivity"></activity>
-        <activity android:name=".Profile.AccountSettingsActivity"></activity>
-        <activity android:name=".Login.LoginActivity"></activity>
-        <activity android:name=".Login.RegisterActivity"></activity>
-        <activity android:name=".Share.NextActivity"></activity>
+        <activity android:name="ai.tomorrow.photory.Likes.LikesActivity"></activity>
+        <activity android:name="ai.tomorrow.photory.Share.ShareActivity"></activity>
+        <activity android:name="ai.tomorrow.photory.Profile.ProfileActivity"></activity>
+        <activity android:name="ai.tomorrow.photory.Profile.AccountSettingsActivity"></activity>
+        <activity android:name="ai.tomorrow.photory.Login.LoginActivity"></activity>
+        <activity android:name="ai.tomorrow.photory.Login.RegisterActivity"></activity>
+        <activity android:name="ai.tomorrow.photory.Share.NextActivity"></activity>
     </application>
 
 </manifest>

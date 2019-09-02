@@ -48,7 +48,7 @@
 
             </RelativeLayout>
 
-            <ai.tomorrow.instagramclone.Utils.SquareImageView
+            <ai.tomorrow.photory.Utils.SquareImageView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/relLayout1"

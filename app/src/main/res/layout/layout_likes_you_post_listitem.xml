@@ -29,7 +29,7 @@
         android:textSize="14dp"
         tools:text="lalis.blinki liked your posts." />
 
-    <ai.tomorrow.instagramclone.Utils.SquareImageView
+    <ai.tomorrow.photory.Utils.SquareImageView
         android:id="@+id/post_image"
         android:layout_width="45dp"
         android:layout_height="45dp"
